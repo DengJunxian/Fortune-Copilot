@@ -305,6 +305,12 @@ class PlanWorkflowVersion(RecordMixin, Base):
 
     __tablename__ = "plan_workflow_versions"
     __table_args__ = (
+        CheckConstraint(
+            "state IN ('draft', 'calculated', 'suitability_checked', "
+            "'advisor_reviewed', 'compliance_reviewed', 'customer_confirmed', "
+            "'active', 'superseded')",
+            name="ck_plan_workflow_state",
+        ),
         UniqueConstraint("workflow_id", "sequence", name="uq_plan_workflow_sequence"),
         Index(
             "ix_plan_workflow_household_current",
