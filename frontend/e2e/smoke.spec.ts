@@ -24,19 +24,17 @@ test("offline demo exposes all three portal routes", async ({ page }) => {
   page.on("pageerror", (error) => browserErrors.push(error.message));
 
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "先守住家庭安全底线，再安排长期增长" })).toBeVisible();
-  await expect(page.getByText("竞赛原型，非中国工商银行官方产品")).toBeVisible();
+  await expect(page.getByRole("heading", { name: /把家庭财务看清楚/ })).toBeVisible();
+  await expect(page.getByText("规划结果仅供财务规划参考，不构成任何金融产品的收益或本金保证。")).toBeVisible();
 
-  await page.getByRole("link", { name: "客户端", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "家庭财富驾驶舱" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "财务测算当前不可用" })).toBeVisible();
-  await expect(page.getByText(/纯前端模式不会嵌入家庭金额或伪造计算结果/)).toBeVisible();
-  await expect(page.getByText("信用卡只作为支付工具，额度不计入资产", { exact: false })).toBeVisible();
+  await page.goto("/client");
+  await expect(page.getByRole("heading", { name: "先了解您和家人" })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "规划进度" })).toBeVisible();
 
-  await page.getByRole("link", { name: "顾问端", exact: true }).click();
+  await page.goto("/advisor");
   await expect(page.getByRole("heading", { name: "客户经理工作台", exact: true })).toBeVisible();
 
-  await page.getByRole("link", { name: "风险端", exact: true }).click();
+  await page.goto("/risk");
   await expect(page.getByRole("heading", { name: "风险与审计控制台", exact: true })).toBeVisible();
   await openRiskTechnicalEvidence(page);
   await expect(page.getByText("最低工资不等于 CPI")).toBeVisible();
