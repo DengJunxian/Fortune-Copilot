@@ -1,0 +1,54 @@
+{
+  "household_code": "DEMO_B",
+  "analysis_date": "2026-08-04",
+  "formula_version": "wealth-state-transition-v1.0.0",
+  "engine_version": "wealth-twin-monte-carlo-v1.0.0",
+  "rule_version": "1.0.0",
+  "result_version": "wealth-twin-result-v1.0.0",
+  "scenario_version": "1.0.0",
+  "seed": 20260804,
+  "path_count": 100,
+  "horizon_years": 30,
+  "initial_state": {
+    "total_assets": "2850000.00",
+    "total_liabilities": "1208000.00",
+    "annual_income": "360000.00",
+    "annual_expenses_excluding_debt_service": "216000.00",
+    "monthly_compressible_expenses": "1950.00"
+  },
+  "baseline": {
+    "goal_success_probability": "0.960000",
+    "depletion_probability": "0.290000",
+    "forced_sale_probability": "1.000000",
+    "median_forced_sale_amount": "27143.23",
+    "ending_net_worth_median": "5613217.18",
+    "ending_net_worth_p10": "1761600.39",
+    "total_goal_shortfall_median": "0.00",
+    "required_additional_monthly_savings": "0.00"
+  },
+  "original_stress": {
+    "goal_success_probability": "0.530000",
+    "depletion_probability": "0.390000",
+    "forced_sale_probability": "1.000000",
+    "median_forced_sale_amount": "126714.68",
+    "ending_net_worth_median": "5130539.91",
+    "ending_net_worth_p10": "1480352.75",
+    "total_goal_shortfall_median": "0.00",
+    "required_additional_monthly_savings": "0.00"
+  },
+  "optimized_stress": {
+    "goal_success_probability": "1.000000",
+    "depletion_probability": "0.000000",
+    "forced_sale_probability": "0.040000",
+    "median_forced_sale_amount": "0.00",
+    "ending_net_worth_median": "7417985.04",
+    "ending_net_worth_p10": "3583448.43",
+    "total_goal_shortfall_median": "0.00",
+    "required_additional_monthly_savings": "0.00"
+  },
+  "comparison": {
+    "stress_not_better_than_baseline": true,
+    "avoided_forced_sale_probability": "0.960000",
+    "optimization_change": "0.470000"
+  }
+}

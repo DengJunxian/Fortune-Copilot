@@ -1,0 +1,52 @@
+{
+  "household_code": "DEMO_B",
+  "rule_version": "1.0.0",
+  "formula_version": "behavior-scoring-1.0.0",
+  "experiment_version": "behavior-experiments-1.0.0",
+  "questionnaire_score": "0.632000",
+  "questionnaire_claim_limit": "medium_high",
+  "experiment_score": "0.503333",
+  "experiment_limit": "low",
+  "objective_capacity_score": "0.580000",
+  "objective_capacity_limit": "medium",
+  "behavioral_limit_before_capacity": "low",
+  "effective_risk_limit": "low",
+  "risk_downshifted": true,
+  "conflict_codes": [
+    "claimed_30_percent_but_sold_at_10_percent",
+    "buy_after_rise_sell_after_fall"
+  ],
+  "average_response_time_ms": 2833,
+  "total_modification_count": 6,
+  "overall_consistency_score": "0.716667",
+  "responses": {
+    "market_up_20": {"choice_code": "chase_add", "consistency_score": "0.650000"},
+    "market_down_10": {"choice_code": "sell_all", "consistency_score": "0.300000"},
+    "market_down_30": {"choice_code": "hold_plan", "consistency_score": "0.850000"},
+    "hot_product_choice": {"choice_code": "chase_hot", "consistency_score": "0.750000"},
+    "winner_loser_disposal": {"choice_code": "rebalance_by_target", "consistency_score": "0.850000"},
+    "consume_or_goal": {"choice_code": "split_by_rule", "consistency_score": "0.900000"}
+  },
+  "biases": {
+    "loss_aversion": {"score": "1.000000", "severity": "high"},
+    "overconfidence": {"score": "0.600000", "severity": "high"},
+    "herding": {"score": "1.000000", "severity": "high"},
+    "recency_bias": {"score": "0.900000", "severity": "high"},
+    "disposition_effect": {"score": "0.050000", "severity": "low"},
+    "anchoring": {"score": "0.050000", "severity": "low"},
+    "familiarity_bias": {"score": "0.550000", "severity": "watch"},
+    "mental_accounting": {"score": "0.300000", "severity": "watch"},
+    "present_bias": {"score": "0.450000", "severity": "watch"},
+    "performance_chasing": {"score": "1.000000", "severity": "high"},
+    "frequent_trading_tendency": {"score": "0.500000", "severity": "watch"}
+  },
+  "intervention_codes": [
+    "cooling_period",
+    "staged_investing",
+    "precommitment",
+    "monetary_drawdown",
+    "long_term_probability_range",
+    "counterfactual_rehearsal"
+  ],
+  "cooling_period_hours": 48
+}

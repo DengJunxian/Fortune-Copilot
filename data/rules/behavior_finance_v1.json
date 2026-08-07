@@ -1,0 +1,306 @@
+{
+  "code": "behavior_finance_policy",
+  "semantic_version": "1.0.0",
+  "formula_version": "behavior-scoring-1.0.0",
+  "experiment_version": "behavior-experiments-1.0.0",
+  "ab_framework_version": "behavior-ab-1.0.0",
+  "effective_from": "2026-08-04",
+  "effective_to": null,
+  "source_type": "internal_demo",
+  "source_summary": "比赛内部演示的行为问卷、实验评分、干预选择与 A/B 分组规则；不是监管统一评级标准，也不用于提高客观风险承受能力。",
+  "risk_level_order": ["low", "medium_low", "medium", "medium_high", "high"],
+  "score_thresholds": {
+    "low": "0.20",
+    "medium_low": "0.40",
+    "medium": "0.60",
+    "medium_high": "0.80",
+    "high": "1.00"
+  },
+  "questionnaire_dimensions": [
+    {
+      "code": "risk_willingness",
+      "name": "风险意愿",
+      "prompt": "面对长期资金净值波动，你愿意接受多大程度的短期变化？",
+      "low_label": "尽量避免波动",
+      "high_label": "能接受较大波动",
+      "weight": "0.20"
+    },
+    {
+      "code": "loss_tolerance_claim",
+      "name": "自述损失承受",
+      "prompt": "如果长期账户暂时下跌，你自述能够坚持原计划的程度是多少？",
+      "low_label": "会立即退出",
+      "high_label": "仍按计划复核",
+      "weight": "0.20"
+    },
+    {
+      "code": "investment_experience",
+      "name": "投资经验",
+      "prompt": "你对多类资产和完整市场周期的实际经历程度是多少？",
+      "low_label": "几乎没有",
+      "high_label": "经历多个周期",
+      "weight": "0.15"
+    },
+    {
+      "code": "knowledge",
+      "name": "金融知识",
+      "prompt": "你理解波动、分散、期限、费用和流动性风险的程度是多少？",
+      "low_label": "需要基础解释",
+      "high_label": "能独立解释",
+      "weight": "0.15"
+    },
+    {
+      "code": "trading_frequency",
+      "name": "交易克制度",
+      "prompt": "你能够避免因短期涨跌频繁交易的程度是多少？",
+      "low_label": "经常临时交易",
+      "high_label": "按规则低频复核",
+      "weight": "0.10"
+    },
+    {
+      "code": "attention",
+      "name": "注意力稳定",
+      "prompt": "你能否不被热榜、短期收益和高频提醒持续牵动？",
+      "low_label": "容易被吸引",
+      "high_label": "关注目标进度",
+      "weight": "0.08"
+    },
+    {
+      "code": "goal_discipline",
+      "name": "目标纪律",
+      "prompt": "当消费冲动与重要家庭目标冲突时，你坚持预定计划的程度是多少？",
+      "low_label": "优先当下",
+      "high_label": "优先目标",
+      "weight": "0.12"
+    }
+  ],
+  "experiments": [
+    {
+      "code": "market_up_20",
+      "name": "上涨 20% 后",
+      "scenario": "长期账户在三个月内上涨 20%，家庭事实和目标没有变化。你会怎么做？",
+      "consistency_dimension": "risk_willingness",
+      "options": [
+        {
+          "code": "keep_plan",
+          "label": "保持既定配置并按期复核",
+          "behavior_score": "0.65",
+          "bias_impacts": {"recency_bias": "0.05", "performance_chasing": "0.05"},
+          "evidence": "价格上涨未改变家庭目标和适当性边界。"
+        },
+        {
+          "code": "rebalance",
+          "label": "按预设阈值再平衡",
+          "behavior_score": "0.75",
+          "bias_impacts": {"recency_bias": "0.00", "performance_chasing": "0.00"},
+          "evidence": "使用事先约定的规则处理偏离。"
+        },
+        {
+          "code": "chase_add",
+          "label": "因近期上涨立即大幅加仓",
+          "behavior_score": "0.35",
+          "bias_impacts": {"recency_bias": "0.85", "performance_chasing": "1.00", "overconfidence": "0.60"},
+          "evidence": "仅因近期涨幅扩大风险暴露。"
+        }
+      ]
+    },
+    {
+      "code": "market_down_10",
+      "name": "下跌 10% 后",
+      "scenario": "长期账户下跌 10%，应急、债务和近期目标条件没有变化。你会怎么做？",
+      "consistency_dimension": "loss_tolerance_claim",
+      "options": [
+        {
+          "code": "hold_plan",
+          "label": "保持计划并检查家庭约束",
+          "behavior_score": "0.70",
+          "bias_impacts": {"loss_aversion": "0.10", "recency_bias": "0.05"},
+          "evidence": "先复核家庭约束，不因单次跌幅直接清仓。"
+        },
+        {
+          "code": "reduce_some",
+          "label": "临时减仓一部分",
+          "behavior_score": "0.40",
+          "bias_impacts": {"loss_aversion": "0.55", "recency_bias": "0.45"},
+          "evidence": "短期跌幅触发了计划外风险收缩。"
+        },
+        {
+          "code": "sell_all",
+          "label": "立即全部卖出",
+          "behavior_score": "0.10",
+          "bias_impacts": {"loss_aversion": "1.00", "recency_bias": "0.90", "performance_chasing": "0.70"},
+          "evidence": "较小跌幅即触发全部退出，与高损失承受声明可能冲突。"
+        }
+      ]
+    },
+    {
+      "code": "market_down_30",
+      "name": "下跌 30% 后",
+      "scenario": "长期账户经历 30% 回撤，未来收益未知。你会怎么做？",
+      "consistency_dimension": "loss_tolerance_claim",
+      "options": [
+        {
+          "code": "hold_plan",
+          "label": "保持计划并复核期限",
+          "behavior_score": "0.65",
+          "bias_impacts": {"loss_aversion": "0.25"},
+          "evidence": "在不预测反弹的前提下复核原计划。"
+        },
+        {
+          "code": "staged_buy",
+          "label": "仅在安全条件仍满足时分批投入",
+          "behavior_score": "0.75",
+          "bias_impacts": {"overconfidence": "0.25"},
+          "evidence": "以家庭安全条件和分批纪律约束操作。"
+        },
+        {
+          "code": "reduce_some",
+          "label": "临时减仓一部分",
+          "behavior_score": "0.35",
+          "bias_impacts": {"loss_aversion": "0.75", "recency_bias": "0.55"},
+          "evidence": "大幅回撤触发计划外风险收缩。"
+        },
+        {
+          "code": "sell_all",
+          "label": "立即全部卖出",
+          "behavior_score": "0.05",
+          "bias_impacts": {"loss_aversion": "1.00", "recency_bias": "0.85"},
+          "evidence": "回撤触发全部退出。"
+        }
+      ]
+    },
+    {
+      "code": "hot_product_choice",
+      "name": "热门高收益叙事",
+      "scenario": "热榜产品宣传近期高收益，但风险和期限高于家庭适配方案。你会选择什么？",
+      "consistency_dimension": "attention",
+      "options": [
+        {
+          "code": "choose_suitable",
+          "label": "选择适配方案并忽略热榜",
+          "behavior_score": "0.75",
+          "bias_impacts": {"herding": "0.00", "performance_chasing": "0.00"},
+          "evidence": "选择依据为家庭适配而非热度。"
+        },
+        {
+          "code": "compare_first",
+          "label": "先比较风险、期限和费用",
+          "behavior_score": "0.65",
+          "bias_impacts": {"herding": "0.15", "anchoring": "0.10"},
+          "evidence": "热度引起关注，但仍先核对适配证据。"
+        },
+        {
+          "code": "choose_familiar",
+          "label": "因熟悉机构或行业而自行选择",
+          "behavior_score": "0.45",
+          "bias_impacts": {"familiarity_bias": "1.00", "overconfidence": "0.55", "herding": "0.20"},
+          "evidence": "熟悉感替代了对集中度、期限和家庭适配的完整比较。"
+        },
+        {
+          "code": "chase_hot",
+          "label": "因近期收益和热度立即买入",
+          "behavior_score": "0.20",
+          "bias_impacts": {"herding": "1.00", "recency_bias": "0.85", "performance_chasing": "1.00", "familiarity_bias": "0.55"},
+          "evidence": "近期收益和群体热度替代了家庭适配判断。"
+        }
+      ]
+    },
+    {
+      "code": "winner_loser_disposal",
+      "name": "盈利与亏损资产处置",
+      "scenario": "两项长期资产偏离目标权重：一项盈利、一项亏损。你会怎么处理？",
+      "consistency_dimension": "knowledge",
+      "options": [
+        {
+          "code": "rebalance_by_target",
+          "label": "按目标权重和适当性再平衡",
+          "behavior_score": "0.75",
+          "bias_impacts": {"disposition_effect": "0.05", "anchoring": "0.05"},
+          "evidence": "依据目标权重而不是买入成本判断。"
+        },
+        {
+          "code": "sell_winner_hold_loser",
+          "label": "卖出盈利项，亏损项等回本",
+          "behavior_score": "0.35",
+          "bias_impacts": {"disposition_effect": "1.00", "anchoring": "0.85"},
+          "evidence": "以买入成本为锚，倾向过早兑现盈利并拖延止损。"
+        },
+        {
+          "code": "hold_until_entry",
+          "label": "两项都等回到买入价再决定",
+          "behavior_score": "0.30",
+          "bias_impacts": {"anchoring": "1.00", "familiarity_bias": "0.45", "disposition_effect": "0.65"},
+          "evidence": "买入价成为与当前目标无关的决策锚点。"
+        }
+      ]
+    },
+    {
+      "code": "consume_or_goal",
+      "name": "立即消费与未来目标",
+      "scenario": "收到一笔一次性收入，同时教育或养老目标仍有缺口。你会如何分配？",
+      "consistency_dimension": "goal_discipline",
+      "options": [
+        {
+          "code": "goal_first",
+          "label": "按预先承诺优先补目标缺口",
+          "behavior_score": "0.80",
+          "bias_impacts": {"present_bias": "0.00", "mental_accounting": "0.10"},
+          "evidence": "一次性收入按目标优先级处理。"
+        },
+        {
+          "code": "split_by_rule",
+          "label": "按预定规则分配消费与目标",
+          "behavior_score": "0.65",
+          "bias_impacts": {"present_bias": "0.30", "mental_accounting": "0.30"},
+          "evidence": "保留消费但使用事先规则限制。"
+        },
+        {
+          "code": "consume_now",
+          "label": "先用于当下消费，再考虑目标",
+          "behavior_score": "0.20",
+          "bias_impacts": {"present_bias": "1.00", "mental_accounting": "0.75"},
+          "evidence": "即时消费优先于已记录的长期目标缺口。"
+        }
+      ]
+    }
+  ],
+  "bias_definitions": [
+    {"code": "loss_aversion", "name": "损失厌恶", "description": "同等金额损失带来的不适显著强于收益满足。"},
+    {"code": "overconfidence", "name": "过度自信", "description": "高估判断稳定性或低估不确定性。"},
+    {"code": "herding", "name": "从众", "description": "用热度和他人选择替代家庭适配判断。"},
+    {"code": "recency_bias", "name": "近期偏差", "description": "过度外推近期涨跌。"},
+    {"code": "disposition_effect", "name": "处置效应", "description": "倾向过早兑现盈利并拖延处理亏损。"},
+    {"code": "anchoring", "name": "锚定", "description": "让买入价或宣传数字主导当前判断。"},
+    {"code": "familiarity_bias", "name": "熟悉性偏差", "description": "因熟悉而低估集中和信息盲区。"},
+    {"code": "mental_accounting", "name": "心理账户", "description": "忽略家庭资源可替代性，割裂目标和资金。"},
+    {"code": "present_bias", "name": "现时偏好", "description": "过度偏向即时消费而牺牲未来目标。"},
+    {"code": "performance_chasing", "name": "追涨杀跌", "description": "仅因近期表现追买或恐慌卖出。"},
+    {"code": "frequent_trading_tendency", "name": "频繁交易倾向", "description": "高频关注、反复修改和短期动作挤压长期纪律。"}
+  ],
+  "bias_thresholds": {"low_max": "0.29", "watch_max": "0.59"},
+  "interventions": [
+    {"code": "cooling_period", "name": "24／48 小时冷静期", "trigger_biases": ["performance_chasing", "herding", "recency_bias"], "scenario_code": "impulse_trade", "message_template": "{household_name} 的实验出现{bias_names}证据；本次计划外交易先暂停 {cooling_hours} 小时。", "action_instruction": "冷静期结束后重新核对家庭目标、适当性上限和数字孪生损失，不自动执行交易。"},
+    {"code": "staged_investing", "name": "分批投入", "trigger_biases": ["performance_chasing", "overconfidence"], "scenario_code": "new_investment", "message_template": "把一次性投入拆成预定批次，降低单次时点判断对家庭目标的影响。", "action_instruction": "先确认安全层和目标期限，再记录每批金额与日期；这不保证降低损失。"},
+    {"code": "recurring_investment", "name": "自动／定期投入建议", "trigger_biases": ["frequent_trading_tendency", "present_bias"], "scenario_code": "long_term_saving", "message_template": "将长期结余按固定周期投入，减少临时择时和挪用。", "action_instruction": "金额仍由家庭资金瀑布决定，不得越过应急、债务、保障和近期目标。"},
+    {"code": "precommitment", "name": "预先承诺", "trigger_biases": ["present_bias", "performance_chasing", "disposition_effect"], "scenario_code": "decision_rule", "message_template": "在市场变化前写下允许调整的条件和不允许突破的家庭边界。", "action_instruction": "由客户确认规则；条件未命中时保持原计划并记录例外原因。"},
+    {"code": "goal_progress_focus", "name": "目标进度替代日收益", "trigger_biases": ["recency_bias", "present_bias", "mental_accounting"], "scenario_code": "attention", "message_template": "首页优先显示{goal_name}的准备率和缺口，弱化单日收益。", "action_instruction": "按月查看目标进度；风险和损失信息仍完整保留。"},
+    {"code": "monetary_drawdown", "name": "金额化回撤", "trigger_biases": ["loss_aversion", "overconfidence"], "scenario_code": "loss_rehearsal", "message_template": "把百分比回撤换算为家庭可见金额，并同时展示应急和目标影响。", "action_instruction": "确认金额化损失仍在客观能力边界内；超出时下调，不以意愿覆盖能力。"},
+    {"code": "long_term_probability_range", "name": "长期概率区间", "trigger_biases": ["recency_bias", "overconfidence", "loss_aversion"], "scenario_code": "uncertainty", "message_template": "用 P10—P90 路径区间替代单点收益想象。", "action_instruction": "同时阅读假设、最差路径和失败概率；区间不是收益承诺。"},
+    {"code": "counterfactual_rehearsal", "name": "反事实与下跌前预演", "trigger_biases": ["loss_aversion", "performance_chasing"], "scenario_code": "loss_rehearsal", "message_template": "在交易前预演下跌 10%／30% 时的家庭现金流和目标结果。", "action_instruction": "记录预演后的选择；不得用语言模型心算关键金额。"},
+    {"code": "redemption_confirmation", "name": "冲动赎回二次确认", "trigger_biases": ["loss_aversion", "recency_bias"], "scenario_code": "redemption", "message_template": "赎回前再次确认是否因短期跌幅改变，以及会影响哪个家庭目标。", "action_instruction": "二次确认显示金额、期限和替代方案，不制造无法退出的暗黑模式。"},
+    {"code": "ranking_deemphasis", "name": "热榜弱化", "trigger_biases": ["herding", "performance_chasing", "familiarity_bias"], "scenario_code": "product_discovery", "message_template": "降低热度和近期收益排序权重，先显示适配、期限、费用和流动性。", "action_instruction": "热门产品仍可检索，但不得越过三道适当性闸门。"},
+    {"code": "windfall_allocation", "name": "一次性收入分配", "trigger_biases": ["present_bias", "mental_accounting"], "scenario_code": "windfall", "message_template": "一次性收入先按目标缺口和家庭安全层生成分配草案。", "action_instruction": "保留客户可调整空间，并显示调整对目标的影响。"},
+    {"code": "automatic_rebalancing_reminder", "name": "自动再平衡提醒", "trigger_biases": ["disposition_effect", "anchoring", "frequent_trading_tendency", "overconfidence"], "scenario_code": "portfolio_review", "message_template": "仅在绝对偏离 5 个百分点、相对偏离 20% 或半年复核时提醒。", "action_instruction": "提醒不是自动交易；市场情景不得推翻家庭安全与近期目标约束。"}
+  ],
+  "ab_variants": [
+    {"code": "ordinary_prompt", "name": "普通提示", "description": "展示统一风险提示与退出入口。"},
+    {"code": "personalized_prompt", "name": "个性化提示", "description": "引用本次偏差证据和家庭目标，不使用通用收益话术。"},
+    {"code": "twin_loss_simulation", "name": "数字孪生损失模拟", "description": "关联金额化损失和路径区间，由确定性模拟提供数字。"},
+    {"code": "cooling_goal_reminder", "name": "冷静期／目标提醒", "description": "加入 24／48 小时冷静期和目标进度复核。"}
+  ],
+  "maximum_selected_interventions": 6,
+  "cooling_period_threshold": "0.60",
+  "high_cooling_period_threshold": "0.80",
+  "default_cooling_hours": 24,
+  "high_cooling_hours": 48
+}

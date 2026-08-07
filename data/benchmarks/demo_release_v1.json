@@ -1,0 +1,64 @@
+{
+  "suite_version": "wealthtwin-release-experiments-v1.0.0",
+  "as_of_date": "2026-08-04",
+  "source_type": "internal_demo",
+  "boundary_note": "全部阈值、问卷与流程时长均为比赛测试协议；不是中国工商银行真实客户、员工、收益或生产运营结果。",
+  "performance_targets_ms": {
+    "first_page_load": 5000,
+    "first_diagnosis": 300000,
+    "monte_carlo_100_paths": 60000,
+    "formal_report": 60000,
+    "complete_demo": 300000
+  },
+  "policy_questions": [
+    {
+      "id": "policy_personal_pension",
+      "query": "个人养老金每年缴费限额是多少？",
+      "expected_chunk_codes": ["personal_pension_tax_limit"]
+    },
+    {
+      "id": "policy_wealth_risk",
+      "query": "银行理财能否统一理解为保本？",
+      "expected_chunk_codes": ["wealth_product_risk_disclosure"]
+    },
+    {
+      "id": "policy_minimum_wage_boundary",
+      "query": "最低工资能否直接当作CPI？",
+      "expected_chunk_codes": ["shanghai_cost_boundary"]
+    }
+  ],
+  "comprehension_questionnaire": [
+    {
+      "code": "four_accounts_dynamic",
+      "question": "四账户是否按固定比例分配？",
+      "correct_answer": "否；先按家庭安全约束和目标期限执行动态瀑布。"
+    },
+    {
+      "code": "credit_limit_boundary",
+      "question": "信用卡额度是否计入家庭资产？",
+      "correct_answer": "否；未付款计入负债，可用额度只作信息展示。"
+    },
+    {
+      "code": "non_guarantee_boundary",
+      "question": "银行理财、信托、基金和保险是否都保本？",
+      "correct_answer": "否；必须按具体合同和产品属性区分保证与非保证部分。"
+    },
+    {
+      "code": "growth_70_boundary",
+      "question": "长期增长账户70%以上是否适用于家庭总资产？",
+      "correct_answer": "否；只可能适用于通过全部安全闸门后的长期可投资资金或年度新增长期结余。"
+    },
+    {
+      "code": "model_boundary",
+      "question": "关键金额和配置能否由大语言模型心算？",
+      "correct_answer": "否；关键金额、比率和配置必须由确定性工具计算。"
+    }
+  ],
+  "advisor_process_time_simulation_seconds": [
+    {"stage": "资料核对", "baseline": 900, "assisted": 360},
+    {"stage": "财务诊断", "baseline": 1200, "assisted": 240},
+    {"stage": "方案比较", "baseline": 1500, "assisted": 420},
+    {"stage": "合规证据整理", "baseline": 1200, "assisted": 300},
+    {"stage": "报告与行动清单", "baseline": 900, "assisted": 240}
+  ]
+}

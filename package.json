@@ -1,0 +1,19 @@
+{
+  "name": "wealthtwin",
+  "version": "0.13.0",
+  "private": true,
+  "workspaces": [
+    "frontend"
+  ],
+  "scripts": {
+    "frontend:dev": "npm --workspace frontend run dev",
+    "frontend:test": "npm --workspace frontend run test",
+    "frontend:lint": "npm --workspace frontend run lint",
+    "frontend:typecheck": "npm --workspace frontend run typecheck",
+    "frontend:build": "npm --workspace frontend run build",
+    "frontend:e2e": "npm --workspace frontend run test:e2e"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

@@ -1,0 +1,244 @@
+{
+  "code": "household_wealth_twin_simulation",
+  "semantic_version": "1.0.0",
+  "engine_version": "wealth-twin-monte-carlo-v1.0.0",
+  "formula_version": "wealth-state-transition-v1.0.0",
+  "result_version": "wealth-twin-result-v1.0.0",
+  "effective_from": "2026-08-04",
+  "effective_to": null,
+  "source_type": "internal_demo",
+  "source_summary": "Fortune Copilot V3 提示词 6 的离线可复现家庭财富数字孪生规则；所有收益、波动、相关性与压力参数仅用于比赛演示，不是预测、承诺或监管参数。",
+  "default_seed": 20260804,
+  "default_path_count": 500,
+  "minimum_path_count": 100,
+  "maximum_path_count": 5000,
+  "default_horizon_years": 30,
+  "minimum_horizon_years": 5,
+  "maximum_horizon_years": 60,
+  "time_step_months": 1,
+  "default_output_interval_months": 12,
+  "quantiles": ["0.10", "0.25", "0.50", "0.75", "0.90"],
+  "goal_success_threshold": "0.800000",
+  "maximum_balance": "1000000000000000.00",
+  "base_inflation_rate": "0.025000",
+  "base_income_growth_rate": "0.030000",
+  "asset_classes": [
+    "cash_equivalent",
+    "fixed_income",
+    "diversified_equity",
+    "real_assets",
+    "gold"
+  ],
+  "asset_assumptions": {
+    "cash_equivalent": {
+      "expected_annual_return": "0.015000",
+      "annual_volatility": "0.005000"
+    },
+    "fixed_income": {
+      "expected_annual_return": "0.035000",
+      "annual_volatility": "0.060000"
+    },
+    "diversified_equity": {
+      "expected_annual_return": "0.075000",
+      "annual_volatility": "0.220000"
+    },
+    "real_assets": {
+      "expected_annual_return": "0.065000",
+      "annual_volatility": "0.200000"
+    },
+    "gold": {
+      "expected_annual_return": "0.045000",
+      "annual_volatility": "0.180000"
+    }
+  },
+  "correlation_matrix": [
+    ["1.000000", "0.100000", "0.000000", "0.000000", "0.000000"],
+    ["0.100000", "1.000000", "0.200000", "0.250000", "0.050000"],
+    ["0.000000", "0.200000", "1.000000", "0.550000", "0.050000"],
+    ["0.000000", "0.250000", "0.550000", "1.000000", "0.100000"],
+    ["0.000000", "0.050000", "0.050000", "0.100000", "1.000000"]
+  ],
+  "property_assumption": {
+    "expected_annual_return": "0.025000",
+    "annual_volatility": "0.100000"
+  },
+  "pension_assumption": {
+    "expected_annual_return": "0.045000",
+    "annual_volatility": "0.080000"
+  },
+  "other_asset_annual_depreciation": "0.080000",
+  "scenario_version": "1.0.0",
+  "scenarios": [
+    {
+      "code": "primary_income_interruption_6m",
+      "name": "主收入中断 6 个月",
+      "category": "income",
+      "description": "从模拟首月起暂停金额最大的劳动收入六个月。",
+      "parameters": {"income_interruption_months": 6},
+      "explanation": "用于检验应急金能否避免被迫出售长期资产。",
+      "is_composable": true
+    },
+    {
+      "code": "one_income_reduction_30",
+      "name": "一方收入下降 30%",
+      "category": "income",
+      "description": "第二大劳动收入在 24 个月内下降 30%。",
+      "parameters": {"income_reduction_ratio": "0.300000", "income_reduction_months": 24, "income_reduction_target": "secondary"},
+      "explanation": "用于检验双收入家庭对单一成员收入变化的承受力。",
+      "is_composable": true
+    },
+    {
+      "code": "medical_out_of_pocket",
+      "name": "医疗自付冲击",
+      "category": "protection",
+      "description": "首年发生 200,000 元医疗支出，先按有效医疗保障和免赔额抵扣。",
+      "parameters": {"medical_shock_amount": "200000.00"},
+      "explanation": "保额只抵扣合同责任范围内的模拟损失，不计入资产。",
+      "is_composable": true
+    },
+    {
+      "code": "dependent_support_increase",
+      "name": "赡养支出增加",
+      "category": "family",
+      "description": "每月赡养支出增加 3,000 元，持续十年。",
+      "parameters": {"family_support_monthly_increase": "3000.00", "family_support_duration_months": 120},
+      "explanation": "模拟家庭责任增加，而不是临时消费。",
+      "is_composable": true
+    },
+    {
+      "code": "education_overrun",
+      "name": "教育费用超支",
+      "category": "goal",
+      "description": "教育目标到期时额外增加 200,000 元。",
+      "parameters": {"education_overrun_amount": "200000.00"},
+      "explanation": "超支与原目标支出在同月扣减。",
+      "is_composable": true
+    },
+    {
+      "code": "early_retirement",
+      "name": "提前退休",
+      "category": "lifecycle",
+      "description": "劳动收入停止年龄提前五年。",
+      "parameters": {"retirement_age_reduction_years": 5},
+      "explanation": "同时减少工资期和养老金积累期。",
+      "is_composable": true
+    },
+    {
+      "code": "longevity",
+      "name": "长寿延长",
+      "category": "lifecycle",
+      "description": "模拟期限额外延长十年，检验退休后资金耗尽风险。",
+      "parameters": {"longevity_extension_years": 10},
+      "explanation": "延长期继续发生生活支出，不凭空增加工资。",
+      "is_composable": true
+    },
+    {
+      "code": "mortgage_rate_up",
+      "name": "房贷利率上升",
+      "category": "debt",
+      "description": "浮动利率房贷年利率上升 1.5 个百分点。",
+      "parameters": {"mortgage_rate_increase": "0.015000"},
+      "explanation": "月供不变时会降低本金摊还速度，必要时形成负摊还。",
+      "is_composable": true
+    },
+    {
+      "code": "investment_property_vacancy_discount",
+      "name": "投资房空置和折价",
+      "category": "property",
+      "description": "投资房租金中断 12 个月并发生 20% 估值折价。",
+      "parameters": {"investment_property_vacancy_months": 12, "property_value_shock": "-0.200000"},
+      "explanation": "没有投资房的家庭返回不适用证据，不把自住房虚构成出租资产。",
+      "is_composable": true
+    },
+    {
+      "code": "equity_down_20",
+      "name": "权益下跌 20%",
+      "category": "market",
+      "description": "首月分散权益资产发生 20% 一次性下跌。",
+      "parameters": {"asset_return_shocks": {"diversified_equity": "-0.200000"}},
+      "explanation": "冲击叠加于同一随机路径，不把回撤当成长期收益预测。",
+      "is_composable": true
+    },
+    {
+      "code": "equity_down_30",
+      "name": "权益下跌 30%",
+      "category": "market",
+      "description": "首月分散权益资产发生 30% 一次性下跌。",
+      "parameters": {"asset_return_shocks": {"diversified_equity": "-0.300000"}},
+      "explanation": "用于检验目标日期与被迫出售风险。",
+      "is_composable": true
+    },
+    {
+      "code": "equity_down_40",
+      "name": "权益下跌 40%",
+      "category": "market",
+      "description": "首月分散权益资产发生 40% 一次性下跌。",
+      "parameters": {"asset_return_shocks": {"diversified_equity": "-0.400000"}},
+      "explanation": "极端情景仍受 -100% 下界和数值稳定约束。",
+      "is_composable": true
+    },
+    {
+      "code": "bond_rate_shock",
+      "name": "债券利率冲击",
+      "category": "market",
+      "description": "首月固定收益资产净值下跌 10%。",
+      "parameters": {"asset_return_shocks": {"fixed_income": "-0.100000"}},
+      "explanation": "债券基金和银行理财不因名称稳健而被视为保本。",
+      "is_composable": true
+    },
+    {
+      "code": "gold_reit_volatility",
+      "name": "黄金与 REITs 波动",
+      "category": "market",
+      "description": "黄金和实物资产工具首月下跌 15%，随后波动放大 1.75 倍。",
+      "parameters": {"asset_return_shocks": {"gold": "-0.150000", "real_assets": "-0.150000"}, "asset_volatility_multipliers": {"gold": "1.750000", "real_assets": "1.750000"}},
+      "explanation": "使用负向冲击和放大波动共同检验分散边界。",
+      "is_composable": true
+    },
+    {
+      "code": "multi_asset_drawdown",
+      "name": "多资产同时下跌",
+      "category": "market",
+      "description": "固定收益、权益、REITs 与黄金同时发生负向冲击。",
+      "parameters": {"asset_return_shocks": {"fixed_income": "-0.080000", "diversified_equity": "-0.300000", "real_assets": "-0.250000", "gold": "-0.150000"}},
+      "explanation": "压力期相关性上升时不假设分散永远有效。",
+      "is_composable": true
+    },
+    {
+      "code": "prolonged_low_return",
+      "name": "长期低收益",
+      "category": "market",
+      "description": "除现金外各资产年化收益假设降低 3 个百分点。",
+      "parameters": {"long_term_return_reduction": "0.030000"},
+      "explanation": "检验目标对长期收益假设的敏感性。",
+      "is_composable": true
+    },
+    {
+      "code": "cost_inflation_up",
+      "name": "医疗教育生活成本上升",
+      "category": "inflation",
+      "description": "家庭消费和目标成本年化增速额外上升 2 个百分点。",
+      "parameters": {"inflation_increase": "0.020000"},
+      "explanation": "最低工资参数不参与该冲击，也不被当作 CPI。",
+      "is_composable": true
+    },
+    {
+      "code": "goal_advanced",
+      "name": "目标提前",
+      "category": "goal",
+      "description": "所有未完成目标日期提前 24 个月。",
+      "parameters": {"goal_advance_months": 24},
+      "explanation": "目标金额按缩短后的实际月份增长并在新到期月扣减。",
+      "is_composable": true
+    },
+    {
+      "code": "unemployment_equity_down_30",
+      "name": "失业 6 个月 + 权益下跌 30%",
+      "category": "combined",
+      "description": "主收入中断六个月，同时首月权益下跌 30%。",
+      "parameters": {"income_interruption_months": 6, "asset_return_shocks": {"diversified_equity": "-0.300000"}},
+      "explanation": "主 Demo 组合压力场景，所有效果与同 seed 无冲击基线比较。",
+      "is_composable": true
+    }
+  ]
+}

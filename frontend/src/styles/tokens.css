@@ -1,0 +1,132 @@
+:root {
+  color-scheme: light;
+
+  --color-canvas: #f7f6f4;
+  --color-surface: #ffffff;
+  --color-surface-subtle: #f1efec;
+  --color-surface-raised: #ffffff;
+  --color-ink: #241f20;
+  --color-ink-muted: #635b5d;
+  --color-ink-subtle: #7b7375;
+  --color-border: #ded9d7;
+  --color-border-strong: #aaa2a3;
+
+  --color-brand: #b21f2d;
+  --color-brand-hover: #941724;
+  --color-brand-on: #ffffff;
+  --color-action: #b21f2d;
+  --color-action-hover: #941724;
+  --color-action-on: #ffffff;
+  --color-goal: #8a6428;
+  --color-warning: #a94f16;
+  --color-warning-surface: #fff3e8;
+  --color-danger: #b42318;
+  --color-danger-surface: #fff0ee;
+  --color-success: #2d684c;
+  --color-success-surface: #eaf4ef;
+  --color-info: #315d7d;
+  --color-info-surface: #eaf2f7;
+  --color-focus: #8f1522;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --font-numeric: ui-monospace, "SFMono-Regular", "Roboto Mono", "Cascadia Mono",
+    monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: clamp(1.5rem, 2vw, 2rem);
+  --text-display: clamp(2rem, 3vw, 3rem);
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  --radius-control: 0.375rem;
+  --radius-container: 0.625rem;
+  --radius-pill: 999px;
+
+  --shadow-overlay: 0 1rem 3rem rgb(44 23 27 / 0.16);
+
+  --layer-base: 0;
+  --layer-sticky: 20;
+  --layer-dropdown: 40;
+  --layer-overlay: 60;
+  --layer-modal: 80;
+  --layer-toast: 100;
+
+  --motion-fast: 150ms;
+  --motion-base: 220ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  --density-row-height: 3rem;
+  --density-panel-gap: var(--space-5);
+  --density-control-height: 2.75rem;
+}
+
+[data-density="client"] {
+  --density-row-height: 3.25rem;
+  --density-panel-gap: var(--space-6);
+  --density-control-height: 3rem;
+}
+
+[data-density="advisor"] {
+  --density-row-height: 2.75rem;
+  --density-panel-gap: var(--space-4);
+  --density-control-height: 2.75rem;
+}
+
+[data-density="risk"] {
+  --density-row-height: 2.5rem;
+  --density-panel-gap: var(--space-3);
+  --density-control-height: 2.75rem;
+}
+
+[data-theme="dark"] {
+    color-scheme: dark;
+    --color-canvas: #0e171d;
+    --color-surface: #14222b;
+    --color-surface-subtle: #1a2a34;
+    --color-surface-raised: #1d2d37;
+    --color-ink: #edf2f3;
+    --color-ink-muted: #bec9ce;
+    --color-ink-subtle: #aab8bf;
+    --color-border: #324550;
+    --color-border-strong: #6b7d86;
+    --color-brand: #183f5b;
+    --color-brand-hover: #245675;
+    --color-action: #c74350;
+    --color-action-hover: #da5965;
+    --color-goal: #c29b4b;
+    --color-warning: #e38a4b;
+    --color-warning-surface: #3a271c;
+    --color-danger: #f97066;
+    --color-danger-surface: #3c2022;
+    --color-success: #6fc39b;
+    --color-success-surface: #193228;
+    --color-info: #82b4d1;
+    --color-info-surface: #1b303d;
+    --color-focus: #8ac8ec;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+}
+
+[data-text-scale="large"] {
+  --text-xs: 0.875rem;
+  --text-sm: 1rem;
+  --text-md: 1.125rem;
+  --text-lg: 1.25rem;
+  --text-xl: clamp(1.65rem, 2.2vw, 2.2rem);
+  --text-display: clamp(2.2rem, 3.3vw, 3.25rem);
+  --density-row-height: 3.75rem;
+  --density-control-height: 3.25rem;
+}

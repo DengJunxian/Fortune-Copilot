@@ -1,0 +1,110 @@
+{
+  "code": "dynamic_account_waterfall",
+  "semantic_version": "2.2.0",
+  "formula_version": "fortune-copilot-four-account-v2.2.0",
+  "effective_from": "2026-08-04",
+  "effective_to": null,
+  "source_type": "internal_demo",
+  "source_summary": "智运财富中国家庭动态四账户内部产品规则；账户金额按家庭事实、目标、负债、保障、地区门槛和适当性顺序计算，正式启动线以下仅在满足条件时保留不超过多余长期资金10%的宽基指数学习仓。",
+  "lifecycle": {
+    "base_safety_months": {
+      "early_career": "3.0",
+      "family_formation": "4.0",
+      "parenting": "5.0",
+      "mature_family": "5.0",
+      "retirement_preparation": "8.0",
+      "retirement_and_legacy": "10.0"
+    },
+    "retirement_preparation_years": 7,
+    "retirement_default_age": 60
+  },
+  "safety_months": {
+    "minimum": "3.0",
+    "maximum": "12.0",
+    "single_income_adjustment": "1.0",
+    "dual_income_adjustment": "-0.5",
+    "high_stability_adjustment": "-0.5",
+    "medium_stability_adjustment": "1.0",
+    "low_stability_adjustment": "2.0",
+    "medium_volatility_adjustment": "1.0",
+    "high_volatility_adjustment": "2.0",
+    "mortgage_adjustment": "1.0",
+    "dependent_child_adjustment": "1.0",
+    "family_support_adjustment": "1.0",
+    "medium_health_adjustment": "1.0",
+    "high_health_adjustment": "2.0",
+    "daily_operating_months": "0.25",
+    "daily_operating_min_amount": "3000.00",
+    "daily_operating_max_amount": "20000.00"
+  },
+  "goals": {
+    "present_value_discount_rate": "0.020000",
+    "short_term_months": 12,
+    "stable_goal_months": 60,
+    "default_deferral_months": 12,
+    "conflict_warning_ratio": "1.000000"
+  },
+  "market_environment": {
+    "active_regime": "neutral",
+    "governance_note": "市场状态由财富管理投研规则版本统一发布，不由客户填写，也不由大语言模型判断。家庭目标、债务、保障和流动性约束始终优先。",
+    "profiles": {
+      "favorable": {
+        "label": "偏积极",
+        "stable_reference_min": "0.050000",
+        "stable_target_ratio": "0.075000",
+        "stable_reference_max": "0.100000",
+        "explanation": "市场环境偏积极时，在安全层已经满足的前提下，保本资金采用较低战术锚，更多长期合格资金可进入生钱的钱。"
+      },
+      "neutral": {
+        "label": "中性",
+        "stable_reference_min": "0.100000",
+        "stable_target_ratio": "0.150000",
+        "stable_reference_max": "0.200000",
+        "explanation": "市场环境中性时，保本资金采用居中的战术锚，在流动性与长期增长之间保持平衡。"
+      },
+      "defensive": {
+        "label": "偏防守",
+        "stable_reference_min": "0.200000",
+        "stable_target_ratio": "0.250000",
+        "stable_reference_max": "0.300000",
+        "explanation": "市场环境偏防守时，提高保本资金战术锚；新增长期风险暴露相应减少，但不覆盖家庭目标和适当性约束。"
+      }
+    }
+  },
+  "waterfall": {
+    "debt_buffer_months": "1.0",
+    "protection_coverage_pass_ratio": "0.800000",
+    "hard_constraint_growth_cap": "0.200000",
+    "learning_growth_cap": "0.100000",
+    "growth_70_threshold": "0.700000",
+    "stable_reference_denominator": "investable_financial_assets",
+    "growth_entry_default": "500000.00",
+    "growth_entry_minimum": "300000.00",
+    "growth_entry_maximum": "1000000.00",
+    "behavior_growth_factors": {
+      "low": "0.500000",
+      "medium_low": "0.750000",
+      "medium": "1.000000",
+      "medium_high": "1.000000",
+      "high": "1.000000"
+    },
+    "suitability_pass_levels": ["medium", "medium_high", "high"]
+  },
+  "product_education": {
+    "daily_liquidity": [
+      "日常账户以现金、活期存款和货币基金承担近期支付；信用卡只作为结算工具，未使用额度不计入资产。"
+    ],
+    "risk_protection": [
+      "保障账户坚持保险保障归保险、投资归投资；按家庭责任和持续缴费能力核定消费型保障预算，不把保额当作资产。"
+    ],
+    "stable_goals": [
+      "保本账户是资金用途名称，优先考虑存款、储蓄国债及逐项评估的稳健工具；银行理财、债券基金和养老产品仍须分别核对本金风险、期限和流动性。",
+      "个人养老金可按现行年度额度评估税收安排，账户内不同产品风险并不相同。"
+    ],
+    "long_term_growth": [
+      "长期资金优先考虑宽基指数和分散化多资产工具；普通家庭不默认推荐个股、杠杆或股指期货。",
+      "正式启动线以下如年度结余为正、没有待处理高息债务且通过适当性评估，可用不超过完成前置安排后多余长期资金10%的小仓位学习宽基指数基金；学习仓不是收益目标，也不要求用满上限。",
+      "自住住房不计入生钱账户，新增投资性房产需单独评估集中度、现金流和流动性。"
+    ]
+  }
+}

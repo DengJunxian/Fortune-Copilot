@@ -1,0 +1,216 @@
+{
+  "code": "portfolio_optimization_and_suitability",
+  "semantic_version": "1.0.0",
+  "optimizer_version": "deterministic-grid-v1.0.0",
+  "formula_version": "portfolio-gates-v1.0.0",
+  "effective_from": "2026-08-04",
+  "effective_to": null,
+  "source_type": "internal_demo",
+  "source_summary": "Fortune Copilot V3 提示词 5 的确定性组合与适当性比赛演示规则；不是收益预测、监管评级或真实销售标准。",
+  "random_seed": 20260804,
+  "asset_classes": [
+    "cash_equivalent",
+    "fixed_income",
+    "diversified_equity",
+    "real_assets",
+    "gold"
+  ],
+  "asset_assumptions": {
+    "cash_equivalent": {
+      "expected_nominal_return": "0.015000",
+      "volatility": "0.005000",
+      "cvar_loss": "0.001000",
+      "max_drawdown": "0.001000",
+      "liquidity_score": "1.000000",
+      "annual_fee_rate": "0.001000"
+    },
+    "fixed_income": {
+      "expected_nominal_return": "0.035000",
+      "volatility": "0.060000",
+      "cvar_loss": "0.080000",
+      "max_drawdown": "0.100000",
+      "liquidity_score": "0.700000",
+      "annual_fee_rate": "0.005000"
+    },
+    "diversified_equity": {
+      "expected_nominal_return": "0.075000",
+      "volatility": "0.220000",
+      "cvar_loss": "0.350000",
+      "max_drawdown": "0.450000",
+      "liquidity_score": "0.800000",
+      "annual_fee_rate": "0.005000"
+    },
+    "real_assets": {
+      "expected_nominal_return": "0.065000",
+      "volatility": "0.200000",
+      "cvar_loss": "0.300000",
+      "max_drawdown": "0.380000",
+      "liquidity_score": "0.650000",
+      "annual_fee_rate": "0.008000"
+    },
+    "gold": {
+      "expected_nominal_return": "0.045000",
+      "volatility": "0.180000",
+      "cvar_loss": "0.280000",
+      "max_drawdown": "0.350000",
+      "liquidity_score": "0.850000",
+      "annual_fee_rate": "0.006000"
+    }
+  },
+  "scenarios": [
+    {
+      "code": "deep_stress",
+      "probability": "0.050000",
+      "returns": {
+        "cash_equivalent": "0.010000",
+        "fixed_income": "-0.080000",
+        "diversified_equity": "-0.400000",
+        "real_assets": "-0.350000",
+        "gold": "-0.150000"
+      }
+    },
+    {
+      "code": "stress",
+      "probability": "0.150000",
+      "returns": {
+        "cash_equivalent": "0.012000",
+        "fixed_income": "-0.020000",
+        "diversified_equity": "-0.200000",
+        "real_assets": "-0.150000",
+        "gold": "0.100000"
+      }
+    },
+    {
+      "code": "base",
+      "probability": "0.500000",
+      "returns": {
+        "cash_equivalent": "0.015000",
+        "fixed_income": "0.035000",
+        "diversified_equity": "0.075000",
+        "real_assets": "0.065000",
+        "gold": "0.045000"
+      }
+    },
+    {
+      "code": "positive",
+      "probability": "0.200000",
+      "returns": {
+        "cash_equivalent": "0.018000",
+        "fixed_income": "0.070000",
+        "diversified_equity": "0.180000",
+        "real_assets": "0.150000",
+        "gold": "0.120000"
+      }
+    },
+    {
+      "code": "strong",
+      "probability": "0.100000",
+      "returns": {
+        "cash_equivalent": "0.020000",
+        "fixed_income": "0.100000",
+        "diversified_equity": "0.300000",
+        "real_assets": "0.250000",
+        "gold": "0.200000"
+      }
+    }
+  ],
+  "objective_weights": {
+    "cvar": "1.300000",
+    "goal_shortfall": "1.500000",
+    "drawdown": "1.000000",
+    "liquidity_shortfall": "1.200000",
+    "turnover": "0.350000",
+    "success_probability": "1.300000",
+    "purchasing_power": "0.700000",
+    "diversification": "0.450000"
+  },
+  "grid_step": "0.050000",
+  "minimum_liquidity_score": "0.650000",
+  "default_inflation_rate": "0.025000",
+  "candidate_policies": {
+    "conservative": {
+      "name": "稳健",
+      "required_risk_level": "r2",
+      "bounds": {
+        "cash_equivalent": ["0.200000", "0.400000"],
+        "fixed_income": ["0.500000", "0.800000"],
+        "diversified_equity": ["0.000000", "0.100000"],
+        "real_assets": ["0.000000", "0.000000"],
+        "gold": ["0.000000", "0.100000"]
+      },
+      "fallback": {
+        "cash_equivalent": "0.300000",
+        "fixed_income": "0.650000",
+        "diversified_equity": "0.000000",
+        "real_assets": "0.000000",
+        "gold": "0.050000"
+      }
+    },
+    "balanced": {
+      "name": "基准",
+      "required_risk_level": "r3",
+      "bounds": {
+        "cash_equivalent": ["0.100000", "0.300000"],
+        "fixed_income": ["0.400000", "0.700000"],
+        "diversified_equity": ["0.100000", "0.300000"],
+        "real_assets": ["0.000000", "0.100000"],
+        "gold": ["0.000000", "0.100000"]
+      },
+      "fallback": {
+        "cash_equivalent": "0.200000",
+        "fixed_income": "0.650000",
+        "diversified_equity": "0.050000",
+        "real_assets": "0.000000",
+        "gold": "0.100000"
+      }
+    },
+    "growth": {
+      "name": "进取",
+      "required_risk_level": "r4",
+      "bounds": {
+        "cash_equivalent": ["0.050000", "0.200000"],
+        "fixed_income": ["0.200000", "0.500000"],
+        "diversified_equity": ["0.300000", "0.600000"],
+        "real_assets": ["0.000000", "0.100000"],
+        "gold": ["0.000000", "0.150000"]
+      },
+      "fallback": {
+        "cash_equivalent": "0.100000",
+        "fixed_income": "0.550000",
+        "diversified_equity": "0.150000",
+        "real_assets": "0.050000",
+        "gold": "0.150000"
+      }
+    }
+  },
+  "suitability": {
+    "risk_level_order": ["r1", "r2", "r3", "r4", "r5"],
+    "score_thresholds": {
+      "r1": "0.200000",
+      "r2": "0.400000",
+      "r3": "0.600000",
+      "r4": "0.800000",
+      "r5": "1.000000"
+    },
+    "risk_level_high_risk_caps": {
+      "r1": "0.000000",
+      "r2": "0.100000",
+      "r3": "0.350000",
+      "r4": "0.600000",
+      "r5": "0.800000"
+    },
+    "maximum_single_product_ratio": "0.300000",
+    "maximum_single_asset_class_ratio": "0.700000",
+    "short_horizon_months": 12,
+    "high_volatility_threshold": "0.100000",
+    "family_restricted_high_risk_cap": "0.100000",
+    "family_blocked_high_risk_cap": "0.000000",
+    "complexity_order": ["basic", "standard", "complex", "professional"]
+  },
+  "rebalancing": {
+    "absolute_drift_threshold": "0.050000",
+    "relative_drift_threshold": "0.200000",
+    "scheduled_review_months": 6,
+    "maximum_tactical_shift": "0.050000"
+  }
+}

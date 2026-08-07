@@ -1,0 +1,107 @@
+"""SQLAlchemy model registry imported by Alembic and application services."""
+
+from app.models.assessment import (
+    AccountBucketPlan,
+    BehaviorAssessment,
+    FinancialMetric,
+    FinancialSnapshot,
+    PortfolioPlan,
+    RiskAssessment,
+    SuitabilityCheck,
+)
+from app.models.base import Base, RuntimeMetadata
+from app.models.behavior import (
+    BehaviorBiasFinding,
+    BehaviorExperimentAssignment,
+    BehaviorExperimentResponse,
+    BehaviorExperimentSession,
+    BehaviorIntervention,
+)
+from app.models.demo import DemoRun, ExperimentSuiteRun
+from app.models.family import ConsentRecord, Household, HouseholdMember
+from app.models.finance import (
+    Asset,
+    ExpenseItem,
+    FinancialGoal,
+    IncomeSource,
+    InsurancePolicy,
+    Liability,
+    SocialSecurityAccount,
+)
+from app.models.governance import (
+    ActionItem,
+    AdvisorReview,
+    AuditEvent,
+    CustomerConfirmation,
+    ModelRun,
+    PlanReport,
+    PlanWorkflowVersion,
+    PolicyDocument,
+    Product,
+    Recommendation,
+    RuleVersion,
+    ScenarioDefinition,
+    SimulationRun,
+)
+from app.models.security import (
+    EvaluationRun,
+    IdentityAccessGrant,
+    PrivacyRequest,
+    QualityGateRun,
+)
+from app.models.trust import (
+    AgentOrchestrationRun,
+    AgentStepRun,
+    IntakeDraft,
+    KnowledgeChunk,
+)
+
+__all__ = [
+    "AccountBucketPlan",
+    "ActionItem",
+    "AdvisorReview",
+    "AgentOrchestrationRun",
+    "AgentStepRun",
+    "Asset",
+    "AuditEvent",
+    "Base",
+    "BehaviorAssessment",
+    "BehaviorBiasFinding",
+    "BehaviorExperimentAssignment",
+    "BehaviorExperimentResponse",
+    "BehaviorExperimentSession",
+    "BehaviorIntervention",
+    "ConsentRecord",
+    "CustomerConfirmation",
+    "DemoRun",
+    "EvaluationRun",
+    "ExpenseItem",
+    "ExperimentSuiteRun",
+    "FinancialGoal",
+    "FinancialMetric",
+    "FinancialSnapshot",
+    "Household",
+    "HouseholdMember",
+    "IdentityAccessGrant",
+    "IncomeSource",
+    "InsurancePolicy",
+    "IntakeDraft",
+    "KnowledgeChunk",
+    "Liability",
+    "ModelRun",
+    "PlanReport",
+    "PlanWorkflowVersion",
+    "PolicyDocument",
+    "PortfolioPlan",
+    "PrivacyRequest",
+    "Product",
+    "QualityGateRun",
+    "Recommendation",
+    "RiskAssessment",
+    "RuleVersion",
+    "RuntimeMetadata",
+    "ScenarioDefinition",
+    "SimulationRun",
+    "SocialSecurityAccount",
+    "SuitabilityCheck",
+]

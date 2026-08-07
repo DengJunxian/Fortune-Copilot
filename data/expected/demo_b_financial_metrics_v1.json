@@ -1,0 +1,36 @@
+{
+  "household_code": "DEMO_B",
+  "analysis_date": "2026-08-04",
+  "formula_version": "financial-metrics-v1.0.0",
+  "rule_version": "1.0.0",
+  "statement_totals": {
+    "total_assets": "2850000.00",
+    "total_liabilities": "1208000.00",
+    "net_worth": "1642000.00",
+    "annual_income": "360000.00",
+    "annual_expenses": "288000.00",
+    "annual_surplus": "72000.00"
+  },
+  "metrics": {
+    "total_assets": {"result": "2850000.00", "status": "review", "unit": "CNY"},
+    "total_liabilities": {"result": "1208000.00", "status": "review", "unit": "CNY"},
+    "net_worth": {"result": "1642000.00", "status": "healthy", "unit": "CNY"},
+    "liquidity_reserve_months": {"result": "4.17", "status": "healthy", "unit": "months"},
+    "short_term_debt_coverage": {"result": "4.000000", "status": "healthy", "unit": "ratio"},
+    "debt_to_asset_ratio": {"result": "0.423860", "status": "attention", "unit": "ratio"},
+    "savings_ratio": {"result": "0.200000", "status": "healthy", "unit": "ratio"},
+    "debt_service_burden_ratio": {"result": "0.200000", "status": "healthy", "unit": "ratio"},
+    "investable_assets_to_net_worth": {"result": "0.194884", "status": "review", "unit": "ratio"},
+    "property_to_assets_ratio": {"result": "0.842105", "status": "warning", "unit": "ratio"},
+    "housing_equity_to_net_worth": {"result": "0.730816", "status": "review", "unit": "ratio"},
+    "twelve_month_liquidity_coverage": {"result": "1.403509", "status": "healthy", "unit": "ratio"},
+    "fixed_expense_ratio": {"result": "0.633333", "status": "attention", "unit": "ratio"},
+    "protection_coverage_ratio": {"result": "0.407830", "status": "warning", "unit": "ratio"},
+    "protection_gap": {"result": "1452000.00", "status": "warning", "unit": "CNY"},
+    "retirement_funding_adequacy": {"result": "0.180000", "status": "warning", "unit": "ratio"},
+    "goal_funding_ratio": {"result": "0.044828", "status": "warning", "unit": "ratio"},
+    "income_concentration_hhi": {"result": "0.520000", "status": "warning", "unit": "hhi"},
+    "product_hhi": {"result": "0.384766", "status": "attention", "unit": "hhi"},
+    "financial_independence_ratio": {"result": "0.000000", "status": "warning", "unit": "ratio"}
+  }
+}

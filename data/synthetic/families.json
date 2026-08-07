@@ -1,0 +1,997 @@
+{
+  "dataset_version": "synthetic-families-v1.0.0",
+  "as_of_date": "2026-08-04",
+  "households": [
+    {
+      "household": {
+        "code": "DEMO_A",
+        "name": "家庭 A｜初入职场",
+        "lifecycle_stage": "early_career",
+        "region": "浙江省杭州市",
+        "demo_profile": "A",
+        "is_synthetic": true
+      },
+      "members": [
+        {
+          "display_name": "陈晨",
+          "relationship": "本人",
+          "birth_date": "2002-10-12",
+          "occupation": "软件工程师",
+          "employment_stability": "high",
+          "expected_retirement_age": 60,
+          "health_risk_level": "low"
+        }
+      ],
+      "consents": [
+        {
+          "member_id": "陈晨",
+          "scopes": ["profile", "finance", "risk"],
+          "purpose": "仅用于竞赛合成家庭的基础财富诊断",
+          "granted_at": "2026-08-04T09:00:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "demo-consent-v1",
+          "metadata_json": {"synthetic": true, "scenario": "core_planning", "explicit": true}
+        },
+        {
+          "member_id": "陈晨",
+          "scopes": ["identity_sensitive"],
+          "purpose": "单独授权身份敏感字段脱敏处理",
+          "granted_at": "2026-08-04T09:01:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "demo-sensitive-consent-v1",
+          "metadata_json": {"synthetic": true, "scenario": "protection_review", "sensitive_data_acknowledged": true, "explicit": true}
+        },
+        {
+          "member_id": "陈晨",
+          "scopes": ["simulation", "report"],
+          "purpose": "单独授权压力模拟与八章规划书生成",
+          "granted_at": "2026-08-04T09:02:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "demo-simulation-consent-v1",
+          "metadata_json": {"synthetic": true, "scenario": "simulation_and_report", "explicit": true}
+        }
+      ],
+      "incomes": [
+        {
+          "member_id": "陈晨",
+      "name": "税后工资",
+      "income_type": "employment",
+          "amount": "180000.00",
+          "frequency": "annual",
+          "stability": "0.85",
+          "volatility": "0.10",
+          "interruption_probability": "0.10",
+          "cycle_correlation": "0.30",
+          "source_concentration": "1.00",
+          "is_sustainable": true
+        }
+      ],
+      "expenses": [
+        {
+          "member_id": "陈晨",
+          "name": "基本生活支出",
+          "amount": "84000.00",
+          "frequency": "annual",
+          "necessity": "essential",
+          "compressible_ratio": "0.05",
+          "category": "basic_living"
+        },
+        {
+          "member_id": "陈晨",
+          "name": "可选消费",
+          "amount": "36000.00",
+          "frequency": "annual",
+          "necessity": "flexible",
+          "compressible_ratio": "0.50",
+          "category": "discretionary"
+        }
+      ],
+      "assets": [
+        {
+          "owner_member_id": "陈晨",
+          "name": "活期存款",
+          "category": "demand_deposit",
+          "subcategory": "工资账户",
+          "acquisition_cost": "40000.00",
+          "market_value": "40000.00",
+          "liquidity_days": 0,
+          "liquidity_level": "immediate",
+          "risk_level": "low",
+          "purpose": "日用与应急",
+          "pledged": false,
+          "ownership": "本人",
+          "property_use": "not_property"
+        },
+        {
+          "owner_member_id": "陈晨",
+          "name": "货币基金",
+          "category": "money_market",
+          "subcategory": "模拟货币市场工具",
+          "acquisition_cost": "30000.00",
+          "market_value": "30000.00",
+          "liquidity_days": 1,
+          "liquidity_level": "within_7_days",
+          "risk_level": "low",
+          "purpose": "短期备用",
+          "pledged": false,
+          "ownership": "本人",
+          "property_use": "not_property"
+        },
+        {
+          "owner_member_id": "陈晨",
+          "name": "宽基权益基金",
+          "category": "equity_fund",
+          "subcategory": "模拟宽基基金",
+          "acquisition_cost": "18000.00",
+          "market_value": "20000.00",
+          "liquidity_days": 3,
+          "liquidity_level": "within_7_days",
+          "risk_level": "high",
+          "purpose": "长期增长",
+          "pledged": false,
+          "ownership": "本人",
+          "property_use": "not_property"
+        }
+      ],
+      "liabilities": [],
+      "insurance_policies": [
+        {
+          "insured_member_id": "陈晨",
+          "name": "模拟综合意外险",
+          "policy_type": "accident",
+          "coverage_amount": "500000.00",
+          "annual_premium": "600.00",
+          "start_date": "2026-01-01",
+          "end_date": "2026-12-31",
+          "deductible": "0.00",
+          "waiting_period_days": 0,
+          "guaranteed_benefit": "0.00",
+          "non_guaranteed_benefit": "0.00",
+          "cash_value": "0.00"
+        },
+        {
+          "insured_member_id": "陈晨",
+          "name": "模拟百万医疗险",
+          "policy_type": "medical",
+          "coverage_amount": "1000000.00",
+          "annual_premium": "1200.00",
+          "start_date": "2026-01-01",
+          "end_date": "2026-12-31",
+          "deductible": "10000.00",
+          "waiting_period_days": 30,
+          "guaranteed_benefit": "0.00",
+          "non_guaranteed_benefit": "0.00",
+          "cash_value": "0.00"
+        }
+      ],
+      "social_security_accounts": [
+        {
+          "member_id": "陈晨",
+          "account_type": "城镇职工基本养老保险",
+          "balance": "20000.00",
+          "annual_personal_contribution": "14400.00",
+          "annual_employer_contribution": "28800.00",
+          "benefit_region": "浙江省杭州市"
+        }
+      ],
+      "goals": [
+        {
+          "name": "补足应急储备",
+          "goal_type": "emergency_fund",
+          "target_amount": "50000.00",
+          "target_date": "2027-08-04",
+          "rigidity": "important",
+          "priority": 1,
+          "can_defer": false,
+          "minimum_acceptable_amount": "40000.00",
+          "prepared_amount": "40000.00",
+          "annual_cost_growth_rate": "0.02"
+        },
+        {
+          "name": "职业深造",
+          "goal_type": "education",
+          "target_amount": "150000.00",
+          "target_date": "2031-08-04",
+          "rigidity": "flexible",
+          "priority": 2,
+          "can_defer": true,
+          "minimum_acceptable_amount": "100000.00",
+          "prepared_amount": "0.00",
+          "annual_cost_growth_rate": "0.04"
+        }
+      ],
+      "risk_assessments": [
+        {
+          "capacity_score": "0.82",
+          "willingness_score": "0.78",
+          "knowledge_score": "0.55",
+          "behavior_score": "0.35",
+          "final_risk_limit": "medium",
+          "explanation": "期限较长但真实行为承受力偏低，最终上限取更审慎结果。"
+        }
+      ],
+      "behavior_assessments": [
+        {
+          "questionnaire_score": "0.72",
+          "experiment_score": "0.35",
+          "final_behavior_limit": "medium_low",
+          "detected_biases": ["recency_bias", "herding", "performance_chasing"],
+          "experiment_answers": {
+            "questionnaire": {
+              "risk_willingness": "0.85",
+              "loss_tolerance_claim": "0.80",
+              "investment_experience": "0.55",
+              "knowledge": "0.50",
+              "trading_frequency": "0.25",
+              "attention": "0.20",
+              "goal_discipline": "0.55"
+            },
+            "responses": {
+              "market_up_20": {"choice_code": "chase_add", "response_time_ms": 2100, "modification_count": 2},
+              "market_down_10": {"choice_code": "sell_all", "response_time_ms": 1700, "modification_count": 1},
+              "market_down_30": {"choice_code": "sell_all", "response_time_ms": 2900, "modification_count": 1},
+              "hot_product_choice": {"choice_code": "chase_hot", "response_time_ms": 1400, "modification_count": 2},
+              "winner_loser_disposal": {"choice_code": "hold_until_entry", "response_time_ms": 3300, "modification_count": 1},
+              "consume_or_goal": {"choice_code": "split_by_rule", "response_time_ms": 2600, "modification_count": 1}
+            }
+          },
+          "explanation": "问卷意愿高于下跌场景表现，采用更保守的行为上限。"
+        }
+      ]
+    },
+    {
+      "household": {
+        "code": "DEMO_B",
+        "name": "家庭 B｜双收入育儿家庭",
+        "lifecycle_stage": "parenting",
+        "region": "江苏省南京市",
+        "demo_profile": "B",
+        "is_synthetic": true
+      },
+      "members": [
+        {
+          "display_name": "李先生",
+          "relationship": "本人",
+          "birth_date": "1991-05-20",
+          "occupation": "制造业项目经理",
+          "employment_stability": "high",
+          "expected_retirement_age": 60,
+          "health_risk_level": "low"
+        },
+        {
+          "display_name": "王女士",
+          "relationship": "配偶",
+          "birth_date": "1993-09-08",
+          "occupation": "公立学校教师",
+          "employment_stability": "high",
+          "expected_retirement_age": 55,
+          "health_risk_level": "low"
+        },
+        {
+          "display_name": "李小朋友",
+          "relationship": "子女",
+          "birth_date": "2021-03-15",
+          "occupation": null,
+          "employment_stability": "low",
+          "expected_retirement_age": null,
+          "health_risk_level": "low"
+        }
+      ],
+      "consents": [
+        {
+          "member_id": "李先生",
+          "scopes": ["profile", "finance", "risk"],
+          "purpose": "主 Demo 合成家庭基础诊断与规划",
+          "granted_at": "2026-08-04T09:15:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "demo-consent-v1",
+          "metadata_json": {"synthetic": true, "main_demo": true, "scenario": "core_planning", "explicit": true}
+        },
+        {
+          "member_id": "李先生",
+          "scopes": ["identity_sensitive", "insurance", "health_sensitive"],
+          "purpose": "单独授权身份、健康与保障敏感字段参与保障缺口核对",
+          "granted_at": "2026-08-04T09:16:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "demo-sensitive-consent-v1",
+          "metadata_json": {"synthetic": true, "main_demo": true, "scenario": "protection_review", "sensitive_data_acknowledged": true, "explicit": true}
+        },
+        {
+          "member_id": "李先生",
+          "scopes": ["simulation", "report"],
+          "purpose": "单独授权压力模拟与八章规划书生成",
+          "granted_at": "2026-08-04T09:17:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "demo-simulation-consent-v1",
+          "metadata_json": {"synthetic": true, "main_demo": true, "scenario": "simulation_and_report", "explicit": true}
+        }
+      ],
+      "incomes": [
+        {
+          "member_id": "李先生",
+      "name": "本人税后收入",
+      "income_type": "employment",
+          "amount": "216000.00",
+          "frequency": "annual",
+          "stability": "0.86",
+          "volatility": "0.12",
+          "interruption_probability": "0.10",
+          "cycle_correlation": "0.50",
+          "source_concentration": "0.60",
+          "is_sustainable": true
+        },
+        {
+          "member_id": "王女士",
+      "name": "配偶税后收入",
+      "income_type": "employment",
+          "amount": "144000.00",
+          "frequency": "annual",
+          "stability": "0.95",
+          "volatility": "0.05",
+          "interruption_probability": "0.04",
+          "cycle_correlation": "0.10",
+          "source_concentration": "0.40",
+          "is_sustainable": true
+        }
+      ],
+      "expenses": [
+        {
+          "name": "刚性生活支出",
+          "amount": "144000.00",
+          "frequency": "annual",
+          "necessity": "essential",
+          "compressible_ratio": "0.05",
+          "category": "basic_living"
+        },
+        {
+          "name": "年度房贷还款",
+          "amount": "72000.00",
+          "frequency": "annual",
+          "necessity": "essential",
+          "compressible_ratio": "0.00",
+          "category": "debt_service"
+        },
+        {
+          "name": "家庭年度保费",
+          "amount": "12000.00",
+          "frequency": "annual",
+          "necessity": "essential",
+          "compressible_ratio": "0.10",
+          "category": "insurance_premium"
+        },
+        {
+          "name": "子女教育与父母赡养等其他支出",
+          "amount": "60000.00",
+          "frequency": "annual",
+          "necessity": "flexible",
+          "compressible_ratio": "0.25",
+          "category": "other"
+        }
+      ],
+      "assets": [
+        {
+          "name": "流动资产",
+          "category": "demand_deposit",
+          "subcategory": "活期及现金",
+          "acquisition_cost": "50000.00",
+          "market_value": "50000.00",
+          "liquidity_days": 0,
+          "liquidity_level": "immediate",
+          "risk_level": "low",
+          "purpose": "日用支付与应急",
+          "pledged": false,
+          "ownership": "夫妻共同",
+          "property_use": "not_property"
+        },
+        {
+          "name": "低波动资产",
+          "category": "time_deposit",
+          "subcategory": "模拟定期存款及低波动工具",
+          "acquisition_cost": "150000.00",
+          "market_value": "150000.00",
+          "liquidity_days": 30,
+          "liquidity_level": "within_30_days",
+          "risk_level": "low",
+          "purpose": "中短期目标",
+          "pledged": false,
+          "ownership": "夫妻共同",
+          "property_use": "not_property"
+        },
+        {
+          "name": "权益基金",
+          "category": "equity_fund",
+          "subcategory": "模拟分散化权益基金",
+          "acquisition_cost": "100000.00",
+          "market_value": "120000.00",
+          "liquidity_days": 3,
+          "liquidity_level": "within_7_days",
+          "risk_level": "high",
+          "purpose": "长期增长",
+          "pledged": false,
+          "ownership": "夫妻共同",
+          "property_use": "not_property"
+        },
+        {
+          "name": "个人养老金账户",
+          "category": "pension_account",
+          "subcategory": "个人养老金",
+          "acquisition_cost": "30000.00",
+          "market_value": "30000.00",
+          "liquidity_days": 3650,
+          "liquidity_level": "illiquid",
+          "risk_level": "medium",
+          "purpose": "退休养老",
+          "pledged": false,
+          "ownership": "李先生",
+          "property_use": "not_property"
+        },
+        {
+          "name": "自住房",
+          "category": "primary_residence",
+          "subcategory": "城市住宅",
+          "acquisition_cost": "1800000.00",
+          "market_value": "2400000.00",
+          "liquidity_days": 180,
+          "liquidity_level": "illiquid",
+          "risk_level": "medium",
+          "purpose": "家庭自住",
+          "pledged": true,
+          "ownership": "夫妻共同",
+          "property_use": "primary_residence"
+        },
+        {
+          "name": "其他资产",
+          "category": "vehicle",
+          "subcategory": "家庭车辆及耐用品",
+          "acquisition_cost": "160000.00",
+          "market_value": "100000.00",
+          "liquidity_days": 60,
+          "liquidity_level": "within_1_year",
+          "risk_level": "medium_low",
+          "purpose": "家庭使用",
+          "pledged": false,
+          "ownership": "夫妻共同",
+          "property_use": "not_property"
+        }
+      ],
+      "liabilities": [
+        {
+          "borrower_member_id": "李先生",
+          "linked_asset_id": "自住房",
+          "name": "住房按揭贷款",
+          "category": "mortgage",
+          "outstanding_balance": "1200000.00",
+          "annual_interest_rate": "0.0345",
+          "monthly_payment": "6000.00",
+          "maturity_date": "2047-05-20",
+          "rate_type": "floating",
+          "prepayment_cost": "0.00",
+          "is_high_interest": false
+        },
+        {
+          "borrower_member_id": "李先生",
+          "linked_asset_id": null,
+          "name": "信用卡未付",
+          "category": "credit_card_unpaid",
+          "outstanding_balance": "8000.00",
+          "annual_interest_rate": "0.18",
+          "monthly_payment": "8000.00",
+          "maturity_date": "2026-08-25",
+          "rate_type": "fixed",
+          "prepayment_cost": "0.00",
+          "is_high_interest": true
+        }
+      ],
+      "insurance_policies": [
+        {
+          "insured_member_id": "李先生",
+          "name": "模拟定期寿险",
+          "policy_type": "term_life",
+          "coverage_amount": "1000000.00",
+          "annual_premium": "6000.00",
+          "start_date": "2025-01-01",
+          "end_date": "2045-12-31",
+          "deductible": "0.00",
+          "waiting_period_days": 90,
+          "guaranteed_benefit": "0.00",
+          "non_guaranteed_benefit": "0.00",
+          "cash_value": "0.00"
+        },
+        {
+          "insured_member_id": "王女士",
+          "name": "模拟医疗及重疾组合",
+          "policy_type": "medical",
+          "coverage_amount": "800000.00",
+          "annual_premium": "6000.00",
+          "start_date": "2025-01-01",
+          "end_date": "2026-12-31",
+          "deductible": "10000.00",
+          "waiting_period_days": 30,
+          "guaranteed_benefit": "0.00",
+          "non_guaranteed_benefit": "0.00",
+          "cash_value": "0.00"
+        }
+      ],
+      "social_security_accounts": [
+        {
+          "member_id": "李先生",
+          "account_type": "城镇职工基本养老保险",
+          "balance": "180000.00",
+          "annual_personal_contribution": "17280.00",
+          "annual_employer_contribution": "34560.00",
+          "benefit_region": "江苏省南京市"
+        },
+        {
+          "member_id": "王女士",
+          "account_type": "机关事业单位养老保险",
+          "balance": "150000.00",
+          "annual_personal_contribution": "11520.00",
+          "annual_employer_contribution": "23040.00",
+          "benefit_region": "江苏省南京市"
+        }
+      ],
+      "goals": [
+        {
+          "name": "子女教育",
+          "goal_type": "education",
+          "target_amount": "600000.00",
+          "target_date": "2036-08-04",
+          "rigidity": "rigid",
+          "priority": 1,
+          "can_defer": false,
+          "minimum_acceptable_amount": "450000.00",
+          "prepared_amount": "80000.00",
+          "annual_cost_growth_rate": "0.05"
+        },
+        {
+          "name": "夫妻退休养老",
+          "goal_type": "retirement",
+          "target_amount": "2000000.00",
+          "target_date": "2051-05-20",
+          "rigidity": "important",
+          "priority": 2,
+          "can_defer": true,
+          "minimum_acceptable_amount": "1500000.00",
+          "prepared_amount": "30000.00",
+          "annual_cost_growth_rate": "0.03"
+        },
+        {
+          "name": "父母赡养储备",
+          "goal_type": "family_support",
+          "target_amount": "300000.00",
+          "target_date": "2031-08-04",
+          "rigidity": "important",
+          "priority": 3,
+          "can_defer": false,
+          "minimum_acceptable_amount": "200000.00",
+          "prepared_amount": "20000.00",
+          "annual_cost_growth_rate": "0.04"
+        }
+      ],
+      "risk_assessments": [
+        {
+          "capacity_score": "0.58",
+          "willingness_score": "0.66",
+          "knowledge_score": "0.60",
+          "behavior_score": "0.52",
+          "final_risk_limit": "medium",
+          "explanation": "双收入提高稳定性，但房贷、育儿与房产集中约束风险上限。"
+        }
+      ],
+      "behavior_assessments": [
+        {
+          "questionnaire_score": "0.62",
+          "experiment_score": "0.52",
+          "final_behavior_limit": "medium",
+          "detected_biases": ["mental_accounting", "loss_aversion"],
+          "experiment_answers": {
+            "questionnaire": {
+              "risk_willingness": "0.70",
+              "loss_tolerance_claim": "0.80",
+              "investment_experience": "0.60",
+              "knowledge": "0.60",
+              "trading_frequency": "0.50",
+              "attention": "0.45",
+              "goal_discipline": "0.55"
+            },
+            "responses": {
+              "market_up_20": {"choice_code": "chase_add", "response_time_ms": 2400, "modification_count": 1},
+              "market_down_10": {"choice_code": "sell_all", "response_time_ms": 1900, "modification_count": 1},
+              "market_down_30": {"choice_code": "hold_plan", "response_time_ms": 4100, "modification_count": 2},
+              "hot_product_choice": {"choice_code": "chase_hot", "response_time_ms": 1800, "modification_count": 1},
+              "winner_loser_disposal": {"choice_code": "rebalance_by_target", "response_time_ms": 3600, "modification_count": 0},
+              "consume_or_goal": {"choice_code": "split_by_rule", "response_time_ms": 3200, "modification_count": 1}
+            }
+          },
+          "explanation": "能承受一般波动，但教育与住房心理账户会放大短期损失感受。"
+        }
+      ]
+    },
+    {
+      "household": {
+        "code": "DEMO_C",
+        "name": "家庭 C｜退休准备",
+        "lifecycle_stage": "retirement_preparation",
+        "region": "广东省广州市",
+        "demo_profile": "C",
+        "is_synthetic": true
+      },
+      "members": [
+        {
+          "display_name": "周先生",
+          "relationship": "本人",
+          "birth_date": "1971-02-18",
+          "occupation": "民营企业管理人员",
+          "employment_stability": "medium",
+          "expected_retirement_age": 60,
+          "health_risk_level": "medium"
+        },
+        {
+          "display_name": "赵女士",
+          "relationship": "配偶",
+          "birth_date": "1973-06-26",
+          "occupation": "会计师",
+          "employment_stability": "medium",
+          "expected_retirement_age": 55,
+          "health_risk_level": "medium_low"
+        }
+      ],
+      "consents": [
+        {
+          "member_id": "周先生",
+          "scopes": ["profile", "finance", "risk"],
+          "purpose": "退休准备家庭基础诊断与规划",
+          "granted_at": "2026-08-04T09:30:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "demo-consent-v1",
+          "metadata_json": {"synthetic": true, "scenario": "core_planning", "explicit": true}
+        },
+        {
+          "member_id": "周先生",
+          "scopes": ["identity_sensitive", "insurance", "health_sensitive"],
+          "purpose": "单独授权身份、健康与保障敏感字段参与长寿风险核对",
+          "granted_at": "2026-08-04T09:31:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "demo-sensitive-consent-v1",
+          "metadata_json": {"synthetic": true, "scenario": "protection_review", "sensitive_data_acknowledged": true, "explicit": true}
+        },
+        {
+          "member_id": "周先生",
+          "scopes": ["simulation", "report"],
+          "purpose": "单独授权退休压力模拟与八章规划书生成",
+          "granted_at": "2026-08-04T09:32:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "demo-simulation-consent-v1",
+          "metadata_json": {"synthetic": true, "scenario": "simulation_and_report", "explicit": true}
+        }
+      ],
+      "incomes": [
+        {
+          "member_id": "周先生",
+      "name": "本人税后收入",
+      "income_type": "employment",
+          "amount": "240000.00",
+          "frequency": "annual",
+          "stability": "0.62",
+          "volatility": "0.25",
+          "interruption_probability": "0.22",
+          "cycle_correlation": "0.65",
+          "source_concentration": "0.57",
+          "is_sustainable": true
+        },
+        {
+          "member_id": "赵女士",
+      "name": "配偶税后收入",
+      "income_type": "employment",
+          "amount": "120000.00",
+          "frequency": "annual",
+          "stability": "0.72",
+          "volatility": "0.15",
+          "interruption_probability": "0.18",
+          "cycle_correlation": "0.40",
+          "source_concentration": "0.29",
+          "is_sustainable": true
+        },
+        {
+      "name": "资产生息收入",
+      "income_type": "investment",
+          "amount": "60000.00",
+          "frequency": "annual",
+          "stability": "0.55",
+          "volatility": "0.35",
+          "interruption_probability": "0.20",
+          "cycle_correlation": "0.50",
+          "source_concentration": "0.14",
+          "is_sustainable": true
+        }
+      ],
+      "expenses": [
+        {
+          "name": "基本生活与赡养",
+          "amount": "168000.00",
+          "frequency": "annual",
+          "necessity": "essential",
+          "compressible_ratio": "0.08",
+          "category": "basic_living"
+        },
+        {
+          "name": "医疗支出",
+          "amount": "36000.00",
+          "frequency": "annual",
+          "necessity": "essential",
+          "compressible_ratio": "0.00",
+          "category": "medical"
+        },
+        {
+          "name": "家庭保费",
+          "amount": "24000.00",
+          "frequency": "annual",
+          "necessity": "essential",
+          "compressible_ratio": "0.10",
+          "category": "insurance_premium"
+        },
+        {
+          "name": "旅游与可选消费",
+          "amount": "72000.00",
+          "frequency": "annual",
+          "necessity": "flexible",
+          "compressible_ratio": "0.60",
+          "category": "discretionary"
+        }
+      ],
+      "assets": [
+        {
+          "name": "现金及活期",
+          "category": "demand_deposit",
+          "subcategory": "流动资金",
+          "acquisition_cost": "200000.00",
+          "market_value": "200000.00",
+          "liquidity_days": 0,
+          "liquidity_level": "immediate",
+          "risk_level": "low",
+          "purpose": "日用与医疗备用",
+          "pledged": false,
+          "ownership": "夫妻共同",
+          "property_use": "not_property"
+        },
+        {
+          "name": "定期存款",
+          "category": "time_deposit",
+          "subcategory": "模拟定期存款",
+          "acquisition_cost": "800000.00",
+          "market_value": "800000.00",
+          "liquidity_days": 90,
+          "liquidity_level": "within_1_year",
+          "risk_level": "low",
+          "purpose": "退休前稳健储备",
+          "pledged": false,
+          "ownership": "夫妻共同",
+          "property_use": "not_property"
+        },
+        {
+          "name": "债券及债券基金",
+          "category": "bond_fund",
+          "subcategory": "模拟短中久期组合",
+          "acquisition_cost": "580000.00",
+          "market_value": "600000.00",
+          "liquidity_days": 5,
+          "liquidity_level": "within_7_days",
+          "risk_level": "medium_low",
+          "purpose": "退休现金流",
+          "pledged": false,
+          "ownership": "夫妻共同",
+          "property_use": "not_property"
+        },
+        {
+          "name": "混合公募基金",
+          "category": "public_fund",
+          "subcategory": "模拟多资产基金",
+          "acquisition_cost": "450000.00",
+          "market_value": "500000.00",
+          "liquidity_days": 5,
+          "liquidity_level": "within_7_days",
+          "risk_level": "medium",
+          "purpose": "中长期购买力",
+          "pledged": false,
+          "ownership": "夫妻共同",
+          "property_use": "not_property"
+        },
+        {
+          "name": "权益基金组合",
+          "category": "equity_fund",
+          "subcategory": "模拟权益基金",
+          "acquisition_cost": "520000.00",
+          "market_value": "700000.00",
+          "liquidity_days": 5,
+          "liquidity_level": "within_7_days",
+          "risk_level": "high",
+          "purpose": "长期增长",
+          "pledged": false,
+          "ownership": "周先生",
+          "property_use": "not_property"
+        },
+        {
+          "name": "养老金账户资产",
+          "category": "pension_account",
+          "subcategory": "企业年金与个人养老金",
+          "acquisition_cost": "600000.00",
+          "market_value": "600000.00",
+          "liquidity_days": 1825,
+          "liquidity_level": "illiquid",
+          "risk_level": "medium",
+          "purpose": "退休养老",
+          "pledged": false,
+          "ownership": "夫妻分别持有",
+          "property_use": "not_property"
+        },
+        {
+          "name": "自住房",
+          "category": "primary_residence",
+          "subcategory": "城市住宅",
+          "acquisition_cost": "1800000.00",
+          "market_value": "2800000.00",
+          "liquidity_days": 240,
+          "liquidity_level": "illiquid",
+          "risk_level": "medium",
+          "purpose": "家庭自住",
+          "pledged": false,
+          "ownership": "夫妻共同",
+          "property_use": "primary_residence"
+        },
+        {
+          "name": "投资性房产",
+          "category": "investment_property",
+          "subcategory": "出租住宅",
+          "acquisition_cost": "1200000.00",
+          "market_value": "1500000.00",
+          "liquidity_days": 240,
+          "liquidity_level": "illiquid",
+          "risk_level": "medium_high",
+          "purpose": "租金与资产配置",
+          "pledged": true,
+          "ownership": "夫妻共同",
+          "property_use": "investment_property"
+        }
+      ],
+      "liabilities": [
+        {
+          "borrower_member_id": "周先生",
+          "linked_asset_id": "投资性房产",
+          "name": "投资房按揭余额",
+          "category": "mortgage",
+          "outstanding_balance": "300000.00",
+          "annual_interest_rate": "0.038",
+          "monthly_payment": "12000.00",
+          "maturity_date": "2029-12-31",
+          "rate_type": "floating",
+          "prepayment_cost": "0.00",
+          "is_high_interest": false
+        }
+      ],
+      "insurance_policies": [
+        {
+          "insured_member_id": "周先生",
+          "name": "模拟医疗险",
+          "policy_type": "medical",
+          "coverage_amount": "1000000.00",
+          "annual_premium": "12000.00",
+          "start_date": "2026-01-01",
+          "end_date": "2026-12-31",
+          "deductible": "10000.00",
+          "waiting_period_days": 30,
+          "guaranteed_benefit": "0.00",
+          "non_guaranteed_benefit": "0.00",
+          "cash_value": "0.00"
+        },
+        {
+          "insured_member_id": "赵女士",
+          "name": "模拟医疗险",
+          "policy_type": "medical",
+          "coverage_amount": "1000000.00",
+          "annual_premium": "12000.00",
+          "start_date": "2026-01-01",
+          "end_date": "2026-12-31",
+          "deductible": "10000.00",
+          "waiting_period_days": 30,
+          "guaranteed_benefit": "0.00",
+          "non_guaranteed_benefit": "0.00",
+          "cash_value": "0.00"
+        }
+      ],
+      "social_security_accounts": [
+        {
+          "member_id": "周先生",
+          "account_type": "城镇职工基本养老保险",
+          "balance": "620000.00",
+          "annual_personal_contribution": "19200.00",
+          "annual_employer_contribution": "38400.00",
+          "benefit_region": "广东省广州市"
+        },
+        {
+          "member_id": "赵女士",
+          "account_type": "城镇职工基本养老保险",
+          "balance": "480000.00",
+          "annual_personal_contribution": "9600.00",
+          "annual_employer_contribution": "19200.00",
+          "benefit_region": "广东省广州市"
+        }
+      ],
+      "goals": [
+        {
+          "name": "退休基础资金",
+          "goal_type": "retirement",
+          "target_amount": "2000000.00",
+          "target_date": "2031-02-18",
+          "rigidity": "rigid",
+          "priority": 1,
+          "can_defer": true,
+          "minimum_acceptable_amount": "1700000.00",
+          "prepared_amount": "1400000.00",
+          "annual_cost_growth_rate": "0.03"
+        },
+        {
+          "name": "长期医疗储备",
+          "goal_type": "medical",
+          "target_amount": "500000.00",
+          "target_date": "2033-08-04",
+          "rigidity": "rigid",
+          "priority": 2,
+          "can_defer": false,
+          "minimum_acceptable_amount": "500000.00",
+          "prepared_amount": "200000.00",
+          "annual_cost_growth_rate": "0.06"
+        },
+        {
+          "name": "养老传承储备",
+          "goal_type": "wealth_transfer",
+          "target_amount": "1000000.00",
+          "target_date": "2046-08-04",
+          "rigidity": "flexible",
+          "priority": 3,
+          "can_defer": true,
+          "minimum_acceptable_amount": "500000.00",
+          "prepared_amount": "300000.00",
+          "annual_cost_growth_rate": "0.03"
+        }
+      ],
+      "risk_assessments": [
+        {
+          "capacity_score": "0.48",
+          "willingness_score": "0.85",
+          "knowledge_score": "0.80",
+          "behavior_score": "0.72",
+          "final_risk_limit": "medium",
+          "explanation": "投资意愿和知识较高，但临近退休、医疗与长寿责任使风险能力下降。"
+        }
+      ],
+      "behavior_assessments": [
+        {
+          "questionnaire_score": "0.85",
+          "experiment_score": "0.72",
+          "final_behavior_limit": "medium_high",
+          "detected_biases": ["overconfidence", "familiarity_bias"],
+          "experiment_answers": {
+            "questionnaire": {
+              "risk_willingness": "0.85",
+              "loss_tolerance_claim": "0.85",
+              "investment_experience": "0.90",
+              "knowledge": "0.75",
+              "trading_frequency": "0.75",
+              "attention": "0.65",
+              "goal_discipline": "0.80"
+            },
+            "responses": {
+              "market_up_20": {"choice_code": "rebalance", "response_time_ms": 5200, "modification_count": 0},
+              "market_down_10": {"choice_code": "hold_plan", "response_time_ms": 4700, "modification_count": 0},
+              "market_down_30": {"choice_code": "staged_buy", "response_time_ms": 6100, "modification_count": 1},
+              "hot_product_choice": {"choice_code": "choose_familiar", "response_time_ms": 3800, "modification_count": 1},
+              "winner_loser_disposal": {"choice_code": "hold_until_entry", "response_time_ms": 5600, "modification_count": 1},
+              "consume_or_goal": {"choice_code": "goal_first", "response_time_ms": 4400, "modification_count": 0}
+            }
+          },
+          "explanation": "经验带来较高信心，但需用退休期限约束过度自信与熟悉性偏差。"
+        }
+      ]
+    }
+  ]
+}

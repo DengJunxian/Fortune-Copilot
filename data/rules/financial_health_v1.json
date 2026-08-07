@@ -1,0 +1,173 @@
+{
+  "code": "financial_health",
+  "semantic_version": "1.0.0",
+  "formula_version": "financial-metrics-v1.0.0",
+  "effective_from": "2026-08-04",
+  "effective_to": null,
+  "source_summary": "智运财富家庭财务诊断规则；参考范围用于家庭理财观察，不作为监管统一合格线。",
+  "classification": {
+    "emergency_liquid_levels": ["immediate"],
+    "short_term_liquid_max_days": 30,
+    "twelve_month_liquid_max_days": 365,
+    "financial_asset_categories": [
+      "cash",
+      "demand_deposit",
+      "money_market",
+      "time_deposit",
+      "bank_wealth_management",
+      "bond",
+      "bond_fund",
+      "public_fund",
+      "equity_fund",
+      "stock",
+      "pension_account",
+      "insurance_cash_value",
+      "trust"
+    ],
+    "investable_financial_asset_categories": [
+      "cash",
+      "demand_deposit",
+      "money_market",
+      "time_deposit",
+      "bank_wealth_management",
+      "bond",
+      "bond_fund",
+      "public_fund",
+      "equity_fund",
+      "stock",
+      "trust"
+    ],
+    "property_categories": ["primary_residence", "investment_property"],
+    "passive_income_types": ["pension", "rental", "investment"],
+    "stale_financial_days": 180,
+    "stale_property_days": 365,
+    "abnormal_return_multiple": "5.00"
+  },
+  "protection": {
+    "death_support_years": "5",
+    "medical_self_pay_reserve": "200000.00",
+    "accident_income_years": "3",
+    "family_support_years": "3"
+  },
+  "purchasing_power": {
+    "official_cpi": {
+      "label": "消费价格情景观察基准",
+      "rate": "0.020000",
+      "source_type": "internal_demo",
+      "source_reference": "版本化规划参数，非实时统计发布值",
+      "data_as_of": "2026-08-04",
+      "is_live": false
+    },
+    "expense_category_rates": {
+      "basic_living": "0.020000",
+      "discretionary": "0.025000",
+      "parent_support": "0.040000",
+      "child_education": "0.050000",
+      "medical": "0.050000",
+      "insurance_premium": "0.025000",
+      "debt_service": "0.000000",
+      "tax": "0.000000",
+      "other": "0.030000"
+    },
+    "minimum_wage_catch_up": {
+      "label": "最低工资增长辅助观察参数",
+      "rate": "0.030000",
+      "source_type": "internal_demo",
+      "source_reference": "版本化规划参数；仅作长期购买力辅助信号，不等同于 CPI",
+      "data_as_of": "2026-08-04",
+      "is_cpi": false,
+      "is_return_guarantee": false
+    }
+  },
+  "thresholds": {
+    "measurement_only": {
+      "reference_range": "无统一阈值，按家庭事实与生命周期解释",
+      "source_type": "internal_demo",
+      "source_reference": "Fortune Copilot 仅作计量和家庭内比较",
+      "parameters": {}
+    },
+    "liquidity_reserve_months": {
+      "reference_range": "稳定收入 3—6 月；波动收入 6—12 月",
+      "source_type": "internal_demo",
+      "source_reference": "Fortune Copilot V3 提示词 3 初始 Demo 参考",
+      "parameters": {
+        "stable_min": "3",
+        "stable_max": "6",
+        "volatile_min": "6",
+        "volatile_max": "12"
+      }
+    },
+    "short_term_debt_coverage": {
+      "reference_range": "<1 预警；1—1.5 关注；>1.5 相对充足",
+      "source_type": "internal_demo",
+      "source_reference": "Fortune Copilot V3 提示词 3 初始 Demo 参考",
+      "parameters": {"warning_below": "1", "healthy_above": "1.5"}
+    },
+    "debt_to_asset_ratio": {
+      "reference_range": "<30% 较稳健；30%—50% 关注；>50% 重点分析",
+      "source_type": "internal_demo",
+      "source_reference": "Fortune Copilot V3 提示词 3 初始 Demo 参考",
+      "parameters": {"healthy_below": "0.30", "warning_above": "0.50"}
+    },
+    "savings_ratio": {
+      "reference_range": "<10% 偏低；10%—20% 有改善空间；≥20% 具备持续积累能力；≥30% 较好",
+      "source_type": "internal_demo",
+      "source_reference": "Fortune Copilot V3 提示词 3 初始 Demo 参考",
+      "parameters": {"warning_below": "0.10", "healthy_at": "0.20", "strong_at": "0.30"}
+    },
+    "debt_service_burden_ratio": {
+      "reference_range": "<30% 较稳健；30%—40% 关注；>40% 预警",
+      "source_type": "internal_demo",
+      "source_reference": "Fortune Copilot V3 提示词 3 初始 Demo 参考",
+      "parameters": {"healthy_below": "0.30", "warning_above": "0.40"}
+    },
+    "investable_assets_to_net_worth": {
+      "reference_range": "20%—50% 为家庭理财常用观察区间；需结合年龄、责任、期限和流动性解释",
+      "source_type": "internal_demo",
+      "source_reference": "中国家庭理财规划常用观察口径，非统一合格线",
+      "parameters": {"observation_min": "0.20", "observation_max": "0.50"}
+    },
+    "property_to_assets_ratio": {
+      "reference_range": ">60% 提示集中；>75% 重点分析流动性",
+      "source_type": "internal_demo",
+      "source_reference": "Fortune Copilot V3 提示词 3 初始 Demo 参考；须结合城市、自住、房贷与生命周期",
+      "parameters": {"attention_above": "0.60", "warning_above": "0.75"}
+    },
+    "twelve_month_liquidity_coverage": {
+      "reference_range": "≥1 覆盖未来十二个月必要支出；<1 存在流动性缺口",
+      "source_type": "internal_demo",
+      "source_reference": "Fortune Copilot 内部 Demo 流动性检查",
+      "parameters": {"healthy_at": "1"}
+    },
+    "fixed_expense_ratio": {
+      "reference_range": "不设统一上限；结合收入稳定性和家庭责任解释",
+      "source_type": "internal_demo",
+      "source_reference": "Fortune Copilot 家庭现金流诊断参数",
+      "parameters": {"attention_above": "0.60", "warning_above": "0.80"}
+    },
+    "protection_coverage_ratio": {
+      "reference_range": "以保障缺口为主，不以固定保费比例判断",
+      "source_type": "internal_demo",
+      "source_reference": "Fortune Copilot 可配置保障缺口模型",
+      "parameters": {"warning_below": "0.50", "healthy_at": "0.80"}
+    },
+    "funding_ratio": {
+      "reference_range": "按目标期限、刚性与已准备资金动态解释",
+      "source_type": "internal_demo",
+      "source_reference": "Fortune Copilot 目标资金表",
+      "parameters": {"warning_below": "0.30", "healthy_at": "0.80"}
+    },
+    "concentration_hhi": {
+      "reference_range": "HHI <0.25 相对分散；0.25—0.50 关注；>0.50 集中",
+      "source_type": "internal_demo",
+      "source_reference": "Fortune Copilot 内部集中度演示阈值，非监管统一标准",
+      "parameters": {"healthy_below": "0.25", "warning_above": "0.50"}
+    },
+    "financial_independence_ratio": {
+      "reference_range": "非劳动性可持续收入 ÷ 年支出；≥1 表示当前口径下可覆盖",
+      "source_type": "internal_demo",
+      "source_reference": "Fortune Copilot 财务自由度演示口径",
+      "parameters": {"attention_at": "0.50", "healthy_at": "1.00"}
+    }
+  }
+}
