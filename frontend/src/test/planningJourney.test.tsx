@@ -62,6 +62,7 @@ const explanations = analysis.metrics.map((item) => ({
 
 describe("household planning journey", () => {
   beforeEach(() => {
+    window.localStorage?.clear();
     vi.stubGlobal("scrollTo", vi.fn());
     vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => {
       callback(0);
