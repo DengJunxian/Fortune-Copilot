@@ -122,6 +122,7 @@ class AccountBucketPlan(RecordMixin, Base):
     total_asset_ratio: Mapped[Decimal | None] = mapped_column(RATIO, nullable=True)
     investable_asset_ratio: Mapped[Decimal | None] = mapped_column(RATIO, nullable=True)
     annual_surplus_ratio: Mapped[Decimal | None] = mapped_column(RATIO, nullable=True)
+    residual_long_term_ratio: Mapped[Decimal | None] = mapped_column(RATIO, nullable=True)
     plan_version: Mapped[str] = mapped_column(String(64), default="unknown", nullable=False)
     input_version: Mapped[str] = mapped_column(String(64), default="unknown", nullable=False)
     calculation_source: Mapped[str] = mapped_column(

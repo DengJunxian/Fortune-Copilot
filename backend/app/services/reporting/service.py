@@ -544,6 +544,7 @@ def _compose_and_stage_report(
         settings.financial_rules_path,
         settings.planning_rules_path,
         analysis_date,
+        methodology_rules_path=settings.methodology_rules_path,
     )
     portfolio = portfolio_household(
         session,
@@ -554,6 +555,7 @@ def _compose_and_stage_report(
         settings.product_catalog_path,
         analysis_date,
         MarketScenario.NEUTRAL,
+        settings.methodology_rules_path,
     )
     fund_advisory = advise_household(
         session,
@@ -612,6 +614,8 @@ def _compose_and_stage_report(
         input_version=plan.meta.input_version,
         formula_version=analysis.meta.formula_version,
         planning_rule_version=plan.meta.rule_version,
+        methodology_version=plan.meta.methodology_version,
+        decision_hash=plan.decision_evidence.decision_hash,
         portfolio_rule_version=portfolio.meta.rule_version,
         twin_result_version=twin.meta.result_version,
         model_version=MODEL_VERSION,

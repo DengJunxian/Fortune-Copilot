@@ -35,6 +35,14 @@ class Settings(BaseSettings):
         default="../data/rules/planning_waterfall_v1.json",
         alias="PLANNING_RULES_PATH",
     )
+    methodology_rules_path: str = Field(
+        default="../data/rules/wealth_methodology_v3.json",
+        alias="METHODOLOGY_RULES_PATH",
+    )
+    public_data_snapshot_path: str = Field(
+        default="../data/public/authoritative_public_snapshot_v1.json",
+        alias="PUBLIC_DATA_SNAPSHOT_PATH",
+    )
     portfolio_rules_path: str = Field(
         default="../data/rules/portfolio_policy_v1.json",
         alias="PORTFOLIO_RULES_PATH",

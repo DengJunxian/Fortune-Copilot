@@ -9,7 +9,10 @@ from app.domain.enums import GoalType, PropertyUse
 from app.domain.financial import HouseholdFacts
 from app.schemas.financial_analysis import (
     FinancialStatements,
+    HealthAssessment,
     HealthDimension,
+    HealthHardGate,
+    HealthPriorityAction,
     MetricApplicability,
     MetricInput,
     MetricResult,
@@ -1093,19 +1096,28 @@ def _score_from_ratio(value: Decimal | None, target: Decimal) -> Decimal:
     return display_number(max(ZERO, min(Decimal("100"), value / target * Decimal("100"))))
 
 
-def build_health_dimensions(metrics: list[MetricResult]) -> list[HealthDimension]:
+def _inverse_score(value: Decimal | None, ceiling: Decimal) -> Decimal:
+    if value is None or ceiling <= ZERO:
+        return ZERO
+    return display_number(max(ZERO, min(Decimal("100"), (ONE - value / ceiling) * Decimal("100"))))
+
+
+def _average_score(*scores: Decimal) -> Decimal:
+    if not scores:
+        return ZERO
+    return display_number(sum(scores, ZERO) / Decimal(len(scores)))
+
+
+def build_health_dimensions(
+    metrics: list[MetricResult], facts: HouseholdFacts
+) -> list[HealthDimension]:
     by_id = {item.metric_id: item for item in metrics}
     liquidity = _score_from_ratio(_metric_value(by_id, "liquidity_reserve_months"), Decimal("6"))
     debt_ratio = _metric_value(by_id, "debt_to_asset_ratio")
-    debt = (
-        display_number(
-            max(
-                ZERO,
-                min(Decimal("100"), (ONE - debt_ratio / Decimal("0.60")) * Decimal("100")),
-            )
-        )
-        if debt_ratio is not None
-        else ZERO
+    debt_service = _metric_value(by_id, "debt_service_burden_ratio")
+    balance_sheet = _average_score(
+        _inverse_score(debt_ratio, Decimal("0.60")),
+        _inverse_score(debt_service, Decimal("0.60")),
     )
     savings = _score_from_ratio(_metric_value(by_id, "savings_ratio"), Decimal("0.30"))
     protection = _score_from_ratio(_metric_value(by_id, "protection_coverage_ratio"), ONE)
@@ -1114,64 +1126,288 @@ def build_health_dimensions(metrics: list[MetricResult]) -> list[HealthDimension
         _metric_value(by_id, "retirement_funding_adequacy"), Decimal("0.80")
     )
     hhi = _metric_value(by_id, "product_hhi")
-    diversification = (
-        display_number(
-            max(
-                ZERO,
-                min(Decimal("100"), (ONE - hhi / Decimal("0.50")) * Decimal("100")),
-            )
-        )
-        if hhi is not None
-        else ZERO
+    product_concentration = _inverse_score(hhi, Decimal("0.50"))
+    property_ratio = _metric_value(by_id, "property_to_assets_ratio")
+    property_concentration = _inverse_score(property_ratio, Decimal("0.85"))
+    concentration = _average_score(product_concentration, property_concentration)
+    twelve_month_coverage = _score_from_ratio(
+        _metric_value(by_id, "twelve_month_liquidity_coverage"), ONE
     )
+    portfolio_risk = _average_score(twelve_month_coverage, product_concentration)
+    investable_ratio = _score_from_ratio(
+        _metric_value(by_id, "investable_assets_to_net_worth"), Decimal("0.30")
+    )
+    long_term_growth = _average_score(savings, investable_ratio)
+    latest_behavior = facts.behavior_assessments[-1] if facts.behavior_assessments else None
+    latest_risk = facts.risk_assessments[-1] if facts.risk_assessments else None
+    behavior_available = latest_behavior is not None or latest_risk is not None
+    if latest_behavior is not None:
+        behavior = _average_score(
+            display_number(latest_behavior.questionnaire_score * Decimal("100")),
+            display_number(latest_behavior.experiment_score * Decimal("100")),
+        )
+        behavior_explanation = "综合问卷与损失情景实验；行为结果只能下调长期风险预算。"
+    elif latest_risk is not None:
+        behavior = display_number(latest_risk.behavior_score * Decimal("100"))
+        behavior_explanation = "暂用最近一次风险评估中的行为分量；完成行为实验后更新。"
+    else:
+        behavior = ZERO
+        behavior_explanation = "尚无行为观察，本维度不进入综合指数；不得据此放宽适当性条件。"
+    resilience = _average_score(
+        twelve_month_coverage,
+        _inverse_score(debt_service, Decimal("0.60")),
+        liquidity,
+    )
+    weight = Decimal("0.100000")
     return [
         HealthDimension(
             code="liquidity",
-            name="流动性",
+            name="流动性健康",
             score=liquidity,
             metric_ids=["liquidity_reserve_months", "twelve_month_liquidity_coverage"],
             explanation="按应急储备月数相对 6 个月归一化，上限 100。",
+            weight=weight,
         ),
         HealthDimension(
-            code="debt",
-            name="债务韧性",
-            score=debt,
+            code="balance_sheet",
+            name="资产负债健康",
+            score=balance_sheet,
             metric_ids=["debt_to_asset_ratio", "debt_service_burden_ratio"],
-            explanation="按资产负债率相对 60% 的剩余空间归一化。",
-        ),
-        HealthDimension(
-            code="savings",
-            name="储蓄",
-            score=savings,
-            metric_ids=["savings_ratio", "fixed_expense_ratio"],
-            explanation="按结余率相对 30% 归一化，上限 100。",
+            explanation="综合资产负债率与年度偿债负担，较低杠杆和较小还款占用得分更高。",
+            weight=weight,
         ),
         HealthDimension(
             code="protection",
-            name="保障",
+            name="风险保障",
             score=protection,
             metric_ids=["protection_coverage_ratio", "protection_gap"],
             explanation="按最大不可承受风险的保障覆盖率归一化。",
-        ),
-        HealthDimension(
-            code="diversification",
-            name="分散度",
-            score=diversification,
-            metric_ids=["product_hhi", "property_to_assets_ratio"],
-            explanation="按可投资持仓 HHI 相对 0.50 的剩余空间归一化。",
+            weight=weight,
         ),
         HealthDimension(
             code="retirement",
-            name="养老",
+            name="养老准备",
             score=retirement,
             metric_ids=["retirement_funding_adequacy"],
             explanation="按养老资金充足率相对 80% 归一化；未录入养老目标时为 0。",
+            weight=weight,
         ),
         HealthDimension(
             code="goals",
-            name="目标准备",
+            name="目标健康",
             score=goals,
             metric_ids=["goal_funding_ratio"],
             explanation="按全体目标准备率相对 80% 归一化，不替代逐目标期限分析。",
+            weight=weight,
+        ),
+        HealthDimension(
+            code="portfolio_risk",
+            name="组合风险",
+            score=portfolio_risk,
+            metric_ids=["twelve_month_liquidity_coverage", "product_hhi"],
+            explanation="以一年内资金期限匹配和产品集中度作为初赛代理；正式判断由组合压力测试补充。",
+            weight=weight,
+        ),
+        HealthDimension(
+            code="concentration",
+            name="集中度",
+            score=concentration,
+            metric_ids=["product_hhi", "property_to_assets_ratio"],
+            explanation="综合金融产品与房产集中情况；自住房价值不等于可随时动用的长期投资资金。",
+            weight=weight,
+        ),
+        HealthDimension(
+            code="long_term_growth",
+            name="长期增长",
+            score=long_term_growth,
+            metric_ids=["savings_ratio", "investable_assets_to_net_worth"],
+            explanation="综合持续结余和可投资金融资产积累；长期目标需另行核对购买力门槛。",
+            weight=weight,
+        ),
+        HealthDimension(
+            code="behavior",
+            name="行为稳定",
+            score=behavior,
+            metric_ids=["behavior_assessment"],
+            explanation=behavior_explanation,
+            weight=weight,
+            available=behavior_available,
+        ),
+        HealthDimension(
+            code="resilience",
+            name="财务韧性",
+            score=resilience,
+            metric_ids=[
+                "liquidity_reserve_months",
+                "twelve_month_liquidity_coverage",
+                "debt_service_burden_ratio",
+            ],
+            explanation="由流动性与偿债压力形成诊断代理；失业、医疗和市场冲击概率以数字孪生结果为准。",
+            weight=weight,
         ),
     ]
+
+
+def _health_gate(
+    *, code: str, name: str, value: Decimal | None, risk: bool, detail: str, metric_ids: list[str]
+) -> HealthHardGate:
+    return HealthHardGate(
+        code=code,
+        name=name,
+        status="not_applicable" if value is None else ("risk" if risk else "pass"),
+        detail=detail,
+        metric_ids=metric_ids,
+    )
+
+
+def build_health_assessment(
+    metrics: list[MetricResult], dimensions: list[HealthDimension]
+) -> HealthAssessment:
+    by_id = {item.metric_id: item for item in metrics}
+    available = [item for item in dimensions if item.available]
+    normalized_weight = ONE / Decimal(len(available)) if available else ONE
+    epsilon = Decimal("1")
+    log_sum = sum(
+        (
+            normalized_weight * (max(epsilon, dimension.score) / Decimal("100")).ln()
+            for dimension in available
+        ),
+        ZERO,
+    )
+    overall_score = display_number(log_sum.exp() * Decimal("100")) if available else ZERO
+
+    liquidity_value = _metric_value(by_id, "liquidity_reserve_months")
+    debt_service_value = _metric_value(by_id, "debt_service_burden_ratio")
+    protection_value = _metric_value(by_id, "protection_coverage_ratio")
+    hard_gates = [
+        _health_gate(
+            code="one_month_liquidity",
+            name="一个月必要支出来源",
+            value=liquidity_value,
+            risk=liquidity_value is not None and liquidity_value < ONE,
+            detail=(
+                "资料不足，暂不判断一个月必要支出来源。"
+                if liquidity_value is None
+                else (
+                    "可立即动用资金不足一个月必要支出。"
+                    if liquidity_value < ONE
+                    else "可立即动用资金至少覆盖一个月必要支出。"
+                )
+            ),
+            metric_ids=["liquidity_reserve_months"],
+        ),
+        _health_gate(
+            code="debt_service_pressure",
+            name="偿债现金流压力",
+            value=debt_service_value,
+            risk=debt_service_value is not None and debt_service_value > Decimal("0.50"),
+            detail=(
+                "资料不足，暂不判断偿债现金流压力。"
+                if debt_service_value is None
+                else (
+                    "年度还本付息超过税后收入的一半。"
+                    if debt_service_value > Decimal("0.50")
+                    else "年度偿债负担未触发50%的风险闸门。"
+                )
+            ),
+            metric_ids=["debt_service_burden_ratio"],
+        ),
+        _health_gate(
+            code="protection_gap",
+            name="重大风险保障缺口",
+            value=protection_value,
+            risk=protection_value is not None and protection_value < Decimal("0.50"),
+            detail=(
+                "资料不足，暂不判断重大风险保障缺口。"
+                if protection_value is None
+                else (
+                    "主要不可承受风险的保障覆盖不足50%。"
+                    if protection_value < Decimal("0.50")
+                    else "主要不可承受风险的保障覆盖未触发50%的风险闸门。"
+                )
+            ),
+            metric_ids=["protection_coverage_ratio", "protection_gap"],
+        ),
+    ]
+    hard_gate_triggered = any(item.status == "risk" for item in hard_gates)
+    status = (
+        "risk"
+        if hard_gate_triggered or overall_score < Decimal("60")
+        else "attention"
+        if overall_score < Decimal("75")
+        else "healthy"
+    )
+    lowest = min(available, key=lambda item: item.score) if available else dimensions[0]
+    triggered_dimension = next(
+        (
+            dimension_code
+            for gate_code, dimension_code in (
+                ("one_month_liquidity", "liquidity"),
+                ("debt_service_pressure", "balance_sheet"),
+                ("protection_gap", "protection"),
+            )
+            if any(gate.code == gate_code and gate.status == "risk" for gate in hard_gates)
+        ),
+        None,
+    )
+    priority_dimension = next(
+        (item for item in dimensions if item.code == triggered_dimension), lowest
+    )
+    action_copy = {
+        "liquidity": (
+            "先补足现金流缓冲",
+            "先把可立即动用资金补到至少一个月必要支出，再逐步完成动态应急储备。",
+        ),
+        "balance_sheet": (
+            "先降低偿债压力",
+            "核对高息债务、月还款和可延期支出，避免用新增投资掩盖现金流压力。",
+        ),
+        "protection": (
+            "先补关键保障缺口",
+            "保险只承担风险转移，不承担投资任务；先核对家庭经济支柱的医疗、重疾和意外保障。",
+        ),
+        "retirement": (
+            "先补全养老目标",
+            "把基本养老、年金、个人养老金和预计退休支出放在同一口径下测算缺口。",
+        ),
+        "goals": (
+            "先处理最刚性的目标",
+            "按期限和不可延期程度排序，优先补足近期教育、医疗、赡养或住房责任。",
+        ),
+        "portfolio_risk": (
+            "先修正资金期限错配",
+            "一年内要用的钱不进入长期波动资产；再检查金融产品是否过度集中。",
+        ),
+        "concentration": (
+            "先降低单一资产集中",
+            "分别检查房产和单一金融产品占用，保留足够的可动用金融资产。",
+        ),
+        "long_term_growth": (
+            "先提高稳定结余",
+            "先建立可持续月度结余，再用完成前置安排后的长期资金追求购买力增长。",
+        ),
+        "behavior": (
+            "先完成行为风险实验",
+            "用下跌情景检验真实持有反应；行为结果只能下调风险预算，不能放宽安全条件。",
+        ),
+        "resilience": (
+            "先做联合压力测试",
+            "用失业、医疗支出和市场下跌的联合场景，检查是否会被迫出售长期资产。",
+        ),
+    }
+    action_title, action_detail = action_copy[priority_dimension.code]
+    return HealthAssessment(
+        version="chfi-demo-v1.0.0",
+        overall_score=overall_score,
+        status=status,
+        formula="100 × ∏(max(维度得分, 1) / 100)^(可用维度归一化权重)",
+        weighting_note="初赛采用可用维度等权几何平均；权重不是全国统一标准，后续需用脱敏样本校准。",
+        hard_gate_triggered=hard_gate_triggered,
+        hard_gates=hard_gates,
+        priority_action=HealthPriorityAction(
+            dimension_code=priority_dimension.code,
+            title=action_title,
+            detail=action_detail,
+            metric_ids=priority_dimension.metric_ids,
+        ),
+    )

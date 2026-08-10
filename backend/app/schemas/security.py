@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from decimal import Decimal
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -201,4 +202,46 @@ class ModelRunSummary(BaseModel):
 class ModelRunListResponse(BaseModel):
     items: list[ModelRunSummary]
     total: int
+    boundary_note: str
+
+
+class ModelGovernanceEvaluationRequest(StrictRequest):
+    model_id: str = Field(min_length=1, max_length=120)
+    model_version: str = Field(min_length=1, max_length=120)
+    risk_class: Literal["low", "medium", "high"]
+    observed_at: datetime
+    sample_size: int = Field(ge=1)
+    minimum_group_sample_size: int = Field(ge=0)
+    input_drift_score: Decimal = Field(ge=0, le=1)
+    output_drift_score: Decimal = Field(ge=0, le=1)
+    fairness_max_gap: Decimal = Field(ge=0, le=1)
+    unsupported_fact_rate: Decimal = Field(ge=0, le=1)
+    availability_rate: Decimal = Field(ge=0, le=1)
+    independent_validation_completed: bool
+    data_security_review_completed: bool
+    explainability_review_completed: bool
+    approval_reference: str | None = Field(default=None, max_length=160)
+    baseline_version: str | None = Field(default=None, max_length=120)
+
+
+class ModelGovernanceControlResult(BaseModel):
+    code: str
+    status: Literal["pass", "block"]
+    observed: str
+    threshold: str
+    explanation: str
+
+
+class ModelGovernanceEvaluationResponse(BaseModel):
+    evaluation_version: str
+    model_id: str
+    model_version: str
+    production_eligible: bool
+    decision: Literal["pass", "block"]
+    deterministic_fallback_required: bool
+    allowed_llm_tasks: list[
+        Literal["information_extraction", "explanation", "rag", "report"]
+    ]
+    controls: list[ModelGovernanceControlResult]
+    evaluated_at: datetime
     boundary_note: str

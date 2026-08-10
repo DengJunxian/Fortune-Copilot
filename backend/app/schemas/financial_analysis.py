@@ -309,6 +309,37 @@ class HealthDimension(BaseModel):
     score: Decimal = Field(ge=0, le=100)
     metric_ids: list[str]
     explanation: str
+    weight: Decimal = Field(ge=0, le=1)
+    available: bool = True
+    is_regulatory_rating: Literal[False] = False
+
+
+class HealthHardGate(BaseModel):
+    code: str
+    name: str
+    status: Literal["pass", "risk", "not_applicable"]
+    detail: str
+    metric_ids: list[str]
+
+
+class HealthPriorityAction(BaseModel):
+    dimension_code: str
+    title: str
+    detail: str
+    metric_ids: list[str]
+
+
+class HealthAssessment(BaseModel):
+    code: Literal["chfi"] = "chfi"
+    version: str
+    overall_score: Decimal = Field(ge=0, le=100)
+    status: Literal["healthy", "attention", "risk"]
+    formula: str
+    weighting_note: str
+    hard_gate_triggered: bool
+    hard_gates: list[HealthHardGate]
+    priority_action: HealthPriorityAction
+    is_credit_score: Literal[False] = False
     is_regulatory_rating: Literal[False] = False
 
 
@@ -320,7 +351,8 @@ class FinancialAnalysisResponse(BaseModel):
     diagnostics: DataDiagnostics
     protection: ProtectionAssessment
     purchasing_power: PurchasingPowerAssessment
-    health_dimensions: list[HealthDimension] = Field(min_length=7, max_length=7)
+    health_dimensions: list[HealthDimension] = Field(min_length=10, max_length=10)
+    health_assessment: HealthAssessment
 
 
 class StatementsResponse(BaseModel):
@@ -332,7 +364,8 @@ class StatementsResponse(BaseModel):
 class MetricsResponse(BaseModel):
     meta: AnalysisMeta
     metrics: list[MetricResult]
-    health_dimensions: list[HealthDimension] = Field(min_length=7, max_length=7)
+    health_dimensions: list[HealthDimension] = Field(min_length=10, max_length=10)
+    health_assessment: HealthAssessment
 
 
 class DiagnosticsResponse(BaseModel):

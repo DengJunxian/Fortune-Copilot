@@ -2,9 +2,13 @@
 
 英文名：Fortune Copilot。
 
-面向中国个人与家庭的财富规划产品。客户从家庭情况、客户识别和一张完整财务报表开始，查看资产负债、年度收支和六项家庭财务比率，再录入理财目标与大额支出，最后生成固定八章的理财规划书。
+**Fortune Copilot 不是基金推荐器，而是面向中国家庭的财务健康规划系统。** 它以 CHFH 中国家庭财富健康理论为总框架，以 GRB（Goal、Risk、Behavior）动态账户模型为配置核心，在家庭生活、刚性责任、保障与近期目标得到安排后，才评估真正长期资金的购买力增长。
 
-金额、比率、公式代入和规划书数字由确定性程序计算。大语言模型只用于理解、追问和解释已验证结果。
+客户从家庭情况、客户识别和一张完整财务报表开始，查看资产负债、年度收支和六项家庭财务比率，再录入理财目标与大额支出，最后生成固定八章的理财规划书。
+
+金额、比例、阈值、适当性、产品资格和规划书数字均由确定性程序计算。大语言模型只用于理解、追问和解释已验证结果，无权覆盖硬约束。所有关键结论携带方法论、规则、地区参数、市场状态、养老金政策、产品快照与评估版本，并生成可重演的决策哈希。
+
+> 仓库已加入经官方公开网页核验的 CPI、杭州／南京／广州最低工资和监管政策只读快照；它们不是实时 API。工商银行 IAM、客户数据、AML/CDD、产品、交易、CRM 和内部投研系统仍只有 fail-closed Port/Adapter 契约，未接入、也不伪装接入。
 
 ## 产品流程
 
@@ -58,7 +62,30 @@
 
 普通家庭不默认配置个股、杠杆、股指期货或新增投资性房产。最低工资涨幅只作长期购买力辅助观察，不等同于 CPI。
 
+## CHFH、GRB、CHFI 与 HFDT
+
+- CHFH 将决策主体从单个投资者扩展为家庭，联合观察资产、负债、现金流、保障、制度账户、目标、风险和行为。
+- GRB 用目标期限与刚性、风险承担能力与意愿、真实行为反馈共同决定四账户，不只读取一次风险问卷。
+- CHFI 以十个维度做家庭财务健康诊断，采用可用维度归一化后的几何平均，强项不能抵消现金流、偿债或保障短板。它不是征信评分。
+- HFDT 家庭金融数字孪生使用可复现压力情景检验失业、医疗支出、市场下跌和家庭责任变化下的财务韧性，不预测市场涨跌。
+
+系统形成 `CHFH → GRB → 动态四账户 → CHFI → HFDT → 产品适当性 → 持续复盘` 的单一主线。RRI-G 的责任、韧性和制度覆盖能力保留为内部约束组件，不再作为对外独立方法论品牌。
+
 市场口径来自统一规则，不由客户或大语言模型临时判断。当前演示规则为中性：参考区间 10%—20%，中间参考点 15%。
+
+V4 的完整定义与边界见：
+
+- [`中国家庭财富框架`](docs/methodology/china_household_wealth_framework.md)
+- [`Deep Research 报告吸收与原则校准`](docs/methodology/deep_research_alignment.md)
+- [`四域责任瀑布`](docs/methodology/four_domain_responsibility_waterfall.md)
+- [`中国家庭购买力门槛 PPH`](docs/methodology/purchasing_power_hurdle.md)
+- [`Fortune Copilot V4 架构`](docs/architecture/fortune_copilot_v4.md)
+- [`决策证据治理`](docs/governance/decision_evidence.md)
+- [`Personal Pension Copilot`](docs/product/personal_pension.md)
+- [`工行生产集成端口与边界`](docs/integrations/icbc_production_ports.md)
+- [`权威公共数据管道`](docs/governance/authoritative_public_data.md)
+- [`模型生命周期与监控`](docs/governance/model_lifecycle_monitoring.md)
+- [`生产就绪、SRE 与灾备`](docs/operations/production_readiness.md)
 
 ## 规划书结构
 
@@ -88,15 +115,18 @@
 ```mermaid
 flowchart LR
     WEB["React + TypeScript"] --> API["FastAPI"]
-    API --> FIN["确定性财务与报告服务"]
-    API --> LLM["DeepSeek 解释服务"]
+    API --> LEDGER["家庭事实与责任账本"]
+    LEDGER --> METHOD["CHFH + GRB 方法论与版本快照"]
+    METHOD --> FIN["确定性规划、组合与压力测试"]
+    API --> LLM["可降级的金融解释层"]
+    FIN --> EVIDENCE["Decision Evidence Package"]
     FIN --> DB["SQLite／PostgreSQL"]
     FIN --> REPORT["八章 HTML／PDF 规划书"]
 ```
 
 - 前端：React 19、TypeScript、Vite、ECharts、Phosphor Icons。
 - 后端：FastAPI、Pydantic、SQLAlchemy 2、Alembic。
-- 计算：Decimal 金额、版本化公式与参考阈值。
+- 计算：Decimal 金额、PFNW、三分母、地区化启动线、PPH 与版本化规则快照。
 - 模型：DeepSeek 的 OpenAI 兼容接口，JSON 输出通过应用自有 Pydantic 模型再次校验。
 - 测试：Pytest、Vitest、Testing Library 与 Playwright。
 
@@ -165,6 +195,10 @@ make check
 - `POST /api/v1/households/{household_id}/reports`：生成严格八章正式规划书。
 - `GET /api/v1/fund-advisory/products`：读取已核验的公开基金资料。
 - `GET /api/v1/households/{household_id}/fund-advisory`：生成第七章的具体产品说明。
+- `GET /api/v1/public-data/authoritative-snapshot`：读取带官方来源、版本和完整性哈希的公共数据快照。
+- `GET /api/v1/integrations/readiness`：查看银行专有能力、审批和运维证据缺口。
+- `GET /api/v1/health/live`、`GET /api/v1/health/ready`：存活与环境感知的就绪探针。
+- `POST /api/v1/security/model-governance/evaluate`：对汇总漂移、公平性、可用性与独立验证状态执行确定性门禁。
 
 ## 产品边界
 

@@ -58,9 +58,10 @@ def request(
     role: str = "admin",
     confirm: str | None = None,
     timeout: int = 300,
+    accept: str = "application/json",
 ) -> tuple[int, bytes, str]:
     headers = {
-        "Accept": "application/json",
+        "Accept": accept,
         "X-Actor-ID": f"acceptance-{role}",
         "X-Actor-Role": role,
     }
@@ -283,7 +284,7 @@ def run_acceptance(api_url: str, web_url: str, *, reset_demo: bool) -> dict[str,
     )
 
     for path in ("/", "/demo", "/client", "/advisor", "/risk"):
-        status, body, content_type = request(web_url, path)
+        status, body, content_type = request(web_url, path, accept="text/html")
         ledger.check(
             f"page_smoke_{path.strip('/') or 'home'}",
             status == 200 and content_type == "text/html" and b'<div id="root">' in body,

@@ -129,16 +129,24 @@ def test_analysis_api_exposes_required_views_export_and_persisted_audit_run() ->
     assert by_id["net_worth"]["result"] == "1642000.00"
     assert by_id["debt_to_asset_ratio"]["result"] == "0.423860"
     dimensions = metrics_response.json()["health_dimensions"]
-    assert len(dimensions) == 7
+    assert len(dimensions) == 10
     assert [item["code"] for item in dimensions] == [
         "liquidity",
-        "debt",
-        "savings",
+        "balance_sheet",
         "protection",
-        "diversification",
         "retirement",
         "goals",
+        "portfolio_risk",
+        "concentration",
+        "long_term_growth",
+        "behavior",
+        "resilience",
     ]
+    health = metrics_response.json()["health_assessment"]
+    assert health["code"] == "chfi"
+    assert health["is_credit_score"] is False
+    assert len(health["hard_gates"]) == 3
+    assert health["priority_action"]["dimension_code"] in {item["code"] for item in dimensions}
 
     export = call(
         "GET",

@@ -229,6 +229,33 @@ export interface HealthDimension {
   score: string;
   metric_ids: string[];
   explanation: string;
+  weight: string;
+  available: boolean;
+  is_regulatory_rating: false;
+}
+
+export interface HealthAssessment {
+  code: "chfi";
+  version: string;
+  overall_score: string;
+  status: "healthy" | "attention" | "risk";
+  formula: string;
+  weighting_note: string;
+  hard_gate_triggered: boolean;
+  hard_gates: Array<{
+    code: string;
+    name: string;
+    status: "pass" | "risk" | "not_applicable";
+    detail: string;
+    metric_ids: string[];
+  }>;
+  priority_action: {
+    dimension_code: string;
+    title: string;
+    detail: string;
+    metric_ids: string[];
+  };
+  is_credit_score: false;
   is_regulatory_rating: false;
 }
 
@@ -284,6 +311,7 @@ export interface FinancialAnalysis {
     minimum_wage_is_return_guarantee: false;
   };
   health_dimensions: HealthDimension[];
+  health_assessment: HealthAssessment;
 }
 
 interface PurchasingPowerFactor {

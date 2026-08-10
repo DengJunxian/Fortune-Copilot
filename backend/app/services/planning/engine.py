@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from dataclasses import asdict
 from datetime import date
 from decimal import Decimal
@@ -30,6 +31,13 @@ from app.services.financial.engine import analyze_facts
 from app.services.financial.facts import load_household_facts
 from app.services.financial.rules import load_financial_rules
 from app.services.financial.utils import ZERO, money
+from app.services.methodology.engine import assess_methodology
+from app.services.methodology.evidence import build_decision_evidence
+from app.services.methodology.models import MethodologyRules
+from app.services.methodology.rules import (
+    ensure_methodology_rule_version,
+    load_methodology_rules,
+)
 from app.services.planning.goals import build_goal_plan
 from app.services.planning.lifecycle import assess_lifecycle
 from app.services.planning.rules import (
@@ -38,6 +46,18 @@ from app.services.planning.rules import (
     load_planning_rules,
 )
 from app.services.planning.waterfall import build_waterfall
+from app.services.protection_planner.engine import build_protection_plan
+from app.services.public_data.models import AuthoritativePublicDataSnapshot
+from app.services.public_data.rules import load_public_data_snapshot
+
+DEFAULT_METHODOLOGY_RULES_PATH = os.getenv(
+    "METHODOLOGY_RULES_PATH",
+    "../data/rules/wealth_methodology_v3.json",
+)
+DEFAULT_PUBLIC_DATA_SNAPSHOT_PATH = os.getenv(
+    "PUBLIC_DATA_SNAPSHOT_PATH",
+    "../data/public/authoritative_public_snapshot_v1.json",
+)
 
 
 def empty_counterfactual() -> AppliedCounterfactual:
@@ -162,9 +182,39 @@ def plan_facts(
     planning_rules: PlanningRules,
     analysis_date: date,
     adjustments: AppliedCounterfactual,
+    methodology_rules: MethodologyRules | None = None,
+    public_data_snapshot: AuthoritativePublicDataSnapshot | None = None,
 ) -> PlanningResponse:
     financial_rules = load_financial_rules(financial_rules_path)
     financial = analyze_facts(facts, financial_rules, analysis_date)
+    active_methodology_rules = methodology_rules or load_methodology_rules(
+        DEFAULT_METHODOLOGY_RULES_PATH
+    )
+    active_public_data = public_data_snapshot or load_public_data_snapshot(
+        DEFAULT_PUBLIC_DATA_SNAPSHOT_PATH
+    )
+    investable_categories = set(
+        financial_rules.classification.investable_financial_asset_categories
+    )
+    investable_assets = money(
+        sum(
+            (
+                asset.market_value
+                for asset in facts.assets
+                if asset.category.value in investable_categories
+            ),
+            ZERO,
+        )
+    )
+    pfnw = money(investable_assets - financial.statements.balance_sheet.total_liabilities)
+    methodology = assess_methodology(
+        facts,
+        financial,
+        active_methodology_rules,
+        analysis_date,
+        pfnw,
+        active_public_data,
+    )
     lifecycle = assess_lifecycle(
         facts,
         planning_rules,
@@ -190,6 +240,9 @@ def plan_facts(
         growth_70,
         growth_benchmark,
         actions,
+        asset_liquidity,
+        current_allocation_plan,
+        contribution_plan,
     ) = build_waterfall(
         facts,
         financial,
@@ -199,6 +252,21 @@ def plan_facts(
         goals,
         conflicts,
         adjustments,
+        methodology,
+        active_methodology_rules,
+    )
+    input_version = _planning_input_version(facts, analysis_date, adjustments)
+    decision_evidence = build_decision_evidence(
+        facts=facts,
+        household_input_version=input_version,
+        financial_rule_version=financial.meta.rule_version,
+        planning_rule_version=planning_rules.semantic_version,
+        methodology=methodology,
+        hard_gate_results={
+            item.constraint_id: item.status
+            for item in constraints
+            if item.constraint_type == "hard"
+        },
     )
     return PlanningResponse(
         meta=PlanningMeta(
@@ -206,13 +274,19 @@ def plan_facts(
             household_code=facts.code,
             analysis_date=analysis_date,
             data_as_of=financial.meta.data_as_of,
-            input_version=_planning_input_version(facts, analysis_date, adjustments),
+            input_version=input_version,
             formula_version=planning_rules.formula_version,
             rule_code=planning_rules.code,
             rule_version=planning_rules.semantic_version,
             currency=facts.currency,
             synthetic_data=facts.is_synthetic,
             scenario_type=("counterfactual" if adjustments != empty_counterfactual() else "base"),
+            methodology_version=methodology.methodology_version,
+            regional_parameter_version=methodology.regional_threshold.policy_version,
+            market_regime_version=methodology.market_regime.snapshot_version,
+            minimum_wage_snapshot_version=methodology.minimum_wage_snapshot.version,
+            public_data_snapshot_version=methodology.public_data_snapshot_version,
+            pension_policy_version=methodology.personal_pension.policy.policy_version,
         ),
         lifecycle=lifecycle,
         goals=goals,
@@ -225,10 +299,16 @@ def plan_facts(
         growth_70=growth_70,
         growth_benchmark=growth_benchmark,
         actions=actions,
+        methodology=methodology,
+        asset_liquidity=asset_liquidity,
+        current_allocation_plan=current_allocation_plan,
+        contribution_plan=contribution_plan,
+        protection_plan=build_protection_plan(facts, financial),
+        decision_evidence=decision_evidence,
         applied_counterfactual=adjustments,
         counting_note=(
-            "四账户采用顺序式资金瀑布；保额、信用卡额度、住房和养老金账户均不会被重复计入"
-            "可规划金融资产。保命账户展示必要年保费与保障缺口，不将保额当作资产；"
+            "四域采用顺序式责任瀑布；保额、信用卡额度和自住房不进入可投资金融资产，"
+            "锁定制度账户不会被当作短期流动资金。保命账户展示必要年保费与保障缺口，不将保额当作资产；"
             "保本账户名称表达用途目标，不代表其中所有产品保证本金。"
         ),
     )
@@ -241,6 +321,8 @@ def plan_household(
     planning_rules_path: str,
     analysis_date: date,
     request: CounterfactualRequest | None = None,
+    methodology_rules_path: str = DEFAULT_METHODOLOGY_RULES_PATH,
+    public_data_snapshot_path: str = DEFAULT_PUBLIC_DATA_SNAPSHOT_PATH,
 ) -> PlanningResponse:
     facts = load_household_facts(session, household_id)
     planning_rules = load_planning_rules(planning_rules_path)
@@ -261,6 +343,8 @@ def plan_household(
         planning_rules,
         analysis_date,
         adjustments,
+        load_methodology_rules(methodology_rules_path),
+        load_public_data_snapshot(public_data_snapshot_path),
     )
 
 
@@ -325,6 +409,8 @@ def compare_counterfactual(
     financial_rules_path: str,
     planning_rules_path: str,
     request: CounterfactualRequest,
+    methodology_rules_path: str = DEFAULT_METHODOLOGY_RULES_PATH,
+    public_data_snapshot_path: str = DEFAULT_PUBLIC_DATA_SNAPSHOT_PATH,
 ) -> CounterfactualResponse:
     analysis_date = request.analysis_date or date.today()
     base = plan_household(
@@ -333,6 +419,8 @@ def compare_counterfactual(
         financial_rules_path,
         planning_rules_path,
         analysis_date,
+        methodology_rules_path=methodology_rules_path,
+        public_data_snapshot_path=public_data_snapshot_path,
     )
     scenario = plan_household(
         session,
@@ -341,6 +429,8 @@ def compare_counterfactual(
         planning_rules_path,
         analysis_date,
         request,
+        methodology_rules_path,
+        public_data_snapshot_path,
     )
     return CounterfactualResponse(
         base=base,
@@ -365,8 +455,11 @@ def persist_planning(
     plan: PlanningResponse,
     rules: PlanningRules,
     actor: ActorContext,
+    methodology_rules_path: str = DEFAULT_METHODOLOGY_RULES_PATH,
 ) -> PersistedPlanningRun:
     rule_version = ensure_planning_rule_version(session, rules)
+    methodology_rules = load_methodology_rules(methodology_rules_path)
+    ensure_methodology_rule_version(session, methodology_rules)
     limiting = [item.name for item in plan.constraints if item.limits_growth]
     recommendation = Recommendation(
         household_id=plan.meta.household_id,
@@ -383,6 +476,9 @@ def persist_planning(
             "growth_70": plan.growth_70.model_dump(mode="json"),
             "calculation_source": plan.meta.calculation_source,
         },
+        methodology_version=plan.meta.methodology_version,
+        decision_evidence=plan.decision_evidence.model_dump(mode="json"),
+        decision_hash=plan.decision_evidence.decision_hash,
         rule_version_id=rule_version.id,
         currency=plan.meta.currency,
         valuation_date=plan.meta.data_as_of,
@@ -423,6 +519,9 @@ def persist_planning(
             total_asset_ratio=_ratio(account.measures, "total_assets"),
             investable_asset_ratio=investable_ratio,
             annual_surplus_ratio=_ratio(account.measures, "annual_new_surplus"),
+            residual_long_term_ratio=_ratio(
+                account.measures, "residual_long_term_plannable_capital"
+            ),
             plan_version=plan.meta.formula_version,
             input_version=plan.meta.input_version,
             calculation_source=plan.meta.calculation_source,

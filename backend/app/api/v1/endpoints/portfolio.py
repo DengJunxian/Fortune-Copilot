@@ -17,6 +17,7 @@ from app.schemas.portfolio import (
     SuitabilityProbeRequest,
     SuitabilityProbeResponse,
 )
+from app.services.methodology.rules import load_methodology_rules
 from app.services.portfolio.catalog import build_catalog_response
 from app.services.portfolio.engine import (
     evaluate_suitability_probe,
@@ -52,6 +53,7 @@ def _portfolio(
         settings.product_catalog_path,
         analysis_date or date.today(),
         market_scenario,
+        settings.methodology_rules_path,
     )
 
 
@@ -60,7 +62,13 @@ def get_mock_product_catalog(
     session: SessionDependency,
     _actor: ActorDependency,
 ) -> ProductCatalogResponse:
-    return build_catalog_response(session, get_settings().product_catalog_path)
+    settings = get_settings()
+    methodology = load_methodology_rules(settings.methodology_rules_path)
+    return build_catalog_response(
+        session,
+        settings.product_catalog_path,
+        maximum_age_days=methodology.product_snapshot_policy.maximum_age_days,
+    )
 
 
 @router.get(
@@ -97,6 +105,7 @@ def post_suitability_check(
         settings.planning_rules_path,
         settings.portfolio_rules_path,
         settings.product_catalog_path,
+        settings.methodology_rules_path,
     )
 
 

@@ -190,7 +190,17 @@ def test_client_intake_creates_normalized_case_and_six_ratio_explanations() -> N
     assert narrative.status_code == 200, narrative.text
     plan_payload = narrative.json()
     assert plan_payload["provider"] == "mock"
-    assert plan_payload["planning"]["denominators"]["growth_entry_threshold"] == "700000.00"
+    assert (
+        plan_payload["planning"]["methodology"]["regional_threshold"]
+        ["customer_selected_threshold"]
+        == "700000.00"
+    )
+    assert plan_payload["planning"]["denominators"]["growth_entry_threshold"] == "735000.00"
+    assert (
+        plan_payload["planning"]["denominators"]["growth_entry_threshold"]
+        == plan_payload["planning"]["methodology"]["regional_threshold"]
+        ["effective_threshold"]
+    )
     assert (
         plan_payload["planning"]["denominators"]["net_financial_assets_after_debt"]
         == "-858600.00"

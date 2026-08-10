@@ -37,7 +37,7 @@ ASSET_CATEGORY_MAP = {
     "bond_fund": "fixed_income",
     "public_fund": "diversified_equity",
     "equity_fund": "diversified_equity",
-    "stock": "diversified_equity",
+    "stock": "single_equity",
 }
 
 
@@ -58,6 +58,13 @@ class PortfolioMetrics:
     max_drawdown: Decimal
     liquidity_score: Decimal
     annual_fee_rate: Decimal
+    responsibility_breach_probability: Decimal
+    purchasing_power_success_probability: Decimal
+    liability_coverage: Decimal
+    liquidity_shortfall: Decimal
+    concentration: Decimal
+    real_return_after_fee: Decimal
+    lexicographic_key: tuple[Decimal, ...]
 
 
 @dataclass(frozen=True, slots=True)
@@ -78,7 +85,7 @@ def current_growth_weights(
     amounts = {asset_class: ZERO for asset_class in rules.asset_classes}
     for asset in facts.assets:
         asset_class = ASSET_CATEGORY_MAP.get(asset.category.value)
-        if asset_class is None:
+        if asset_class is None or asset_class not in amounts:
             continue
         if asset.purpose not in {"长期增长", "养老", "财富传承", "长期投资"} and asset_class in {
             "cash_equivalent",
@@ -112,7 +119,7 @@ def _scenario_metrics(
     goal_need: Decimal,
     horizon_months: int,
     current_weights: dict[str, Decimal],
-    inflation_rate: Decimal,
+    purchasing_power_hurdle: Decimal,
     rules: PortfolioRules,
 ) -> PortfolioMetrics:
     years = max(1, (horizon_months + 11) // 12)
@@ -132,10 +139,12 @@ def _scenario_metrics(
         {key: value.annual_fee_rate for key, value in assumptions.items()},
     )
     base_terminal = amount * (Decimal("1") + expected_return) ** years
-    purchasing_power_target = amount * (Decimal("1") + inflation_rate) ** years
+    purchasing_power_target = amount * (Decimal("1") + purchasing_power_hurdle) ** years
     target = max(goal_need, purchasing_power_target)
     terminals: list[tuple[Decimal, Decimal]] = []
     success = ZERO
+    purchasing_power_success = ZERO
+    responsibility_breach = ZERO
     expected_shortfall = ZERO
     for scenario in rules.scenarios:
         scenario_return = _weighted(weights, scenario.returns)
@@ -143,6 +152,10 @@ def _scenario_metrics(
         terminals.append((scenario.probability, terminal))
         if amount > 0 and terminal >= target:
             success += scenario.probability
+        if amount > 0 and terminal >= purchasing_power_target:
+            purchasing_power_success += scenario.probability
+        if goal_need > ZERO and terminal < goal_need:
+            responsibility_breach += scenario.probability
         if target > 0 and terminal < target:
             expected_shortfall += scenario.probability * ((target - terminal) / target)
     turnover = sum(
@@ -151,7 +164,12 @@ def _scenario_metrics(
     ) / Decimal("2")
     diversification = Decimal("1") - sum((value * value for value in weights.values()), ZERO)
     liquidity_shortfall = max(ZERO, rules.minimum_liquidity_score - liquidity)
-    purchasing_shortfall = max(ZERO, inflation_rate - expected_return)
+    purchasing_shortfall = max(ZERO, purchasing_power_hurdle - expected_return)
+    concentration = sum((value * value for value in weights.values()), ZERO)
+    liability_coverage = (
+        min(Decimal("1"), base_terminal / goal_need) if goal_need > ZERO else Decimal("1")
+    )
+    real_return_after_fee = expected_return - purchasing_power_hurdle - fee_rate
     objective_weights = rules.objective_weights
     objective = (
         objective_weights.cvar * cvar_loss
@@ -167,7 +185,7 @@ def _scenario_metrics(
     return PortfolioMetrics(
         objective=ratio(objective),
         expected_return=ratio(expected_return),
-        expected_real_return=ratio(expected_return - inflation_rate),
+        expected_real_return=ratio(expected_return - purchasing_power_hurdle),
         success_probability=ratio(success),
         range_low=money(min(values, default=ZERO)),
         range_base=money(base_terminal),
@@ -176,6 +194,20 @@ def _scenario_metrics(
         max_drawdown=ratio(drawdown),
         liquidity_score=ratio(liquidity),
         annual_fee_rate=ratio(fee_rate),
+        responsibility_breach_probability=ratio(responsibility_breach),
+        purchasing_power_success_probability=ratio(purchasing_power_success),
+        liability_coverage=ratio(liability_coverage),
+        liquidity_shortfall=ratio(liquidity_shortfall),
+        concentration=ratio(concentration),
+        real_return_after_fee=ratio(real_return_after_fee),
+        lexicographic_key=(
+            ratio(responsibility_breach),
+            ratio(liquidity_shortfall),
+            ratio(cvar_loss + drawdown),
+            ratio(-success),
+            ratio(fee_rate + turnover),
+            ratio(objective),
+        ),
     )
 
 
@@ -369,7 +401,7 @@ def optimize_candidate(
     goal_need: Decimal,
     horizon_months: int,
     current_weights: dict[str, Decimal],
-    inflation_rate: Decimal,
+    purchasing_power_hurdle: Decimal,
     high_risk_cap: Decimal,
     analysis_date: date,
     market_scenario: MarketScenario,
@@ -386,7 +418,8 @@ def optimize_candidate(
         "goal_need": str(goal_need),
         "horizon_months": horizon_months,
         "current_weights": {key: str(value) for key, value in current_weights.items()},
-        "inflation_rate": str(inflation_rate),
+        "purchasing_power_hurdle": str(purchasing_power_hurdle),
+        "inflation_rate_deprecated": str(purchasing_power_hurdle),
         "high_risk_cap": str(high_risk_cap),
         "market_scenario": market_scenario.value,
         "rule_version": rules.semantic_version,
@@ -413,10 +446,10 @@ def optimize_candidate(
                 goal_need,
                 horizon_months,
                 current_weights,
-                inflation_rate,
+                purchasing_power_hurdle,
                 rules,
             )
-            if best_metrics is None or metrics.objective < best_metrics.objective:
+            if best_metrics is None or metrics.lexicographic_key < best_metrics.lexicographic_key:
                 best_weights = weights
                 best_metrics = metrics
     fallback_reason: str | None = None
@@ -428,7 +461,7 @@ def optimize_candidate(
             goal_need,
             horizon_months,
             current_weights,
-            inflation_rate,
+            purchasing_power_hurdle,
             rules,
         )
         method = "rule_based_fallback"

@@ -26,6 +26,7 @@ from app.models.finance import (
     IncomeSource,
     InsurancePolicy,
     Liability,
+    Responsibility,
     SocialSecurityAccount,
 )
 from app.models.governance import (
@@ -97,6 +98,7 @@ __all__ = [
     "Product",
     "QualityGateRun",
     "Recommendation",
+    "Responsibility",
     "RiskAssessment",
     "RuleVersion",
     "RuntimeMetadata",

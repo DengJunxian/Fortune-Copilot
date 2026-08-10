@@ -1,11 +1,17 @@
 from __future__ import annotations
 
-from datetime import timedelta
+from datetime import date, timedelta
 from decimal import Decimal
 
 from app.domain.enums import AccountBucket, AssetCategory, GoalRigidity, RiskLevel
 from app.domain.financial import HouseholdFacts
 from app.schemas.financial_analysis import FinancialAnalysisResponse
+from app.schemas.methodology import (
+    AssetLiquiditySummary,
+    ContributionPlan,
+    CurrentAllocationPlan,
+    MethodologyAssessment,
+)
 from app.schemas.planning import (
     AccountAllocation,
     ActionDraft,
@@ -26,6 +32,8 @@ from app.schemas.planning import (
 )
 from app.services.financial.rules import FinancialRules
 from app.services.financial.utils import ZERO, format_money, money, safe_ratio
+from app.services.methodology.models import MethodologyRules
+from app.services.planning.cashflow import DeterministicDailyLiquidityPolicy
 from app.services.planning.rules import PlanningRules
 
 
@@ -49,11 +57,19 @@ def _measures(
     total_assets: Decimal,
     investable_assets: Decimal,
     annual_surplus: Decimal,
+    residual_long_term_capital: Decimal = ZERO,
 ) -> list[RatioMeasure]:
-    definitions: tuple[tuple[DenominatorId, str, Decimal], ...] = (
-        ("total_assets", "家庭总资产", total_assets),
-        ("investable_financial_assets", "可投资金融资产", investable_assets),
-        ("annual_new_surplus", "年度新增结余", annual_surplus),
+    definitions: tuple[tuple[DenominatorId, str, Decimal, bool], ...] = (
+        ("total_household_assets", "家庭总资产", total_assets, False),
+        ("investable_financial_assets", "可投资金融资产", investable_assets, False),
+        (
+            "residual_long_term_plannable_capital",
+            "完成前置安排后的长期可规划资源",
+            residual_long_term_capital,
+            False,
+        ),
+        ("total_assets", "家庭总资产（兼容字段）", total_assets, True),
+        ("annual_new_surplus", "年度新增结余（流量观察）", annual_surplus, True),
     )
     return [
         RatioMeasure(
@@ -67,8 +83,9 @@ def _measures(
                 if denominator > ZERO
                 else f"{name}为 0，比例不适用"
             ),
+            deprecated=deprecated,
         )
-        for code, name, denominator in definitions
+        for code, name, denominator, deprecated in definitions
     ]
 
 
@@ -76,27 +93,73 @@ def _current_account_amounts(
     facts: HouseholdFacts,
     financial_rules: FinancialRules,
     adjustments: AppliedCounterfactual,
-) -> tuple[Decimal, Decimal, Decimal, list[str], list[str], list[str]]:
+    analysis_date: date,
+) -> tuple[
+    Decimal,
+    Decimal,
+    Decimal,
+    list[str],
+    list[str],
+    list[str],
+    AssetLiquiditySummary,
+]:
     investable_categories = set(
         financial_rules.classification.investable_financial_asset_categories
     )
     investable = [asset for asset in facts.assets if asset.category.value in investable_categories]
-    daily_assets = [asset for asset in investable if asset.liquidity_days == 0]
+    institutional_assets = [
+        asset
+        for asset in facts.assets
+        if asset.category == AssetCategory.PENSION_ACCOUNT
+        or asset.account_wrapper.value
+        in {
+            "personal_pension",
+            "social_security",
+            "enterprise_annuity",
+            "occupational_annuity",
+            "provident_fund",
+        }
+    ]
+    institutional_ids = {asset.id for asset in institutional_assets}
+    reallocatable = [
+        asset for asset in investable if not asset.lock_up and asset.id not in institutional_ids
+    ]
+    daily_assets = [
+        asset for asset in reallocatable if asset.liquidity_days == 0
+    ]
     stable_assets = [
         asset
-        for asset in investable
-        if asset not in daily_assets and asset.risk_level in {RiskLevel.LOW, RiskLevel.MEDIUM_LOW}
+        for asset in reallocatable
+        if asset not in daily_assets
+        and asset.risk_level in {RiskLevel.LOW, RiskLevel.MEDIUM_LOW}
     ]
     growth_assets = [
-        asset for asset in investable if asset not in daily_assets and asset not in stable_assets
+        asset
+        for asset in reallocatable
+        if asset not in daily_assets and asset not in stable_assets
     ]
-    pension_assets = [
-        asset for asset in facts.assets if asset.category == AssetCategory.PENSION_ACCOUNT
+    locked_institutional = [
+        asset
+        for asset in institutional_assets
+        if asset.lock_up
+        or asset.withdrawable_date is None
+        or asset.withdrawable_date > analysis_date
+    ]
+    withdrawable_institutional = [
+        asset
+        for asset in institutional_assets
+        if asset not in locked_institutional
+        and asset.liquidity_days <= financial_rules.classification.twelve_month_liquid_max_days
     ]
     daily = money(sum((asset.market_value for asset in daily_assets), ZERO))
+    eligible_withdrawable_institutional = [
+        asset
+        for asset in withdrawable_institutional
+        if asset.category.value in investable_categories
+    ]
     stable = money(
         sum((asset.market_value for asset in stable_assets), ZERO)
-        + sum((asset.market_value for asset in pension_assets), ZERO)
+        + sum((asset.market_value for asset in eligible_withdrawable_institutional), ZERO)
     )
     growth = money(sum((asset.market_value for asset in growth_assets), ZERO))
 
@@ -116,8 +179,27 @@ def _current_account_amounts(
         stable,
         growth,
         [asset.id for asset in daily_assets],
-        [asset.id for asset in stable_assets + pension_assets],
+        [asset.id for asset in stable_assets + eligible_withdrawable_institutional],
         [asset.id for asset in growth_assets],
+        AssetLiquiditySummary(
+            daily_liquid_assets=daily,
+            liquid_stable_assets=money(
+                sum((asset.market_value for asset in stable_assets), ZERO)
+            ),
+            withdrawable_institutional_assets=money(
+                sum((asset.market_value for asset in withdrawable_institutional), ZERO)
+            ),
+            locked_institutional_assets=money(
+                sum((asset.market_value for asset in locked_institutional), ZERO)
+            ),
+            growth_assets=growth,
+            locked_asset_ids=[asset.id for asset in locked_institutional],
+            withdrawable_asset_ids=[asset.id for asset in withdrawable_institutional],
+            explanation=(
+                "只有已合法可领取且实际赎回期满足短期责任的制度账户才进入流动稳定资产；"
+                "锁定个人养老金不满足日用、应急或近期刚性目标。"
+            ),
+        ),
     )
 
 
@@ -130,6 +212,8 @@ def build_waterfall(
     goals: list[GoalProjection],
     conflicts: list[GoalConflict],
     adjustments: AppliedCounterfactual,
+    methodology: MethodologyAssessment,
+    methodology_rules: MethodologyRules,
 ) -> tuple[
     DenominatorSummary,
     list[WaterfallStep],
@@ -139,6 +223,9 @@ def build_waterfall(
     GrowthEligibility,
     GrowthBenchmark,
     list[ActionDraft],
+    AssetLiquiditySummary,
+    CurrentAllocationPlan,
+    ContributionPlan,
 ]:
     statements = financial.statements
     annual_surplus = money(
@@ -161,19 +248,7 @@ def build_waterfall(
     )
     total_liabilities = statements.balance_sheet.total_liabilities
     net_financial_assets = money(investable_assets - total_liabilities)
-    configured_threshold = Decimal(
-        str(
-            facts.planning_preferences.get(
-                "growth_entry_threshold", rules.waterfall.growth_entry_default
-            )
-        )
-    )
-    growth_entry_threshold = money(
-        min(
-            Decimal(rules.waterfall.growth_entry_maximum),
-            max(Decimal(rules.waterfall.growth_entry_minimum), configured_threshold),
-        )
-    )
+    growth_entry_threshold = methodology.regional_threshold.effective_threshold
     high_interest_before = money(
         sum(
             (
@@ -187,21 +262,14 @@ def build_waterfall(
     debt_reduction = min(adjustments.high_interest_debt_reduction, high_interest_before)
     high_interest_after = money(high_interest_before - debt_reduction)
     annual_premium = statements.insurance.total_annual_premium
-    gross_resources = money(
-        max(ZERO, investable_assets - debt_reduction) + annual_surplus + annual_premium
-    )
+    current_balance_available = money(max(ZERO, investable_assets - debt_reduction))
 
     monthly_essential = money(statements.cash_flow.annual_essential_expenses / Decimal("12"))
-    daily_months = Decimal(rules.safety_months.daily_operating_months)
-    daily_operations_required = money(
-        min(
-            Decimal(rules.safety_months.daily_operating_max_amount),
-            max(
-                Decimal(rules.safety_months.daily_operating_min_amount),
-                monthly_essential * daily_months,
-            ),
-        )
-    )
+    daily_forecast = DeterministicDailyLiquidityPolicy(
+        methodology_rules.daily_liquidity
+    ).forecast(monthly_essential)
+    daily_months = methodology_rules.daily_liquidity.operating_months
+    daily_operations_required = daily_forecast.target_amount
     emergency_required = money(
         monthly_essential * max(ZERO, lifecycle.dynamic_safety_months - daily_months)
     )
@@ -215,12 +283,16 @@ def build_waterfall(
     certain_cashflow = money(min(annual_surplus, short_term_gap))
     short_term_net = money(max(ZERO, short_term_gap - certain_cashflow))
     daily_target = daily_operations_required
-    resources = money(max(ZERO, gross_resources - certain_cashflow))
+    future_contribution_available = money(max(ZERO, annual_surplus - certain_cashflow))
+    resources = current_balance_available
     denominators = DenominatorSummary(
         total_assets=total_assets,
+        total_household_assets=total_assets,
         investable_financial_assets=investable_assets,
         net_financial_assets_after_debt=net_financial_assets,
+        plannable_financial_net_worth=net_financial_assets,
         growth_entry_threshold=growth_entry_threshold,
+        residual_long_term_plannable_capital=ZERO,
         annual_new_surplus=annual_surplus,
         available_planning_resources=resources,
         high_interest_debt_before_plan=high_interest_before,
@@ -300,7 +372,7 @@ def build_waterfall(
             + [item.id for item in facts.members],
         )
     )
-    protection_allocated, remaining = _allocate(annual_premium, remaining)
+    protection_allocated = annual_premium
     steps.append(
         WaterfallStep(
             sequence=4,
@@ -309,7 +381,7 @@ def build_waterfall(
             required_amount=annual_premium,
             allocated_amount=protection_allocated,
             remaining_resources=remaining,
-            status="cashflow_covered" if protection_allocated >= annual_premium else "partial",
+            status="cashflow_covered",
             formula="当前有效保单年度保费；保障缺口单独展示，不用保额反推产品价格",
             explanation="年度结余已经扣除已记录保费，因此资源池先加回保费再按本步骤列示，避免遗漏或重复扣减。",
             source_record_ids=[item.id for item in facts.insurance_policies],
@@ -355,7 +427,7 @@ def build_waterfall(
     )
     raw_growth = remaining
     stable_account_target = money(emergency_required + short_term_net + stable_target)
-    active_market_regime = rules.market_environment.active_regime
+    active_market_regime = methodology.market_regime.regime
     market_profile = rules.market_environment.profiles[active_market_regime]
     market_stable_anchor = money(
         investable_assets * Decimal(market_profile.stable_target_ratio)
@@ -367,9 +439,25 @@ def build_waterfall(
         min(raw_growth, max(ZERO, market_stable_anchor - stable_core_allocated))
     )
     market_adjusted_growth = money(max(ZERO, raw_growth - market_holdback))
+    denominators = denominators.model_copy(
+        update={"residual_long_term_plannable_capital": raw_growth}
+    )
 
-    current_daily, current_stable, current_growth, daily_ids, stable_ids, growth_ids = (
-        _current_account_amounts(facts, financial_rules, adjustments)
+    (
+        current_daily,
+        current_stable,
+        current_growth,
+        daily_ids,
+        stable_ids,
+        growth_ids,
+        asset_liquidity,
+    ) = (
+        _current_account_amounts(
+            facts,
+            financial_rules,
+            adjustments,
+            financial.meta.analysis_date,
+        )
     )
     effective_protection_gap = money(
         max(ZERO, financial.protection.protection_gap - adjustments.protection_gap_reduction)
@@ -548,13 +636,13 @@ def build_waterfall(
     failed_hard = [
         item for item in constraints if item.constraint_type == "hard" and item.status != "pass"
     ]
-    account_resource = money(max(ZERO, resources - debt_allocated))
     learning_cap_ratio = Decimal(rules.waterfall.learning_growth_cap)
     learning_applicable = not capital_threshold_pass
     learning_conditions = [
         "可规划金融净值尚未达到客户确认的正式启动线",
         "年度新增结余为正",
-        "完成日常、保障支出、近期目标、债务安排和市场留存后仍有多余长期资金",
+        "日常、应急与近期刚性责任已有可用流动资金",
+        "完成债务安排和家庭责任后仍有多余长期资金",
         "没有待处理的高息债务",
         "风险能力与审慎上限通过长期投资适当性条件",
     ]
@@ -563,6 +651,8 @@ def build_waterfall(
         learning_failed_conditions.append("年度新增结余不为正")
     if market_adjusted_growth <= ZERO:
         learning_failed_conditions.append("完成前置安排后没有多余长期资金")
+    if not liquidity_pass or not horizon_pass:
+        learning_failed_conditions.append("日常、应急或近期刚性责任尚未完整备资")
     if not debt_pass:
         learning_failed_conditions.append("仍有待处理的高息债务")
     if not suitability_pass:
@@ -570,17 +660,13 @@ def build_waterfall(
     learning_eligible = bool(
         learning_applicable and not learning_failed_conditions
     )
-    learning_cap_amount = money(market_adjusted_growth * learning_cap_ratio)
+    learning_cap_amount = money(raw_growth * learning_cap_ratio)
 
     if learning_applicable:
         hard_cap = learning_cap_amount if learning_eligible else ZERO
         constrained_growth = money(hard_cap * behavior_factor)
     else:
-        hard_cap = (
-            money(account_resource * Decimal(rules.waterfall.hard_constraint_growth_cap))
-            if failed_hard
-            else market_adjusted_growth
-        )
+        hard_cap = ZERO if failed_hard else market_adjusted_growth
         constrained_growth = money(min(market_adjusted_growth, hard_cap) * behavior_factor)
     safety_holdback = money(max(ZERO, market_adjusted_growth - constrained_growth))
     stable_recommended = money(
@@ -588,8 +674,8 @@ def build_waterfall(
     )
     growth_allocated = constrained_growth
     learning_ratio = (
-        safe_ratio(growth_allocated, market_adjusted_growth)
-        if learning_applicable and market_adjusted_growth > ZERO
+        safe_ratio(growth_allocated, raw_growth)
+        if learning_applicable and raw_growth > ZERO
         else None
     )
     learning_percent = (learning_ratio or ZERO) * Decimal("100")
@@ -600,7 +686,7 @@ def build_waterfall(
         recommended_ratio=learning_ratio,
         recommended_amount=growth_allocated if learning_applicable else ZERO,
         denominator_name="完成前置安排与市场留存后的多余长期资金",
-        denominator_value=market_adjusted_growth,
+        denominator_value=raw_growth,
         conditions=learning_conditions,
         failed_conditions=learning_failed_conditions,
         explanation=(
@@ -670,7 +756,7 @@ def build_waterfall(
             "完成前置安排与市场留存后的多余长期资金 × 10%学习仓上限 × 行为承受力系数"
         )
         growth_substitution = (
-            f"多余长期资金 {format_money(market_adjusted_growth)} × "
+                f"长期可规划资源 {format_money(raw_growth)} × "
             f"{learning_cap_ratio * Decimal('100'):.0f}% × {behavior_factor} = "
             f"{format_money(growth_allocated)}"
         )
@@ -701,13 +787,13 @@ def build_waterfall(
         )
     daily_min = money(
         max(
-            Decimal(rules.safety_months.daily_operating_min_amount),
+            methodology_rules.daily_liquidity.minimum_amount,
             daily_target * Decimal("0.75"),
         )
     )
     daily_max = money(
         min(
-            Decimal(rules.safety_months.daily_operating_max_amount),
+            methodology_rules.daily_liquidity.maximum_amount,
             daily_target * Decimal("1.25"),
         )
     )
@@ -715,6 +801,7 @@ def build_waterfall(
         AccountAllocation(
             bucket=AccountBucket.DAILY_LIQUIDITY,
             name="要花的钱",
+            methodology_domain="DAILY_LIQUIDITY",
             sequence=1,
             current_amount=current_daily,
             target_amount=daily_target,
@@ -725,19 +812,26 @@ def build_waterfall(
             annual_cost_amount=ZERO,
             coverage_gap_amount=ZERO,
             primary_denominator_name="可投资金融资产",
+            primary_denominator_id="investable_financial_assets",
             reference_band=None,
             current_measures=_measures(
-                current_daily, total_assets, investable_assets, annual_surplus
+                current_daily, total_assets, investable_assets, annual_surplus, raw_growth
             ),
             target_measures=_measures(
-                daily_target, total_assets, investable_assets, annual_surplus
+                daily_target, total_assets, investable_assets, annual_surplus, raw_growth
             ),
-            measures=_measures(daily_recommended, total_assets, investable_assets, annual_surplus),
-            formula="将月必要支出的四分之一作为起点，并限制在 3,000-20,000 元的个性化周转区间",
+            measures=_measures(
+                daily_recommended,
+                total_assets,
+                investable_assets,
+                annual_surplus,
+                raw_growth,
+            ),
+            formula="月必要支出 × 版本化日常周转月数，再应用规则上下界",
             substitution=(
                 f"{format_money(monthly_essential)} × {daily_months}，"
-                f"再应用 {format_money(Decimal(rules.safety_months.daily_operating_min_amount))} "
-                f"至 {format_money(Decimal(rules.safety_months.daily_operating_max_amount))} 的边界"
+                f"再应用 {format_money(methodology_rules.daily_liquidity.minimum_amount)} "
+                f"至 {format_money(methodology_rules.daily_liquidity.maximum_amount)} 的边界"
             ),
             rationale=(
                 "只承担近期消费和结算，不按家庭总资产固定 10%；"
@@ -750,6 +844,7 @@ def build_waterfall(
         AccountAllocation(
             bucket=AccountBucket.RISK_PROTECTION,
             name="保命的钱",
+            methodology_domain="RISK_PROTECTION",
             sequence=2,
             current_amount=annual_premium,
             target_amount=annual_premium,
@@ -759,19 +854,21 @@ def build_waterfall(
             gap_amount=ZERO,
             annual_cost_amount=annual_premium,
             coverage_gap_amount=effective_protection_gap,
-            primary_denominator_name="年度新增结余",
+            primary_denominator_name="可投资金融资产（仅用于结构解释）",
+            primary_denominator_id="investable_financial_assets",
             reference_band=None,
             current_measures=_measures(
-                annual_premium, total_assets, investable_assets, annual_surplus
+                annual_premium, total_assets, investable_assets, annual_surplus, raw_growth
             ),
             target_measures=_measures(
-                annual_premium, total_assets, investable_assets, annual_surplus
+                annual_premium, total_assets, investable_assets, annual_surplus, raw_growth
             ),
             measures=_measures(
                 protection_recommended,
                 total_assets,
                 investable_assets,
                 annual_surplus,
+                raw_growth,
             ),
             formula="已核验必要保障成本按年度保费列示；保障覆盖缺口独立列示",
             substitution=(
@@ -786,6 +883,7 @@ def build_waterfall(
         AccountAllocation(
             bucket=AccountBucket.STABLE_GOALS,
             name="保本的钱",
+            methodology_domain="STABILITY_AND_GOALS",
             sequence=3,
             current_amount=current_stable,
             target_amount=stable_account_target,
@@ -802,6 +900,7 @@ def build_waterfall(
             annual_cost_amount=ZERO,
             coverage_gap_amount=ZERO,
             primary_denominator_name="可投资金融资产",
+            primary_denominator_id="investable_financial_assets",
             reference_band=ReferenceBand(
                 denominator_id=rules.waterfall.stable_reference_denominator,
                 denominator_name="可投资金融资产",
@@ -825,16 +924,21 @@ def build_waterfall(
                 ),
             ),
             current_measures=_measures(
-                current_stable, total_assets, investable_assets, annual_surplus
+                current_stable, total_assets, investable_assets, annual_surplus, raw_growth
             ),
             target_measures=_measures(
-                stable_account_target, total_assets, investable_assets, annual_surplus
+                stable_account_target,
+                total_assets,
+                investable_assets,
+                annual_surplus,
+                raw_growth,
             ),
             measures=_measures(
                 stable_recommended,
                 total_assets,
                 investable_assets,
                 annual_surplus,
+                raw_growth,
             ),
             formula=(
                 "应急储备 + 一年内确定支出 + 五年内刚性目标 + "
@@ -848,8 +952,8 @@ def build_waterfall(
             rationale=(
                 f"当前{market_profile.label}市场口径以可投资金融资产的"
                 f"{Decimal(market_profile.stable_target_ratio) * 100:.1f}%作为战术锚；"
-                "家庭目标和安全约束可覆盖该锚。账户名称表达本金安全与流动性目标，"
-                "不代表银行理财、基金、保险等产品一律保证本金。"
+                "家庭目标和安全约束可覆盖该锚。"
+                "\"保本的钱\"是家庭资金用途名称，不代表账户内所有产品保证本金。"
             ),
             constraint_ids=["debt", "horizon", "suitability", "behavior"],
             source_record_ids=stable_ids + [goal.goal_id for goal in stable_goals],
@@ -858,6 +962,7 @@ def build_waterfall(
         AccountAllocation(
             bucket=AccountBucket.LONG_TERM_GROWTH,
             name="生钱的钱",
+            methodology_domain="LONG_TERM_GROWTH",
             sequence=4,
             current_amount=current_growth,
             target_amount=growth_target_amount,
@@ -868,17 +973,25 @@ def build_waterfall(
             annual_cost_amount=ZERO,
             coverage_gap_amount=ZERO,
             primary_denominator_name="完成前置安排后的长期可规划资源",
+            primary_denominator_id="residual_long_term_plannable_capital",
             reference_band=None,
             current_measures=_measures(
-                current_growth, total_assets, investable_assets, annual_surplus
+                current_growth, total_assets, investable_assets, annual_surplus, raw_growth
             ),
             target_measures=_measures(
                 growth_target_amount,
                 total_assets,
                 investable_assets,
                 annual_surplus,
+                raw_growth,
             ),
-            measures=_measures(growth_allocated, total_assets, investable_assets, annual_surplus),
+            measures=_measures(
+                growth_allocated,
+                total_assets,
+                investable_assets,
+                annual_surplus,
+                raw_growth,
+            ),
             formula=growth_formula,
             substitution=growth_substitution,
             rationale=growth_rationale,
@@ -888,7 +1001,8 @@ def build_waterfall(
         ),
     ]
 
-    growth_ratio = safe_ratio(growth_allocated, raw_growth)
+    formal_growth_amount = ZERO if learning_applicable else growth_allocated
+    growth_ratio = safe_ratio(formal_growth_amount, raw_growth)
     threshold = Decimal(rules.waterfall.growth_70_threshold)
     eligibility_conditions = [
         "可规划金融净值达到客户确认的 30万-100万元启动门槛",
@@ -931,26 +1045,21 @@ def build_waterfall(
         threshold=threshold,
         actual_ratio=growth_ratio,
         denominator_name="完成日用、保障、近期目标和优先债务安排后的长期可规划资源",
+        denominator_id="residual_long_term_plannable_capital",
         denominator_value=raw_growth,
+        formal_growth_amount=formal_growth_amount,
         conditions=eligibility_conditions,
         failed_conditions=failed_conditions,
         explanation=growth_explanation,
     )
 
-    purchasing_power = financial.purchasing_power
-    benchmark_components = {
-        "官方CPI观察值": purchasing_power.official_cpi.rate,
-        "家庭支出加权变化": purchasing_power.family_weighted_inflation.rate,
-        "最低工资增长辅助信号": purchasing_power.minimum_wage_catch_up.rate,
-    }
+    pph = methodology.purchasing_power_hurdle
+    benchmark_components = {item.label: item.rate for item in pph.components}
     growth_benchmark = GrowthBenchmark(
-        benchmark_rate=max(benchmark_components.values()),
+        benchmark_rate=pph.rate,
         components=benchmark_components,
-        formula="max(官方CPI观察值, 家庭支出加权变化, 最低工资增长辅助信号)",
-        explanation=(
-            "该值用于观察长期购买力压力，不是产品收益承诺。最低工资增长反映本土收入底线变化，"
-            "与CPI的统计含义不同。"
-        ),
+        formula=pph.formula,
+        explanation=pph.explanation,
     )
 
     actions: list[ActionDraft] = []
@@ -1076,6 +1185,26 @@ def build_waterfall(
             AccountBucket.LONG_TERM_GROWTH,
             growth_ids,
         )
+    current_allocation_plan = CurrentAllocationPlan(
+        current_investable_balance=investable_assets,
+        debt_settlement_from_current_balance=money(debt_reduction + debt_allocated),
+        current_balance_available_after_debt=money(
+            max(ZERO, investable_assets - debt_reduction - debt_allocated)
+        ),
+        explanation=(
+            "这是今天已存在的可投资金融资产；未来工资和年度结余不会加入该余额。"
+        ),
+    )
+    contribution_plan = ContributionPlan(
+        annual_new_surplus=annual_surplus,
+        recorded_premium_reclassification=annual_premium,
+        same_period_commitments=certain_cashflow,
+        future_contribution_available=future_contribution_available,
+        explanation=(
+            "这是未来现金流贡献计划，不是今天可立即配置的资产存量；"
+            "已记录保费仅用于流量口径解释，不与存量重复计数。"
+        ),
+    )
     return (
         denominators,
         steps,
@@ -1085,4 +1214,7 @@ def build_waterfall(
         growth_70,
         growth_benchmark,
         actions,
+        asset_liquidity,
+        current_allocation_plan,
+        contribution_plan,
     )

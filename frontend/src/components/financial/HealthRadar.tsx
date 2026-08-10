@@ -26,7 +26,7 @@ export function HealthRadar({ dimensions, dataAsOf = "当前数据日", ruleVers
     series: [{
       name: "财务健康维度",
       type: "radar",
-      data: [{ value: dimensions.map((dimension) => Number(dimension.score)), name: "当前家庭" }],
+      data: [{ value: dimensions.map((dimension) => dimension.available ? Number(dimension.score) : 0), name: "当前家庭" }],
       lineStyle: { color: chartTheme.brand, width: 2 },
       itemStyle: { color: chartTheme.action },
       areaStyle: { color: chartTheme.brandWash },
@@ -35,18 +35,18 @@ export function HealthRadar({ dimensions, dataAsOf = "当前数据日", ruleVers
   return (
     <ChartFrame
       className="health-radar"
-      title="家庭财务健康雷达"
-      description="后端确定性指标归一化后的辅助展示，不属于监管评级或投资评级。"
+      title="十维家庭财务健康"
+      description="CHFI 十个诊断维度的辅助展示；缺少观测的维度显示为待补充，不属于监管评级或征信评分。"
       unit="0-100 分"
       timeRange={`截至 ${dataAsOf}`}
-      methodology="流动性、偿债、储蓄、保障、分散、养老与目标维度归一化"
+      methodology="十维指标归一化；综合分采用可用维度等权几何平均"
       updatedAt={dataAsOf}
       source={`财务健康规则 ${ruleVersion}`}
       insight="雷达图只帮助定位薄弱维度；最终行动应回到原始指标、适用条件和家庭目标。"
       option={option}
       state={dimensions.length < 3 ? "empty" : "ready"}
       columns={[{ key: "dimension", label: "维度" }, { key: "score", label: "得分", numeric: true }, { key: "explanation", label: "解释" }]}
-      rows={dimensions.map((dimension) => ({ dimension: dimension.name, score: Number(dimension.score).toFixed(0), explanation: dimension.explanation }))}
+      rows={dimensions.map((dimension) => ({ dimension: dimension.name, score: dimension.available ? Number(dimension.score).toFixed(0) : "待补", explanation: dimension.explanation }))}
       legend={[{ label: "当前家庭", color: chartTheme.brand }]}
     />
   );

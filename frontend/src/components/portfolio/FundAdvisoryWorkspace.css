@@ -449,7 +449,7 @@
 @media (max-width: 48rem) {
   .fund-advisory-workspace {
     gap: var(--space-5);
-    margin-inline: calc(var(--space-4) * -1);
+    margin-inline: 0;
     border-right: 0;
     border-left: 0;
     border-radius: 0;

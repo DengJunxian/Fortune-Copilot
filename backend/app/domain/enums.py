@@ -17,6 +17,25 @@ class AccountBucket(StrEnum):
     LONG_TERM_GROWTH = "long_term_growth"
 
 
+class AssetPurposeDimension(StrEnum):
+    DAILY = "daily"
+    PROTECTION = "protection"
+    STABLE = "stable"
+    GROWTH = "growth"
+
+
+class AccountWrapper(StrEnum):
+    ORDINARY = "ordinary"
+    DEMAND_ACCOUNT = "demand_account"
+    PERSONAL_PENSION = "personal_pension"
+    SOCIAL_SECURITY = "social_security"
+    ENTERPRISE_ANNUITY = "enterprise_annuity"
+    OCCUPATIONAL_ANNUITY = "occupational_annuity"
+    PROVIDENT_FUND = "provident_fund"
+    INSURANCE = "insurance"
+    OTHER = "other"
+
+
 class AssetCategory(StrEnum):
     CASH = "cash"
     DEMAND_DEPOSIT = "demand_deposit"
@@ -86,6 +105,8 @@ class SuitabilityGateType(StrEnum):
     FAMILY_SAFETY = "family_safety"
     CUSTOMER = "customer"
     PRODUCT = "product"
+    CHANNEL = "channel"
+    TRANSACTION_TIME = "transaction_time"
 
 
 class SuitabilityStatus(StrEnum):
@@ -99,6 +120,7 @@ class SuitabilityDecision(StrEnum):
     DOWNGRADE = "downgrade"
     REJECT = "reject"
     EDUCATION_ONLY = "education_only"
+    ESCALATE = "escalate"
 
 
 class MarketScenario(StrEnum):

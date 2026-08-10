@@ -34,7 +34,7 @@ FINANCIAL_RULES_PATH = "../data/rules/financial_health_v1.json"
 PLANNING_RULES_PATH = "../data/rules/planning_waterfall_v1.json"
 PORTFOLIO_RULES_PATH = "../data/rules/portfolio_policy_v1.json"
 PRODUCT_CATALOG_PATH = "../data/products/mock_products_v1.json"
-EXPECTED_PATH = Path("../data/expected/demo_b_portfolio_v1.json")
+EXPECTED_PATH = Path("../data/expected/demo_b_portfolio_v4.json")
 
 
 async def api_request(
@@ -132,6 +132,7 @@ def test_demo_b_matches_independent_portfolio_standard_answer() -> None:
     assert result.meta.rule_version == expected["rule_version"]
     assert result.meta.optimizer_version == expected["optimizer_version"]
     assert result.meta.catalog_version == expected["catalog_version"]
+    assert result.meta.methodology_version == expected["methodology_version"]
     for field, value in expected["context"].items():
         actual = getattr(result.context, field)
         assert str(actual) == str(value)
@@ -185,7 +186,14 @@ def test_three_households_receive_distinct_contexts_with_capital_gate() -> None:
                     "deterministic_grid_search",
                     "rule_based_fallback",
                 }
-                assert len(candidate.gates) == 3
+                assert len(candidate.gates) == 5
+                assert {item.gate.value for item in candidate.gates} == {
+                    "family_safety",
+                    "customer",
+                    "product",
+                    "channel",
+                    "transaction_time",
+                }
                 assert all(mapping.is_mock for mapping in candidate.product_mappings)
     assert results["DEMO_B"].context.eligible_long_term_amount == Decimal("0.00")
     assert all(item.decision.value == "education_only" for item in results["DEMO_B"].candidates)
@@ -199,9 +207,11 @@ def test_three_households_receive_distinct_contexts_with_capital_gate() -> None:
         for code, result in results.items()
     }
     assert len(set(context_signatures.values())) == 3
-    assert results["DEMO_A"].context.eligible_long_term_amount == Decimal("8568.75")
+    assert results["DEMO_A"].context.eligible_long_term_amount == Decimal("4818.75")
     assert all(item.decision.value == "education_only" for item in results["DEMO_A"].candidates)
-    assert results["DEMO_C"].context.eligible_long_term_amount > Decimal("0.00")
+    assert results["DEMO_C"].context.current_growth_assets > Decimal("0.00")
+    assert results["DEMO_C"].context.eligible_long_term_amount == Decimal("0.00")
+    assert results["DEMO_C"].family_safety_gate.status.value == "block"
 
 
 def test_solver_failure_uses_versioned_rule_fallback() -> None:
@@ -304,8 +314,8 @@ def test_safe_household_can_pass_gates_without_bypassing_product_suitability() -
     assert result.family_safety_gate.status.value == "pass"
     assert result.context.eligible_long_term_amount > 0
     conservative, balanced, growth = result.candidates
-    assert conservative.decision.value == "allow"
-    assert balanced.decision.value == "allow"
+    assert conservative.decision.value == "escalate"
+    assert balanced.decision.value == "escalate"
     assert growth.decision.value == "downgrade"
     assert all(item.decision.value == "allow" for item in conservative.product_mappings)
     assert all(item.decision.value == "allow" for item in balanced.product_mappings)
@@ -325,7 +335,7 @@ def test_safe_household_can_pass_gates_without_bypassing_product_suitability() -
     )
 
 
-def test_portfolio_api_exports_and_persists_three_candidates_with_nine_gates() -> None:
+def test_portfolio_api_exports_and_persists_three_candidates_with_five_stage_gates() -> None:
     household_id = seed_households()["DEMO_A"]
     query = "?analysis_date=2026-08-04&market_scenario=risk_on"
     response = call("GET", f"/api/v1/households/{household_id}/portfolio{query}")
@@ -350,10 +360,10 @@ def test_portfolio_api_exports_and_persists_three_candidates_with_nine_gates() -
     persisted = call("POST", f"/api/v1/households/{household_id}/portfolio/runs{query}")
     assert persisted.status_code == 201, persisted.text
     assert persisted.json()["candidate_count"] == 3
-    assert persisted.json()["suitability_check_count"] == 9
+    assert persisted.json()["suitability_check_count"] == 15
     with SessionLocal() as session:
         assert session.scalar(select(func.count()).select_from(PortfolioPlan)) == 3
-        assert session.scalar(select(func.count()).select_from(SuitabilityCheck)) == 9
+        assert session.scalar(select(func.count()).select_from(SuitabilityCheck)) == 15
         assert session.scalar(select(func.count()).select_from(Recommendation)) == 1
 
 

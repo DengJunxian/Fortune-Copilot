@@ -27,6 +27,7 @@ const decisionCopy: Record<SuitabilityDecision, string> = {
   downgrade: "已降级",
   reject: "拒绝执行",
   education_only: "仅教育展示",
+  escalate: "转人工复核",
 };
 
 const scenarioCopy: Record<MarketScenario, string> = {
@@ -92,7 +93,7 @@ export function PortfolioWorkspace({ householdId, view = "client" }: { household
     return (
       <section className="portfolio-workspace portfolio-loading" aria-live="polite">
         <p className="section-index">组合与适当性</p>
-        <h2>正在运行三道闸门和确定性组合求解</h2>
+        <h2>正在运行五道闸门和确定性组合求解</h2>
         <p>先确认长期资金，再比较回撤、目标缺口、流动性、费用和分散度。</p>
       </section>
     );
@@ -112,7 +113,7 @@ export function PortfolioWorkspace({ householdId, view = "client" }: { household
     <section className="portfolio-workspace" data-view={view} aria-labelledby={`portfolio-heading-${view}`}>
       <header className="portfolio-header">
         <div>
-          <p className="section-index">组合优化 · 三道闸门</p>
+          <p className="section-index">组合优化 · 五道闸门</p>
           <h2 id={`portfolio-heading-${view}`}>{view === "risk" ? "适当性证据与拒绝链" : view === "advisor" ? "三方案顾问复核台" : "长期资金的三种走法"}</h2>
           <p>{portfolio.counting_note}</p>
         </div>
@@ -127,6 +128,8 @@ export function PortfolioWorkspace({ householdId, view = "client" }: { household
         <ContextValue label="当前增长资产" value={formatMoney(portfolio.context.current_growth_assets)} />
         <ContextValue label="应补回安全层" value={formatMoney(portfolio.context.amount_to_restore_safety_layers)} />
         <ContextValue label="客户审慎上限" value={(portfolio.customer_suitability_gate.effective_risk_limit ?? "r1").toUpperCase()} />
+        <ContextValue label="购买力门槛 PPH" value={formatRatio(portfolio.context.purchasing_power_hurdle)} />
+        <ContextValue label="单只股票卫星暴露" value={formatMoney(portfolio.context.single_equity_amount)} />
         <ContextValue label="模拟产品目录" value={`${portfolio.catalog.product_count} 类 · Mock`} />
         <label className="portfolio-scenario-control">
           <span>有限战术情景</span>
@@ -142,6 +145,7 @@ export function PortfolioWorkspace({ householdId, view = "client" }: { household
           <p>三套比例只用于教育比较；先按四账户顺序补足应急、债务、保障和近期目标，系统不会为了展示组合而绕过安全闸门。</p>
         </aside>
       ) : null}
+      {portfolio.catalog.catalog_stale ? <aside className="portfolio-block-note" role="alert"><strong>产品快照已过期</strong><p>当前只保留教育展示，不产生可执行购买建议。</p></aside> : null}
 
       <CandidateComparison candidates={portfolio.candidates} selectedType={selectedType} onSelect={setSelectedType} />
 
@@ -221,10 +225,13 @@ function CandidateComparison({ candidates, selectedType, onSelect }: { candidate
           <tbody>
             <ComparisonRow label="可执行金额" candidates={candidates} render={(item) => formatMoney(item.investment_amount)} />
             <ComparisonRow label="目标情景成功率" candidates={candidates} render={(item) => formatRatio(item.goal_success_probability)} />
+            <ComparisonRow label="刚性责任违约概率" candidates={candidates} render={(item) => formatRatio(item.responsibility_breach_probability)} />
+            <ComparisonRow label="购买力成功概率" candidates={candidates} render={(item) => formatRatio(item.purchasing_power_success_probability)} />
             <ComparisonRow label="情景区间" candidates={candidates} render={(item) => `${formatMoney(item.simulated_range_low, true)}—${formatMoney(item.simulated_range_high, true)}`} />
             <ComparisonRow label="极端损失估计" candidates={candidates} render={(item) => `${formatMoney(item.extreme_loss_amount, true)} / ${formatRatio(item.extreme_loss_ratio)}`} />
             <ComparisonRow label="最大回撤估计" candidates={candidates} render={(item) => formatRatio(item.max_drawdown_estimate)} />
             <ComparisonRow label="流动性 / 年费" candidates={candidates} render={(item) => `${item.liquidity_description} / ${formatMoney(item.annual_fee_estimate, true)}`} />
+            <ComparisonRow label="费后实际回报" candidates={candidates} render={(item) => formatRatio(item.real_return_after_fee)} />
             <ComparisonRow label="求解状态" candidates={candidates} render={(item) => item.optimization.method === "deterministic_grid_search" ? `网格最优 · ${item.optimization.evaluated_candidates} 个` : "规则降级"} />
           </tbody>
         </table>

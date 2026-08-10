@@ -24,24 +24,32 @@ const workflow = [
 const fourAccounts = [
   {
     name: "要花的钱",
-    range: "照顾日常支付",
-    detail: "用于衣食住行和短期周转，一般从数千元起，按家庭消费习惯调整。信用卡只作支付工具，额度不计入资产。",
+    range: "数千元日常周转",
+    detail: "只放信用卡结算和货币基金等随取资金，按家庭消费习惯调整。应急金可放到保本账户的稳健、便捷取用工具中，信用卡额度不计入资产。",
   },
   {
     name: "保命的钱",
-    range: "先补家庭保障",
-    detail: "用于医疗、重疾、意外和车险等风险保障。先看家庭责任和保障缺口，保险与投资分开安排。",
+    range: "年度数千元保障",
+    detail: "用于医疗、重疾、意外和车险等风险转移。保险只消费、不投资；多数普通家庭从可持续的年度数千元预算开始，具体金额按全家责任和缺口测算。",
   },
   {
     name: "保本的钱",
-    range: "留给中期目标",
-    detail: "用于应急储备、还款缓冲、养老金、教育金和五年内支出。这里强调资金用途稳健，不代表所有理财、基金或保险都保证本金。",
+    range: "可投资金融资产 5%—30%",
+    detail: "用于应急、大额支出、养老金、教育金和债券等稳健安排；行情较好时取较低区间，较弱时提高。个人养老金年度1.2万元额度也可归入这里，但底层产品仍需核对风险和流动性。",
   },
   {
     name: "生钱的钱",
-    range: "只用长期不用的钱",
-    detail: "先完成生活、保障和近期目标，再判断长期资金。未到正式起点时，符合条件的家庭可用不超过多余长期资金10%的小仓位学习宽基指数基金。",
+    range: "合格长期资金 70% 以上",
+    detail: "只在净金融资金达到地区启动线且安全条件通过后，才以剩余长期资金为分母规划70%以上；优先宽基指数和分散工具，多数人不默认做个股、期指或新增房产投资。",
   },
+];
+
+const methodologySpine = [
+  { code: "CHFH", title: "家庭财务健康", detail: "以家庭而非单个投资者为决策单位，先看现金流、责任、保障和目标。" },
+  { code: "GRB", title: "目标、风险、行为", detail: "目标期限、客观风险能力和真实行为共同决定资金边界。" },
+  { code: "四账户", title: "按用途分配", detail: "要花、保命、保本、生钱依次通过前置条件，不套固定象限比例。" },
+  { code: "CHFI", title: "十维健康诊断", detail: "几何平均惩罚明显短板，强项不能抵消现金流或保障风险。" },
+  { code: "HFDT", title: "家庭压力推演", detail: "用失业、医疗支出和市场下跌等情景检验家庭韧性。" },
 ];
 
 const cases = [
@@ -126,6 +134,24 @@ export function HomePage() {
         <div><strong>八章规划书</strong><span>从基础情况到行动建议结构统一</span></div>
       </section>
 
+      <section className="home-section home-methodology" aria-labelledby="methodology-heading">
+        <header className="home-section-heading">
+          <span>一条完整决策主线</span>
+          <h2 id="methodology-heading">先看家庭状态，再看产品</h2>
+          <p>系统把研究框架压缩成五个连续环节。所有金额由确定性工具计算，人工智能负责理解、追问和解释。</p>
+        </header>
+        <ol className="home-method-spine">
+          {methodologySpine.map((item, index) => (
+            <li key={item.code}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <strong>{item.code}</strong>
+              <div><h3>{item.title}</h3><p>{item.detail}</p></div>
+            </li>
+          ))}
+        </ol>
+        <p className="home-method-boundary">CHFI 只用于家庭诊断，不用于征信或贷款定价。HFDT 是压力测试，不是市场预测。任何具体产品仍需通过正式风险测评、适当性和交易时点检查。</p>
+      </section>
+
       <section className="home-section home-workflow" aria-labelledby="workflow-heading">
         <header className="home-section-heading">
           <span>规划流程</span>
@@ -164,9 +190,10 @@ export function HomePage() {
         </div>
         <aside className="home-account-threshold">
           <strong>什么时候开始长期投资？</strong>
-          <p>达到自己选择的30万至100万元起点后，再评估正式长期配置。还没达到时，如果家庭有稳定结余、没有待处理的高息债务，并且仍有长期不用的资金，可以先用其中不超过10%的小仓位学习。</p>
+          <p>现金类和合格金融资产扣除全部贷款与信用卡未付后，达到自己选择的30万至100万元起点，才评估正式长期配置。还没达到时，中青年家庭如有稳定结余、没有待处理高息债务，可用多余长期资金中不超过10%的小仓位学习宽基指数基金。</p>
           <AppLink to="/planning">测算我的启动线 <ArrowRightIcon size={17} aria-hidden="true" /></AppLink>
         </aside>
+        <p className="home-growth-hurdle">长期增值以本金安全和购买力增长为目标，目标增幅至少高于地区最低工资的长期涨幅；该信号不是 CPI，也不是任何产品的收益保证。</p>
       </section>
 
       <section className="home-section ratio-intro" aria-labelledby="ratio-intro-heading">

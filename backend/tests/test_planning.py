@@ -18,6 +18,7 @@ from app.models.finance import FinancialGoal
 from app.models.governance import ActionItem, AuditEvent, Recommendation, RuleVersion
 from app.schemas.planning import CounterfactualRequest
 from app.services.financial.facts import load_household_facts
+from app.services.methodology.rules import load_methodology_rules
 from app.services.planning.engine import (
     compare_counterfactual,
     empty_counterfactual,
@@ -30,7 +31,8 @@ from app.services.seed import seed_synthetic_data
 DATASET_PATH = "../data/synthetic/families.json"
 FINANCIAL_RULES_PATH = "../data/rules/financial_health_v1.json"
 PLANNING_RULES_PATH = "../data/rules/planning_waterfall_v1.json"
-EXPECTED_PATH = Path("../data/expected/demo_b_planning_v1.json")
+EXPECTED_PATH = Path("../data/expected/demo_b_planning_v4.json")
+METHODOLOGY_RULES_PATH = "../data/rules/wealth_methodology_v3.json"
 ANALYSIS_DATE = date(2026, 8, 4)
 
 
@@ -75,6 +77,7 @@ def test_demo_b_matches_versioned_goal_and_account_standard_answer() -> None:
 
     assert plan.meta.formula_version == expected["formula_version"]
     assert plan.meta.rule_version == expected["rule_version"]
+    assert plan.meta.methodology_version == expected["methodology_version"]
     assert plan.lifecycle.detected_stage.value == expected["lifecycle"]["detected_stage"]
     assert plan.lifecycle.effective_stage.value == expected["lifecycle"]["effective_stage"]
     assert plan.lifecycle.dynamic_safety_months == Decimal(
@@ -90,11 +93,11 @@ def test_demo_b_matches_versioned_goal_and_account_standard_answer() -> None:
     for bucket, values in expected["accounts"].items():
         for field, value in values.items():
             assert getattr(accounts[bucket], field) == Decimal(value), (bucket, field)
-        assert {item.denominator_id for item in accounts[bucket].measures} == {
-            "total_assets",
+        assert {
+            "total_household_assets",
             "investable_financial_assets",
-            "annual_new_surplus",
-        }
+            "residual_long_term_plannable_capital",
+        } <= {item.denominator_id for item in accounts[bucket].measures}
     goals = {item.name: item for item in plan.goals}
     for goal_name, values in expected["goals"].items():
         for field, value in values.items():
@@ -139,12 +142,12 @@ def test_below_formal_threshold_can_use_at_most_ten_percent_learning_allocation(
     assert learning.applicable is True
     assert learning.eligible is True
     assert learning.cap_ratio == Decimal("0.100000")
-    assert learning.denominator_value == Decimal("114250.00")
+    assert learning.denominator_value == Decimal("64250.00")
     assert learning.recommended_ratio == Decimal("0.075000")
-    assert learning.recommended_amount == Decimal("8568.75")
+    assert learning.recommended_amount == Decimal("4818.75")
     assert learning.recommended_amount <= learning.denominator_value * learning.cap_ratio
     assert growth.recommended_amount == learning.recommended_amount
-    assert growth.recommended_range_max == Decimal("11425.00")
+    assert growth.recommended_range_max == Decimal("6425.00")
     assert plan.growth_70.eligible is False
     assert "学习仓" in plan.growth_70.explanation
     assert "不得套用于家庭总资产" in plan.growth_70.explanation
@@ -163,12 +166,14 @@ def test_market_regime_moves_only_eligible_long_term_resources() -> None:
         ),
     )
     rules = load_planning_rules(PLANNING_RULES_PATH)
+    methodology_rules = load_methodology_rules(METHODOLOGY_RULES_PATH)
     base = plan_facts(
         facts,
         FINANCIAL_RULES_PATH,
         rules,
         ANALYSIS_DATE,
         empty_counterfactual(),
+        methodology_rules,
     )
     adjustments = empty_counterfactual().model_copy(
         update={"protection_gap_reduction": base.accounts[1].coverage_gap_amount}
@@ -176,15 +181,16 @@ def test_market_regime_moves_only_eligible_long_term_resources() -> None:
 
     results: dict[str, tuple[Decimal, Decimal]] = {}
     for regime in ("favorable", "neutral", "defensive"):
-        market_environment = rules.market_environment.model_copy(
-            update={"active_regime": regime}
+        snapshot = methodology_rules.market_regime_snapshot.model_copy(
+            update={"regime": regime, "snapshot_version": f"test-{regime}"}
         )
         scenario = plan_facts(
             facts,
             FINANCIAL_RULES_PATH,
-            rules.model_copy(update={"market_environment": market_environment}),
+            rules,
             ANALYSIS_DATE,
             adjustments,
+            methodology_rules.model_copy(update={"market_regime_snapshot": snapshot}),
         )
         accounts = {item.bucket.value: item for item in scenario.accounts}
         results[regime] = (
@@ -255,12 +261,23 @@ def test_twelve_month_cashflow_is_committed_once_and_never_double_counted() -> N
     short_step = next(
         item for item in plan.waterfall_steps if item.step_code == "twelve_month_commitments"
     )
-    allocated_accounts = sum((item.recommended_amount for item in plan.accounts), Decimal("0"))
+    current_stock_allocations = sum(
+        (
+            item.recommended_amount
+            for item in plan.accounts
+            if item.bucket.value != "risk_protection"
+        ),
+        Decimal("0"),
+    )
 
     assert commitment > Decimal("0.00")
     assert short_step.required_amount == short_step.allocated_amount
     assert short_step.status == "cashflow_covered"
-    assert allocated_accounts + commitment == Decimal("151800.00")
+    assert current_stock_allocations == plan.current_allocation_plan.current_investable_balance
+    assert plan.denominators.available_planning_resources == Decimal("90000.00")
+    assert plan.contribution_plan.future_contribution_available == (
+        plan.contribution_plan.annual_new_surplus - commitment
+    )
 
 
 def test_safety_gates_block_all_new_resources_from_growth_and_ignore_credit_limit() -> None:
@@ -279,7 +296,13 @@ def test_safety_gates_block_all_new_resources_from_growth_and_ignore_credit_limi
         for item in plan.constraints
     )
     assert plan.denominators.net_financial_assets_after_debt == Decimal("-888000.00")
-    assert plan.denominators.growth_entry_threshold == Decimal("500000.00")
+    assert plan.methodology.regional_threshold.customer_selected_threshold == Decimal(
+        "500000.00"
+    )
+    assert plan.denominators.growth_entry_threshold == Decimal("560000.00")
+    assert plan.denominators.growth_entry_threshold == (
+        plan.methodology.regional_threshold.effective_threshold
+    )
     assert "未使用额度不计入资产" in plan.accounts[0].product_education[0]
 
 
@@ -349,6 +372,14 @@ def test_client_goal_entry_planning_counterfactual_export_and_persistence_api() 
     assert any(item["name"] == "家庭进修计划" for item in payload["goals"])
     assert len(payload["accounts"]) == 4
 
+    pension = call(
+        "GET",
+        f"/api/v1/households/{household_id}/personal-pension{query}",
+    )
+    assert pension.status_code == 200, pension.text
+    assert pension.json()["policy"]["annual_contribution_limit"] == "12000.00"
+    assert pension.json()["product_risk_allocation"][0]["lock_up"] is True
+
     counterfactual = call(
         "POST",
         f"/api/v1/households/{household_id}/planning/counterfactual",
@@ -374,7 +405,7 @@ def test_client_goal_entry_planning_counterfactual_export_and_persistence_api() 
         assert session.scalar(select(func.count()).select_from(Recommendation)) == 1
         assert session.scalar(select(func.count()).select_from(AccountBucketPlan)) == 4
         assert session.scalar(select(func.count()).select_from(ActionItem)) >= 1
-        assert session.scalar(select(func.count()).select_from(RuleVersion)) == 2
+        assert session.scalar(select(func.count()).select_from(RuleVersion)) == 3
         event_count = session.scalar(
             select(func.count())
             .select_from(AuditEvent)

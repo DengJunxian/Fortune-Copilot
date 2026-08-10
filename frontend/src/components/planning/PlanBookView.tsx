@@ -447,15 +447,13 @@ function ChapterSeven({
   householdId: string;
   showFundAdvisory?: boolean;
 }) {
-  const netFinancialAssets = asNumber(planning.denominators.net_financial_assets_after_debt);
+  const netFinancialAssets = asNumber(planning.denominators.plannable_financial_net_worth);
   const threshold = asNumber(planning.denominators.growth_entry_threshold);
   const thresholdProgress = threshold > 0 ? Math.max(0, Math.min(100, (netFinancialAssets / threshold) * 100)) : 0;
   const capitalReady = netFinancialAssets >= threshold;
   const learning = planning.investment_learning;
   const accountMax = Math.max(...planning.accounts.map((account) => asNumber(account.recommended_amount)), 1);
-  const personalPensionNote = kyc.personal_pension_status === "opened"
-    ? "已开立个人养老金账户，可结合当年缴费和税收安排纳入保本的钱，具体产品仍需逐项评估。"
-    : "可了解个人养老金制度及每年1.2万元税前扣除额度；是否参与应结合纳税情况、期限和产品风险决定。";
+  const personalPensionNote = planning.methodology.personal_pension.explanation;
   return (
     <div className="chapter-content account-plan-chapter">
       <section className="investor-guidance" aria-label="给投资者的说明">
@@ -483,7 +481,7 @@ function ChapterSeven({
           <strong>{formatMoney(String(netFinancialAssets))} <small>/ {formatMoney(String(threshold))}</small></strong>
         </header>
         <div className="growth-entry-track"><span style={{ width: `${thresholdProgress}%` }} /></div>
-        <p>这里的金融净值由可投资金融资产扣除全部负债得到。信用卡额度不计入资产；长期配置起点由您在30万至100万元之间选择。</p>
+        <p>这里的 PFNW 由合格可投资金融资产扣除纳入规划的负债得到。系统建议 {formatMoney(planning.methodology.regional_threshold.recommended_minimum)} 至 {formatMoney(planning.methodology.regional_threshold.recommended_maximum)}；您选择 {formatMoney(planning.methodology.regional_threshold.customer_selected_threshold)}；最终有效值 {formatMoney(planning.methodology.regional_threshold.effective_threshold)}。</p>
       </section>
 
       {learning.applicable ? (
@@ -534,7 +532,7 @@ function ChapterSeven({
         </section>
         <section>
           <span>长期资金需要关注的购买力</span>
-          <h3>{formatRatio(planning.growth_benchmark.benchmark_rate)}</h3>
+          <h3>{formatRatio(planning.methodology.purchasing_power_hurdle.rate)}</h3>
           <p>长期投资需要关注家庭目标成本是否持续上涨，不能只看账户是否盈利。</p>
           <small>最低工资变化只作辅助观察，不等同于居民消费价格指数（CPI），也不构成收益保证。</small>
         </section>
@@ -549,7 +547,7 @@ function ChapterSeven({
         </ol>
       </section>
 
-      <aside className="personal-pension-note"><strong>个人养老金</strong><p>{personalPensionNote}</p></aside>
+      <aside className="personal-pension-note"><strong>个人养老金 · 制度账户</strong><p>{personalPensionNote}</p><small>客户登记 {kyc.personal_pension_status} · 年度政策限额 {formatMoney(planning.methodology.personal_pension.contribution_limit)} · 账户余额 {formatMoney(planning.methodology.personal_pension.account_balance)} · 锁定资金不计入应急流动性</small></aside>
       {showFundAdvisory ? <FundAdvisoryWorkspace householdId={householdId} /> : null}
       <aside className="chapter-note">普通家庭不默认配置个股、杠杆或股指期货，也不默认新增投资性房产。选择具体产品前，还需要核对风险等级、持有期限、费用和赎回条件。</aside>
       <section className="review-trigger-panel"><h3>需要重新评估的情况</h3><ul>{narrative.review_triggers.map((trigger) => <li key={trigger}>{trigger}</li>)}</ul></section>

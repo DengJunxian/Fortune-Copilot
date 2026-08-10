@@ -24,12 +24,22 @@ class AssetAssumption(BaseModel):
     max_drawdown: Ratio
     liquidity_score: Ratio
     annual_fee_rate: Ratio
+    source: str
+    effective_date: date
+    confidence: Ratio
+    approved_by: str
+    calibration_period: str
 
 
 class DeterministicScenario(BaseModel):
     code: str
     probability: Ratio
     returns: dict[str, Decimal]
+    source: str
+    effective_date: date
+    confidence: Ratio
+    approved_by: str
+    calibration_period: str
 
 
 class ObjectiveWeights(BaseModel):
@@ -86,7 +96,8 @@ class PortfolioRules(BaseModel):
     objective_weights: ObjectiveWeights
     grid_step: Ratio
     minimum_liquidity_score: Ratio
-    default_inflation_rate: Ratio
+    default_purchasing_power_hurdle: Ratio
+    default_inflation_rate: Ratio | None = None
     candidate_policies: dict[str, CandidatePolicy]
     suitability: SuitabilityRules
     rebalancing: RebalancingRules

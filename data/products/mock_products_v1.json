@@ -4,6 +4,16 @@
   "data_date": "2026-08-04",
   "source": "Fortune Copilot internal synthetic product taxonomy",
   "source_summary": "竞赛用途的受控模拟产品类型库，不代表中国工商银行或任何机构在售产品、报价、评级或收益。",
+  "source_system": "controlled_demo_product_catalog",
+  "source_reference": "Fortune Copilot internal synthetic product taxonomy",
+  "observed_at": "2026-08-04",
+  "effective_at": "2026-08-04",
+  "ingested_at": "2026-08-04T00:00:00+08:00",
+  "version": "wealthtwin_mock_product_catalog@1.0.0",
+  "data_quality": "synthetic_education_only_not_live",
+  "is_live": false,
+  "is_demo": true,
+  "lineage": "synthetic taxonomy -> schema validation -> controlled product snapshot",
   "products": [
     {
       "code": "MOCK-CASH-001",

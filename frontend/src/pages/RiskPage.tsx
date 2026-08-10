@@ -6,6 +6,7 @@ import { BehaviorPortalWorkspace } from "../components/behavior/BehaviorWorkspac
 import { TrustPortalWorkspace } from "../components/trust/TrustWorkspace";
 import { RiskWorkflowWorkspace } from "../components/workflow/RiskWorkflowWorkspace";
 import { SecurityQualityWorkspace } from "../components/security/SecurityQualityWorkspace";
+import { ProductionReadinessWorkspace } from "../components/security/ProductionReadinessWorkspace";
 
 const guardrailCopy: Record<string, { title: string; detail: string }> = {
   credit_limit_is_not_asset: {
@@ -49,6 +50,7 @@ export function RiskPage() {
       </header>
 
       <RiskWorkflowWorkspace />
+      <ProductionReadinessWorkspace />
       <SecurityQualityWorkspace />
 
       <details className="technical-evidence-drawer">

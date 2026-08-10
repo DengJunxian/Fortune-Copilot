@@ -14,7 +14,7 @@ def test_database_engine_supports_sqlite_without_external_service() -> None:
     table_names = inspect(target).get_table_names()
     assert "households" in table_names
     assert "audit_events" in table_names
-    assert len(table_names) == 46
+    assert len(table_names) == 47
     assert {
         "identity_access_grants",
         "privacy_requests",

@@ -75,6 +75,29 @@ class Product(RecordMixin, Base):
     enabled: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_simulated: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     terms: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict, nullable=False)
+    account_wrappers: Mapped[list[str]] = mapped_column(
+        JSON, default=lambda: ["ordinary"], nullable=False
+    )
+    principal_loss_possible: Mapped[bool] = mapped_column(
+        Boolean, default=True, nullable=False
+    )
+    legally_principal_guaranteed: Mapped[bool] = mapped_column(
+        Boolean, default=False, nullable=False
+    )
+    liquidity_days: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    lock_up: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    withdrawable_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    volatility: Mapped[Decimal] = mapped_column(
+        Numeric(9, 6), default=0, nullable=False
+    )
+    sale_status: Mapped[str] = mapped_column(
+        String(24), default="available", nullable=False
+    )
+    channel: Mapped[str] = mapped_column(String(48), default="demo_catalog", nullable=False)
+    source_reference: Mapped[str] = mapped_column(String(500), default="", nullable=False)
+    snapshot_version: Mapped[str] = mapped_column(
+        String(64), default="unknown", nullable=False
+    )
 
 
 class PolicyDocument(RecordMixin, Base):
@@ -172,6 +195,13 @@ class Recommendation(RecordMixin, Base):
     rule_version_id: Mapped[str | None] = mapped_column(
         ForeignKey("rule_versions.id", ondelete="SET NULL"), nullable=True
     )
+    methodology_version: Mapped[str] = mapped_column(
+        String(64), default="unknown", nullable=False
+    )
+    decision_evidence: Mapped[dict[str, Any]] = mapped_column(
+        JSON, default=dict, nullable=False
+    )
+    decision_hash: Mapped[str] = mapped_column(String(64), default="pending", nullable=False)
 
 
 class ActionItem(RecordMixin, Base):
@@ -246,6 +276,10 @@ class PlanReport(RecordMixin, Base):
     planning_rule_version: Mapped[str] = mapped_column(
         String(64), default="unknown", nullable=False
     )
+    methodology_version: Mapped[str] = mapped_column(
+        String(64), default="unknown", nullable=False
+    )
+    decision_hash: Mapped[str] = mapped_column(String(64), default="pending", nullable=False)
     portfolio_rule_version: Mapped[str] = mapped_column(
         String(64), default="unknown", nullable=False
     )

@@ -17,6 +17,8 @@ services:
       SYNTHETIC_DATA_PATH: /seed-data/synthetic/families.json
       FINANCIAL_RULES_PATH: /seed-data/rules/financial_health_v1.json
       PLANNING_RULES_PATH: /seed-data/rules/planning_waterfall_v1.json
+      METHODOLOGY_RULES_PATH: /seed-data/rules/wealth_methodology_v3.json
+      PUBLIC_DATA_SNAPSHOT_PATH: /seed-data/public/authoritative_public_snapshot_v1.json
       PORTFOLIO_RULES_PATH: /seed-data/rules/portfolio_policy_v1.json
       PRODUCT_CATALOG_PATH: /seed-data/products/mock_products_v1.json
       FUND_ADVISORY_CATALOG_PATH: /seed-data/products/verified_real_funds_v1.json

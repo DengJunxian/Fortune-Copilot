@@ -1,12 +1,12 @@
 {
   "code": "portfolio_optimization_and_suitability",
-  "semantic_version": "1.0.0",
-  "optimizer_version": "deterministic-grid-v1.0.0",
-  "formula_version": "portfolio-gates-v1.0.0",
+  "semantic_version": "2.0.0",
+  "optimizer_version": "hierarchical-deterministic-grid-v2.0.0",
+  "formula_version": "portfolio-gates-v2.0.0",
   "effective_from": "2026-08-04",
   "effective_to": null,
   "source_type": "internal_demo",
-  "source_summary": "Fortune Copilot V3 提示词 5 的确定性组合与适当性比赛演示规则；不是收益预测、监管评级或真实销售标准。",
+  "source_summary": "Fortune Copilot V4 责任与目标感知的确定性层次优化演示规则；参数为受控假设，不是收益预测、监管评级或真实销售标准。",
   "random_seed": 20260804,
   "asset_classes": [
     "cash_equivalent",
@@ -22,7 +22,12 @@
       "cvar_loss": "0.001000",
       "max_drawdown": "0.001000",
       "liquidity_score": "1.000000",
-      "annual_fee_rate": "0.001000"
+      "annual_fee_rate": "0.001000",
+      "source": "Fortune Copilot controlled demo assumption",
+      "effective_date": "2026-08-04",
+      "confidence": "0.600000",
+      "approved_by": "demo_methodology_committee",
+      "calibration_period": "controlled_scenario_baseline_2026"
     },
     "fixed_income": {
       "expected_nominal_return": "0.035000",
@@ -30,7 +35,12 @@
       "cvar_loss": "0.080000",
       "max_drawdown": "0.100000",
       "liquidity_score": "0.700000",
-      "annual_fee_rate": "0.005000"
+      "annual_fee_rate": "0.005000",
+      "source": "Fortune Copilot controlled demo assumption",
+      "effective_date": "2026-08-04",
+      "confidence": "0.500000",
+      "approved_by": "demo_methodology_committee",
+      "calibration_period": "controlled_scenario_baseline_2026"
     },
     "diversified_equity": {
       "expected_nominal_return": "0.075000",
@@ -38,7 +48,12 @@
       "cvar_loss": "0.350000",
       "max_drawdown": "0.450000",
       "liquidity_score": "0.800000",
-      "annual_fee_rate": "0.005000"
+      "annual_fee_rate": "0.005000",
+      "source": "Fortune Copilot controlled demo assumption",
+      "effective_date": "2026-08-04",
+      "confidence": "0.400000",
+      "approved_by": "demo_methodology_committee",
+      "calibration_period": "controlled_scenario_baseline_2026"
     },
     "real_assets": {
       "expected_nominal_return": "0.065000",
@@ -46,7 +61,12 @@
       "cvar_loss": "0.300000",
       "max_drawdown": "0.380000",
       "liquidity_score": "0.650000",
-      "annual_fee_rate": "0.008000"
+      "annual_fee_rate": "0.008000",
+      "source": "Fortune Copilot controlled demo assumption",
+      "effective_date": "2026-08-04",
+      "confidence": "0.350000",
+      "approved_by": "demo_methodology_committee",
+      "calibration_period": "controlled_scenario_baseline_2026"
     },
     "gold": {
       "expected_nominal_return": "0.045000",
@@ -54,7 +74,12 @@
       "cvar_loss": "0.280000",
       "max_drawdown": "0.350000",
       "liquidity_score": "0.850000",
-      "annual_fee_rate": "0.006000"
+      "annual_fee_rate": "0.006000",
+      "source": "Fortune Copilot controlled demo assumption",
+      "effective_date": "2026-08-04",
+      "confidence": "0.350000",
+      "approved_by": "demo_methodology_committee",
+      "calibration_period": "controlled_scenario_baseline_2026"
     }
   },
   "scenarios": [
@@ -67,7 +92,12 @@
         "diversified_equity": "-0.400000",
         "real_assets": "-0.350000",
         "gold": "-0.150000"
-      }
+      },
+      "source": "Fortune Copilot controlled stress design",
+      "effective_date": "2026-08-04",
+      "confidence": "0.300000",
+      "approved_by": "demo_methodology_committee",
+      "calibration_period": "controlled_scenario_baseline_2026"
     },
     {
       "code": "stress",
@@ -78,7 +108,12 @@
         "diversified_equity": "-0.200000",
         "real_assets": "-0.150000",
         "gold": "0.100000"
-      }
+      },
+      "source": "Fortune Copilot controlled stress design",
+      "effective_date": "2026-08-04",
+      "confidence": "0.400000",
+      "approved_by": "demo_methodology_committee",
+      "calibration_period": "controlled_scenario_baseline_2026"
     },
     {
       "code": "base",
@@ -89,7 +124,12 @@
         "diversified_equity": "0.075000",
         "real_assets": "0.065000",
         "gold": "0.045000"
-      }
+      },
+      "source": "Fortune Copilot controlled base assumption",
+      "effective_date": "2026-08-04",
+      "confidence": "0.600000",
+      "approved_by": "demo_methodology_committee",
+      "calibration_period": "controlled_scenario_baseline_2026"
     },
     {
       "code": "positive",
@@ -100,7 +140,12 @@
         "diversified_equity": "0.180000",
         "real_assets": "0.150000",
         "gold": "0.120000"
-      }
+      },
+      "source": "Fortune Copilot controlled upside design",
+      "effective_date": "2026-08-04",
+      "confidence": "0.350000",
+      "approved_by": "demo_methodology_committee",
+      "calibration_period": "controlled_scenario_baseline_2026"
     },
     {
       "code": "strong",
@@ -111,7 +156,12 @@
         "diversified_equity": "0.300000",
         "real_assets": "0.250000",
         "gold": "0.200000"
-      }
+      },
+      "source": "Fortune Copilot controlled upside design",
+      "effective_date": "2026-08-04",
+      "confidence": "0.250000",
+      "approved_by": "demo_methodology_committee",
+      "calibration_period": "controlled_scenario_baseline_2026"
     }
   ],
   "objective_weights": {
@@ -126,6 +176,7 @@
   },
   "grid_step": "0.050000",
   "minimum_liquidity_score": "0.650000",
+  "default_purchasing_power_hurdle": "0.025000",
   "default_inflation_rate": "0.025000",
   "candidate_policies": {
     "conservative": {

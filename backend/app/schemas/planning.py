@@ -7,14 +7,24 @@ from typing import Literal
 from pydantic import BaseModel, Field, model_validator
 
 from app.domain.enums import AccountBucket, LifecycleStage
+from app.schemas.methodology import (
+    AssetLiquiditySummary,
+    ContributionPlan,
+    CurrentAllocationPlan,
+    DecisionEvidencePackage,
+    MethodologyAssessment,
+    ProtectionPlan,
+)
 from app.schemas.records import Money
 
 ConstraintStatus = Literal["pass", "limit", "block", "not_evaluated"]
 GoalStatus = Literal["funded", "on_track", "gap", "conflict"]
 DenominatorId = Literal[
     "total_assets",
+    "total_household_assets",
     "investable_financial_assets",
     "annual_new_surplus",
+    "residual_long_term_plannable_capital",
 ]
 WaterfallStatus = Literal[
     "covered",
@@ -39,6 +49,12 @@ class PlanningMeta(BaseModel):
     currency: str
     synthetic_data: bool
     scenario_type: Literal["base", "counterfactual"]
+    methodology_version: str
+    regional_parameter_version: str
+    market_regime_version: str
+    minimum_wage_snapshot_version: str
+    public_data_snapshot_version: str
+    pension_policy_version: str
 
 
 class FactorEvidence(BaseModel):
@@ -116,6 +132,7 @@ class RatioMeasure(BaseModel):
     ratio: Decimal | None
     applicable: bool
     reason: str
+    deprecated: bool = False
 
 
 class ReferenceBand(BaseModel):
@@ -136,6 +153,12 @@ class ReferenceBand(BaseModel):
 class AccountAllocation(BaseModel):
     bucket: AccountBucket
     name: str
+    methodology_domain: Literal[
+        "DAILY_LIQUIDITY",
+        "RISK_PROTECTION",
+        "STABILITY_AND_GOALS",
+        "LONG_TERM_GROWTH",
+    ]
     sequence: int
     current_amount: Decimal
     target_amount: Decimal
@@ -146,6 +169,7 @@ class AccountAllocation(BaseModel):
     annual_cost_amount: Decimal
     coverage_gap_amount: Decimal
     primary_denominator_name: str
+    primary_denominator_id: DenominatorId
     reference_band: ReferenceBand | None
     current_measures: list[RatioMeasure]
     target_measures: list[RatioMeasure]
@@ -204,9 +228,12 @@ class ActionDraft(BaseModel):
 
 class DenominatorSummary(BaseModel):
     total_assets: Decimal
+    total_household_assets: Decimal
     investable_financial_assets: Decimal
     net_financial_assets_after_debt: Decimal
+    plannable_financial_net_worth: Decimal
     growth_entry_threshold: Decimal
+    residual_long_term_plannable_capital: Decimal
     annual_new_surplus: Decimal
     available_planning_resources: Decimal
     high_interest_debt_before_plan: Decimal
@@ -219,7 +246,9 @@ class GrowthEligibility(BaseModel):
     threshold: Decimal
     actual_ratio: Decimal | None
     denominator_name: str
+    denominator_id: Literal["residual_long_term_plannable_capital"]
     denominator_value: Decimal
+    formal_growth_amount: Decimal
     conditions: list[str]
     failed_conditions: list[str]
     explanation: str
@@ -273,6 +302,12 @@ class PlanningResponse(BaseModel):
     actions: list[ActionDraft]
     applied_counterfactual: AppliedCounterfactual
     counting_note: str
+    methodology: MethodologyAssessment
+    asset_liquidity: AssetLiquiditySummary
+    current_allocation_plan: CurrentAllocationPlan
+    contribution_plan: ContributionPlan
+    protection_plan: ProtectionPlan
+    decision_evidence: DecisionEvidencePackage
 
 
 class CounterfactualRequest(BaseModel):

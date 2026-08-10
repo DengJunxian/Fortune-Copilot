@@ -35,6 +35,7 @@ const decisionLabels = {
   downgrade: "降级后可用",
   reject: "拒绝",
   education_only: "仅教育与修复",
+  escalate: "转人工复核",
 };
 
 export function AdvisorWorkflowWorkspace() {

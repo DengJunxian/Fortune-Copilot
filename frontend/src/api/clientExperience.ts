@@ -6,6 +6,7 @@ export type ClientView =
   | "cashflow"
   | "health"
   | "accounts"
+  | "pension"
   | "goals"
   | "twin"
   | "behavior"

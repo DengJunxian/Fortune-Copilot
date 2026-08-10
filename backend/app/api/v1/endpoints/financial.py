@@ -86,6 +86,7 @@ def get_metrics(
         meta=analysis.meta,
         metrics=analysis.metrics,
         health_dimensions=analysis.health_dimensions,
+        health_assessment=analysis.health_assessment,
     )
 
 

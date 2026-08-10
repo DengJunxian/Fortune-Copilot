@@ -63,7 +63,7 @@ def seed_households() -> dict[str, str]:
             product_catalog_path=PRODUCT_CATALOG_PATH,
             twin_rules_path=TWIN_RULES_PATH,
         )
-        assert result.scenario_count == 19
+        assert result.scenario_count == 22
         return {
             item.code: item.id
             for item in session.scalars(select(Household).where(Household.is_deleted.is_(False)))
@@ -110,7 +110,7 @@ def test_scenario_catalog_covers_all_required_composable_stresses() -> None:
     response = call("GET", "/api/v1/twin/scenarios")
     assert response.status_code == 200, response.text
     payload = response.json()
-    assert payload["scenario_count"] == 19
+    assert payload["scenario_count"] == 22
     assert payload["scenario_version"] == "1.0.0"
     assert payload["source_type"] == "internal_demo"
     assert all(item["enabled"] and item["is_composable"] for item in payload["scenarios"])
@@ -135,9 +135,12 @@ def test_scenario_catalog_covers_all_required_composable_stresses() -> None:
         "cost_inflation_up",
         "goal_advanced",
         "unemployment_equity_down_30",
+        "elder_care_10y",
+        "housing_value_down_20",
+        "regional_living_cost_hurdle_up",
     } == codes
     with SessionLocal() as session:
-        assert session.scalar(select(func.count()).select_from(ScenarioDefinition)) == 19
+        assert session.scalar(select(func.count()).select_from(ScenarioDefinition)) == 22
 
 
 def test_fixed_seed_produces_byte_stable_distribution() -> None:

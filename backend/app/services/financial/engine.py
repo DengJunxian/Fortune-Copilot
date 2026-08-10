@@ -26,6 +26,7 @@ from app.services.financial.diagnostics import diagnose_data
 from app.services.financial.facts import load_household_facts
 from app.services.financial.metrics import (
     MetricContext,
+    build_health_assessment,
     build_health_dimensions,
     build_metrics,
 )
@@ -121,6 +122,7 @@ def analyze_facts(
         analysis_date=analysis_date,
     )
     metrics = build_metrics(metric_context)
+    health_dimensions = build_health_dimensions(metrics, facts)
     return FinancialAnalysisResponse(
         meta=AnalysisMeta(
             household_id=facts.id,
@@ -140,7 +142,8 @@ def analyze_facts(
         diagnostics=diagnostics,
         protection=protection,
         purchasing_power=purchasing_power,
-        health_dimensions=build_health_dimensions(metrics),
+        health_dimensions=health_dimensions,
+        health_assessment=build_health_assessment(metrics, health_dimensions),
     )
 
 

@@ -1,0 +1,66 @@
+{
+  "formula_version": "fortune-copilot-four-account-v2.2.0",
+  "rule_version": "2.2.0",
+  "methodology_version": "3.1.0",
+  "lifecycle": {
+    "detected_stage": "parenting",
+    "effective_stage": "parenting",
+    "dynamic_safety_months": "7.00"
+  },
+  "denominators": {
+    "total_assets": "2850000.00",
+    "total_household_assets": "2850000.00",
+    "investable_financial_assets": "320000.00",
+    "net_financial_assets_after_debt": "-888000.00",
+    "plannable_financial_net_worth": "-888000.00",
+    "growth_entry_threshold": "560000.00",
+    "residual_long_term_plannable_capital": "0.00",
+    "annual_new_surplus": "72000.00",
+    "available_planning_resources": "320000.00",
+    "high_interest_debt": "8000.00"
+  },
+  "accounts": {
+    "daily_liquidity": {
+      "current_amount": "50000.00",
+      "target_amount": "4750.00",
+      "recommended_amount": "4750.00",
+      "gap_amount": "0.00"
+    },
+    "risk_protection": {
+      "recommended_amount": "12000.00",
+      "annual_cost_amount": "12000.00",
+      "coverage_gap_amount": "1452000.00"
+    },
+    "stable_goals": {
+      "current_amount": "150000.00",
+      "target_amount": "445718.61",
+      "recommended_amount": "307250.00",
+      "gap_amount": "295718.61"
+    },
+    "long_term_growth": {
+      "current_amount": "120000.00",
+      "target_amount": "0.00",
+      "recommended_amount": "0.00"
+    }
+  },
+  "goals": {
+    "子女教育": {
+      "future_amount": "988205.70",
+      "present_value": "809209.10",
+      "funding_gap": "729209.10",
+      "monthly_required": "6076.74"
+    },
+    "夫妻退休养老": {
+      "future_amount": "4208967.97",
+      "present_value": "2562451.05",
+      "funding_gap": "2532451.05",
+      "monthly_required": "8498.16"
+    },
+    "父母赡养储备": {
+      "future_amount": "366298.98",
+      "present_value": "331468.61",
+      "funding_gap": "311468.61",
+      "monthly_required": "5191.14"
+    }
+  }
+}

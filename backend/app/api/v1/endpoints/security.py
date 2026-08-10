@@ -20,6 +20,8 @@ from app.schemas.security import (
     DemoSessionRequest,
     EvaluationResponse,
     FileInspectionResponse,
+    ModelGovernanceEvaluationRequest,
+    ModelGovernanceEvaluationResponse,
     ModelRunListResponse,
     PrivacyDeletionRequest,
     PrivacyExportRequest,
@@ -35,6 +37,7 @@ from app.schemas.security import (
 from app.services.client_experience import build_client_data_export
 from app.services.crud import ensure_household
 from app.services.security.evaluation import run_adversarial_evaluation, security_dashboard
+from app.services.security.model_governance import evaluate_model_governance
 from app.services.security.model_risk import list_model_runs
 from app.services.security.privacy import (
     consent_catalog,
@@ -164,6 +167,21 @@ def get_model_runs(
 ) -> ModelRunListResponse:
     require_roles(actor, ("compliance", "admin"))
     return list_model_runs(session)
+
+
+@router.post(
+    "/security/model-governance/evaluate",
+    response_model=ModelGovernanceEvaluationResponse,
+)
+def post_model_governance_evaluation(
+    payload: ModelGovernanceEvaluationRequest,
+    session: SessionDependency,
+    actor: ActorDependency,
+) -> ModelGovernanceEvaluationResponse:
+    require_roles(actor, ("compliance", "admin"))
+    response = evaluate_model_governance(session, payload, actor)
+    session.commit()
+    return response
 
 
 @router.post("/reports/{report_id}/quality-gate", response_model=QualityGateResponse)

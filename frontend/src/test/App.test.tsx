@@ -87,6 +87,58 @@ function connectedFetch() {
         guardrails: [],
       }));
     }
+    if (url.endsWith("/api/v1/integrations/readiness")) {
+      return Promise.resolve(jsonResponse({
+        assessment_version: "production-readiness-v1",
+        assessed_at: "2026-08-08T12:00:00Z",
+        runtime_mode: "test",
+        production_ready: false,
+        has_live_icbc_connection: false,
+        has_live_government_connection: false,
+        public_data_snapshot_version: "authoritative-public-cn-2026-08-08",
+        public_data_integrity_hash: "a".repeat(64),
+        capabilities: [{
+          capability: "bank_account_and_cashflow_data",
+          label: "账户、流水与贷款事实",
+          state: "authorization_required",
+          adapter_id: "unavailable-production-adapter",
+          execution_allowed: false,
+          production_blocking: true,
+          current_implementation: "生产端口失败关闭。",
+          required_prerequisites: ["客户授权", "生产凭据", "对账规则"],
+          evidence: ["没有真实工行连接"],
+        }],
+        operational_controls: [],
+        authoritative_sources: [],
+        boundary_note: "公开资料不能授予客户数据、交易或银行内部权限。",
+      }));
+    }
+    if (url.endsWith("/api/v1/public-data/authoritative-snapshot")) {
+      return Promise.resolve(jsonResponse({
+        snapshot: {
+          publication_cutoff: "2026-08-08",
+          official_cpi: {
+            rate: "0.009000",
+            statistic_label: "2026年1—4月全国居民消费价格同比平均涨幅",
+            source_reference: "https://www.stats.gov.cn/",
+            version: "nbs-cpi-2026-jan-apr-v1",
+          },
+          regional_minimum_wages: {},
+          regional_living_cost_observations: {
+            "320100": {
+              region_name: "江苏省南京市",
+              amount: "44578.00",
+              period_end: "2024-12-31",
+              data_quality: "verified_public_snapshot",
+              can_be_used_as_cpi: false,
+            },
+          },
+        },
+        integrity_hash: "a".repeat(64),
+        update_mode: "controlled_snapshot_not_runtime_scraping",
+        boundary_note: "只读快照。",
+      }));
+    }
     if (url.endsWith("/api/v1/demo/manifest")) {
       return Promise.resolve(jsonResponse({
         ...demoManifestFixture,
@@ -170,7 +222,7 @@ function connectedFetch() {
         scenario_version: "1.0.0",
         source_type: "internal_demo",
         source_summary: "测试夹具中的版本化内部演示压力参数。",
-        scenario_count: 19,
+        scenario_count: 22,
         scenarios: [{
           code: "unemployment_equity_down_30",
           name: "失业 6 个月 + 权益下跌 30%",
@@ -519,6 +571,20 @@ describe("Fortune Copilot routes", () => {
     expect(screen.getByText(/规划结果仅供财务规划参考/)).toBeInTheDocument();
   });
 
+  it("shows verified public data separately from blocked ICBC production ports", async () => {
+    vi.stubGlobal("fetch", connectedFetch());
+    render(<AppRoutes initialPath="/risk" />);
+
+    expect(await screen.findByRole("heading", {
+      name: "真实数据与银行系统接入边界",
+    })).toBeInTheDocument();
+    expect(screen.getByText("原型可用 · 生产未就绪")).toBeInTheDocument();
+    expect(screen.getByText("未连接")).toBeInTheDocument();
+    expect(screen.getByText("账户、流水与贷款事实")).toBeInTheDocument();
+    expect(screen.getByText(/2024 年人均消费支出 ¥44,578/)).toBeInTheDocument();
+    expect(screen.getByText(/不是 CPI/)).toBeInTheDocument();
+  });
+
   it("renders the offline-safe Demo manifest and three distinct dynamic family configurations", async () => {
     vi.stubGlobal("fetch", connectedFetch());
     const { container } = render(<AppRoutes initialPath="/demo" />);
@@ -615,20 +681,20 @@ describe("Fortune Copilot routes", () => {
     const { container } = render(<AppRoutes initialPath="/client/advanced" />);
     await openClientTask(user, "财务健康");
     expect(await screen.findByRole("heading", { name: "全量财务健康指标" })).toBeInTheDocument();
-    const radar = screen.getByRole("figure", { name: "家庭财务健康雷达" });
+    const radar = screen.getByRole("figure", { name: "十维家庭财务健康" });
     await user.click(within(radar).getByText("查看数据表"));
-    expect(within(radar).getAllByRole("row")).toHaveLength(8);
+    expect(within(radar).getAllByRole("row")).toHaveLength(11);
     const result = await run(container, { rules: { "color-contrast": { enabled: false } } });
     expect(result.violations).toEqual([]);
   });
 
-  it("provides eleven keyboard-navigable tasks, display modes, masking, and all fourteen states", async () => {
+  it("provides twelve keyboard-navigable tasks, display modes, masking, and all fourteen states", async () => {
     vi.stubGlobal("fetch", connectedFetch());
     const user = userEvent.setup();
     const { container } = render(<AppRoutes initialPath="/client/advanced" />);
 
-    const taskList = await screen.findByRole("tablist", { name: "十一项客户任务" });
-    expect(within(taskList).getAllByRole("tab")).toHaveLength(11);
+    const taskList = await screen.findByRole("tablist", { name: "十二项客户任务" });
+    expect(within(taskList).getAllByRole("tab")).toHaveLength(12);
     const familyTab = within(taskList).getByRole("tab", { name: /家庭画像/ });
     familyTab.focus();
     await user.keyboard("{ArrowRight}");
@@ -740,6 +806,12 @@ describe("Fortune Copilot routes", () => {
 
     await openClientTask(user, "四账户");
     expect(await screen.findByRole("heading", { name: "先过安全闸门，再安排长期资金" })).toBeInTheDocument();
+    expect(screen.getByText("PFNW · 可规划金融净值")).toBeInTheDocument();
+    expect(screen.getByText("为什么现在不建议增加投资？")).toBeInTheDocument();
+    expect(screen.getByText("中国家庭购买力门槛 PPH")).toBeInTheDocument();
+    expect(screen.getByText(/地区最低工资信号不是 CPI/)).toBeInTheDocument();
+    expect(screen.getByText("Personal Pension Copilot")).toBeInTheDocument();
+    expect(screen.getByText("个人养老金是制度账户，不是低风险等级")).toBeInTheDocument();
     for (const name of ["要花的钱", "保命的钱", "保本的钱", "生钱的钱"]) {
       expect(screen.getAllByRole("heading", { name }).length).toBeGreaterThan(0);
     }
@@ -759,6 +831,9 @@ describe("Fortune Copilot routes", () => {
     expect(screen.getByText("五项硬约束全部通过")).toBeInTheDocument();
     await openClientTask(user, "目标时间轴");
     expect(await screen.findByText("目标月投入超过当前新增结余")).toBeInTheDocument();
+    await openClientTask(user, "个人养老金");
+    expect(await screen.findByRole("heading", { name: "个人养老金不是低风险资产类别" })).toBeInTheDocument();
+    expect(screen.getByText(/当前政策与账户数据是受控快照/)).toBeInTheDocument();
   });
 
   it("supports client goal entry and deterministic counterfactual recomputation", async () => {
@@ -794,6 +869,8 @@ describe("Fortune Copilot routes", () => {
     await openClientTask(user, "四账户");
     expect(await screen.findByRole("heading", { name: "长期资金的三种走法" })).toBeInTheDocument();
     expect(screen.getByText("当前没有可执行的长期新增资金")).toBeInTheDocument();
+    expect(screen.getByText("购买力门槛 PPH")).toBeInTheDocument();
+    expect(screen.getByText("单只股票卫星暴露")).toBeInTheDocument();
     expect(screen.getByRole("region", { name: "稳健基准进取方案比较" })).toBeInTheDocument();
     expect(screen.getAllByText("仅教育展示").length).toBeGreaterThanOrEqual(3);
     await user.click(screen.getByRole("button", { name: /进取/ }));

@@ -1,13 +1,17 @@
 from __future__ import annotations
 
 from datetime import date
+from decimal import Decimal
 from typing import Any
 
 from pydantic import Field, model_validator
 
 from app.domain.enums import (
+    AccountWrapper,
     AssetCategory,
+    AssetPurposeDimension,
     CashFlowFrequency,
+    ComplexityLevel,
     ExpenseCategory,
     ExpenseNecessity,
     GoalRigidity,
@@ -121,6 +125,66 @@ class AssetCreate(RecordInput):
     pledged: bool = False
     ownership: str = Field(min_length=1, max_length=80)
     property_use: PropertyUse = PropertyUse.NOT_PROPERTY
+    purpose_dimension: AssetPurposeDimension | None = None
+    account_wrapper: AccountWrapper | None = None
+    principal_loss_possible: bool | None = None
+    legally_principal_guaranteed: bool | None = None
+    lock_up: bool | None = None
+    withdrawable_date: date | None = None
+    volatility: Ratio = Decimal("0")
+    product_complexity: ComplexityLevel = ComplexityLevel.BASIC
+    institution_type: str = Field(default="ordinary", min_length=1, max_length=48)
+    source_kind: str = Field(default="user_self_report", min_length=1, max_length=40)
+    household_role: str = Field(default="household_shared", min_length=1, max_length=40)
+    region_code: str | None = Field(default=None, max_length=24)
+
+    @model_validator(mode="after")
+    def assign_three_dimension_tags(self) -> AssetCreate:
+        daily = {
+            AssetCategory.CASH,
+            AssetCategory.DEMAND_DEPOSIT,
+            AssetCategory.MONEY_MARKET,
+        }
+        growth = {
+            AssetCategory.PUBLIC_FUND,
+            AssetCategory.EQUITY_FUND,
+            AssetCategory.STOCK,
+            AssetCategory.TRUST,
+            AssetCategory.INVESTMENT_PROPERTY,
+        }
+        if self.purpose_dimension is None:
+            self.purpose_dimension = (
+                AssetPurposeDimension.DAILY
+                if self.category in daily
+                else AssetPurposeDimension.GROWTH
+                if self.category in growth
+                else AssetPurposeDimension.PROTECTION
+                if self.category == AssetCategory.INSURANCE_CASH_VALUE
+                else AssetPurposeDimension.STABLE
+            )
+        if self.account_wrapper is None:
+            self.account_wrapper = (
+                AccountWrapper.PERSONAL_PENSION
+                if self.category == AssetCategory.PENSION_ACCOUNT
+                else AccountWrapper.DEMAND_ACCOUNT
+                if self.category in {AssetCategory.CASH, AssetCategory.DEMAND_DEPOSIT}
+                else AccountWrapper.INSURANCE
+                if self.category == AssetCategory.INSURANCE_CASH_VALUE
+                else AccountWrapper.ORDINARY
+            )
+        legal_guarantee = self.category in {
+            AssetCategory.DEMAND_DEPOSIT,
+            AssetCategory.TIME_DEPOSIT,
+        }
+        if self.legally_principal_guaranteed is None:
+            self.legally_principal_guaranteed = legal_guarantee
+        if self.principal_loss_possible is None:
+            self.principal_loss_possible = not legal_guarantee
+        if self.lock_up is None:
+            self.lock_up = self.category == AssetCategory.PENSION_ACCOUNT
+        if self.legally_principal_guaranteed and self.principal_loss_possible:
+            raise ValueError("法律属性保证本金的资产不能同时标记本金可损失")
+        return self
 
 
 class AssetUpdate(RecordUpdate):
@@ -137,6 +201,24 @@ class AssetUpdate(RecordUpdate):
     pledged: bool | None = None
     ownership: str | None = Field(default=None, min_length=1, max_length=80)
     property_use: PropertyUse | None = None
+    purpose_dimension: AssetPurposeDimension | None = None
+    account_wrapper: AccountWrapper | None = None
+    principal_loss_possible: bool | None = None
+    legally_principal_guaranteed: bool | None = None
+    lock_up: bool | None = None
+    withdrawable_date: date | None = None
+    volatility: Ratio | None = None
+    product_complexity: ComplexityLevel | None = None
+    institution_type: str | None = Field(default=None, min_length=1, max_length=48)
+    source_kind: str | None = Field(default=None, min_length=1, max_length=40)
+    household_role: str | None = Field(default=None, min_length=1, max_length=40)
+    region_code: str | None = Field(default=None, max_length=24)
+
+    @model_validator(mode="after")
+    def validate_principal_risk_tags(self) -> AssetUpdate:
+        if self.legally_principal_guaranteed is True and self.principal_loss_possible is True:
+            raise ValueError("法律属性保证本金的资产不能同时标记本金可损失")
+        return self
 
 
 class AssetOut(RecordOut):
@@ -154,6 +236,18 @@ class AssetOut(RecordOut):
     pledged: bool
     ownership: str
     property_use: PropertyUse
+    purpose_dimension: AssetPurposeDimension
+    account_wrapper: AccountWrapper
+    principal_loss_possible: bool
+    legally_principal_guaranteed: bool
+    lock_up: bool
+    withdrawable_date: date | None
+    volatility: Ratio
+    product_complexity: ComplexityLevel
+    institution_type: str
+    source_kind: str
+    household_role: str
+    region_code: str | None
 
 
 class LiabilityCreate(RecordInput):

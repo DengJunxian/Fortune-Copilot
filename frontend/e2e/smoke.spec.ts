@@ -137,7 +137,7 @@ test("connected advisor, compliance, and client share one immutable plan workflo
   await page.getByRole("button", { name: "审核通过" }).click();
   await expect(page.getByText(/已生成 V7/)).toBeVisible();
 
-  await page.goto("/client");
+  await page.goto("/client/advanced");
   await page.getByRole("button", { name: /DEMO_C/ }).click();
   await openClientTask(page, "家庭规划书");
   await expect(page.getByRole("heading", { name: "方案审核与客户确认" })).toBeVisible();
@@ -189,7 +189,7 @@ test("connected formal report is shared, exportable, recalculated, and visible i
   await page.getByRole("button", { name: "导出 PDF" }).click();
   expect((await pdfDownload).suggestedFilename()).toBe("wealthtwin-demo_c-report-r1.pdf");
 
-  await page.goto("/client");
+  await page.goto("/client/advanced");
   await page.getByRole("button", { name: /DEMO_C/ }).click();
   await openClientTask(page, "家庭规划书");
   const formalNavigation = page.getByRole("navigation", { name: "规划书八章" });
@@ -223,7 +223,7 @@ test("connected formal report is shared, exportable, recalculated, and visible i
   expect(browserIssues).toEqual([]);
 });
 
-test("connected client completes the eleven-task journey with strict report and display controls", async ({ page }) => {
+test("connected client completes the twelve-task journey with strict report and display controls", async ({ page }) => {
   test.skip(!process.env.PLAYWRIGHT_BASE_URL, "requires the connected Compose demo");
   await page.setViewportSize({ width: 1366, height: 768 });
   const externalRequests: string[] = [];
@@ -237,9 +237,9 @@ test("connected client completes the eleven-task journey with strict report and 
   });
   page.on("pageerror", (error) => browserIssues.push(error.message));
 
-  await page.goto("/client");
-  const tasks = page.getByRole("tablist", { name: "十一项客户任务" }).getByRole("tab");
-  await expect(tasks).toHaveCount(11);
+  await page.goto("/client/advanced");
+  const tasks = page.getByRole("tablist", { name: "十二项客户任务" }).getByRole("tab");
+  await expect(tasks).toHaveCount(12);
   await tasks.first().focus();
   await page.keyboard.press("ArrowRight");
   await expect(page.getByRole("tab", { name: /资产负债/ })).toBeFocused();
@@ -327,7 +327,7 @@ test("connected client completes the eleven-task journey with strict report and 
     { width: 1920, height: 1080 },
   ]) {
     await page.setViewportSize(viewport);
-    await expect(page.getByRole("tablist", { name: "十一项客户任务" })).toBeVisible();
+    await expect(page.getByRole("tablist", { name: "十二项客户任务" })).toBeVisible();
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(overflow).toBeLessThanOrEqual(1);
   }
@@ -339,8 +339,8 @@ test("client task navigation remains contained on mobile and honors reduced moti
   test.skip(!process.env.PLAYWRIGHT_BASE_URL, "requires the connected Compose demo");
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/client");
-  await expect(page.getByRole("tablist", { name: "十一项客户任务" })).toBeVisible();
+  await page.goto("/client/advanced");
+  await expect(page.getByRole("tablist", { name: "十二项客户任务" })).toBeVisible();
   await openClientTask(page, "家庭规划书");
   await expect(page.getByRole("navigation", { name: "规划书八章" })).toBeVisible();
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
@@ -351,7 +351,7 @@ test("client task navigation remains contained on mobile and honors reduced moti
 test("connected demo exposes auditable financial analysis and JSON export", async ({ page }) => {
   test.skip(!process.env.PLAYWRIGHT_BASE_URL, "requires the connected Compose demo");
 
-  await page.goto("/client");
+  await page.goto("/client/advanced");
   await openClientTask(page, "财务健康");
   await expect(page.getByRole("heading", { name: "全量财务健康指标" })).toBeVisible();
   await expect(page.locator(".metric-table tbody tr")).toHaveCount(20);
@@ -381,7 +381,7 @@ test("connected demo exposes auditable financial analysis and JSON export", asyn
 test("connected demo recalculates the dynamic four-account plan", async ({ page }) => {
   test.skip(!process.env.PLAYWRIGHT_BASE_URL, "requires the connected Compose demo");
 
-  await page.goto("/client");
+  await page.goto("/client/advanced");
   await openClientTask(page, "四账户");
   await expect(
     page.getByRole("heading", { name: "先过安全闸门，再安排长期资金" }),
@@ -419,7 +419,7 @@ test("connected demo recalculates the dynamic four-account plan", async ({ page 
 test("connected demo compares three portfolio candidates with a complete suitability chain", async ({ page }) => {
   test.skip(!process.env.PLAYWRIGHT_BASE_URL, "requires the connected Compose demo");
 
-  await page.goto("/client");
+  await page.goto("/client/advanced");
   await openClientTask(page, "四账户");
   await expect(page.getByRole("heading", { name: "长期资金的三种走法" })).toBeVisible();
   await expect(page.getByRole("region", { name: "稳健基准进取方案比较" })).toBeVisible();
@@ -441,11 +441,11 @@ test("connected demo compares three portfolio candidates with a complete suitabi
   };
   expect(exported.meta.calculation_source).toBe("deterministic_tools");
   expect(exported.candidates).toHaveLength(3);
-  expect(exported.candidates.every((candidate) => candidate.gates.length === 3)).toBeTruthy();
+  expect(exported.candidates.every((candidate) => candidate.gates.length === 5)).toBeTruthy();
   expect(exported.catalog).toMatchObject({ product_count: 19, source_type: "mock" });
 
   await page.getByRole("button", { name: "保存候选草案" }).click();
-  await expect(page.getByText(/已保存 3 套候选与 9 条闸门记录/)).toBeVisible();
+  await expect(page.getByText(/已保存 3 套候选与 15 条闸门记录/)).toBeVisible();
 });
 
 test("risk portal rejects an adversarial request and leaves an audit reference", async ({ page }) => {
@@ -467,10 +467,10 @@ test("risk portal rejects an adversarial request and leaves an audit reference",
 test("connected demo runs and exports the reproducible household wealth twin", async ({ page }) => {
   test.skip(!process.env.PLAYWRIGHT_BASE_URL, "requires the connected Compose demo");
 
-  await page.goto("/client");
+  await page.goto("/client/advanced");
   await openClientTask(page, "数字孪生");
   await expect(page.getByRole("heading", { name: "把家庭未来拆成可检验的路径" })).toBeVisible();
-  await expect(page.getByText(/19 个内置场景 · 版本 1.0.0/)).toBeVisible();
+  await expect(page.getByText(/22 个内置场景 · 版本 1.0.0/)).toBeVisible();
   await page.getByRole("button", { name: "运行数字孪生" }).click();
 
   await expect(page.getByRole("heading", { name: /流动性缓冲使被迫出售概率下降/ })).toBeVisible({ timeout: 30_000 });
@@ -499,7 +499,7 @@ test("connected demo runs and exports the reproducible household wealth twin", a
 test("connected demo can cancel a staged wealth-twin run", async ({ page }) => {
   test.skip(!process.env.PLAYWRIGHT_BASE_URL, "requires the connected Compose demo");
 
-  await page.goto("/client");
+  await page.goto("/client/advanced");
   await openClientTask(page, "数字孪生");
   await expect(page.getByRole("heading", { name: "把家庭未来拆成可检验的路径" })).toBeVisible();
   await page.getByLabel("模拟路径数").fill("1000");
@@ -514,7 +514,7 @@ test("connected demo can cancel a staged wealth-twin run", async ({ page }) => {
 test("connected demo exposes the behavior dual profile, auditable exit, and A/B metrics", async ({ page }) => {
   test.skip(!process.env.PLAYWRIGHT_BASE_URL, "requires the connected Compose demo");
 
-  await page.goto("/client");
+  await page.goto("/client/advanced");
   await openClientTask(page, "行为实验");
   await expect(page.getByRole("heading", { name: "先做选择，再看行为如何影响配置上限" })).toBeVisible();
   await expect(page.getByRole("heading", { name: /行为证据将配置上限从.*下调至/ })).toBeVisible();
@@ -554,7 +554,7 @@ test("connected demo exposes the behavior dual profile, auditable exit, and A/B 
 test("connected demo traces controlled knowledge, confirmed intake, graph inference, and nine governed agents", async ({ page }) => {
   test.skip(!process.env.PLAYWRIGHT_BASE_URL, "requires the connected Compose demo");
 
-  await page.goto("/client");
+  await page.goto("/client/advanced");
   await expect(page.getByRole("heading", { name: "先筛时效和适用范围，再组织解释" })).toBeVisible();
   await page.getByRole("button", { name: "检索受控依据" }).click();
   await expect(page.getByText("已找到受控依据")).toBeVisible({ timeout: 15_000 });

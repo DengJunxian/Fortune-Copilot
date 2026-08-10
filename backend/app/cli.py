@@ -8,6 +8,7 @@ from pathlib import Path
 from app.core.config import get_settings
 from app.core.database import SessionLocal
 from app.services.demo_backup import backup_demo_database, restore_demo_database
+from app.services.public_data.rules import build_public_data_response
 from app.services.seed import seed_synthetic_data
 
 
@@ -32,6 +33,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     restore_parser.add_argument("--input", type=Path, required=True)
     restore_parser.add_argument("--confirm", required=True)
+    public_data_parser = subparsers.add_parser(
+        "validate-public-data",
+        help="validate governed public sources and print the immutable snapshot hash",
+    )
+    public_data_parser.add_argument("--path", help="override the public-data snapshot path")
     return parser
 
 
@@ -56,6 +62,32 @@ def main() -> None:
             )
         )
         return
+    if args.command == "validate-public-data":
+        response = build_public_data_response(
+            args.path or settings.public_data_snapshot_path
+        )
+        print(
+            json.dumps(
+                {
+                    "snapshot_version": response.snapshot.snapshot_version,
+                    "publication_cutoff": response.snapshot.publication_cutoff.isoformat(),
+                    "integrity_hash": response.integrity_hash,
+                    "source_count": (
+                        2
+                        + len(response.snapshot.regional_living_cost_observations)
+                        + len(response.snapshot.policy_sources)
+                        + len(response.snapshot.integration_access_boundaries)
+                        + sum(
+                            1 + len(series.values)
+                            for series in response.snapshot.regional_minimum_wages.values()
+                        )
+                    ),
+                    "is_live": False,
+                },
+                ensure_ascii=False,
+            )
+        )
+        return
     if args.command != "seed":
         raise SystemExit(2)
     with SessionLocal() as session:
@@ -64,6 +96,7 @@ def main() -> None:
             args.path or settings.synthetic_data_path,
             rules_path=settings.financial_rules_path,
             planning_rules_path=settings.planning_rules_path,
+            methodology_rules_path=settings.methodology_rules_path,
             portfolio_rules_path=settings.portfolio_rules_path,
             product_catalog_path=settings.product_catalog_path,
             twin_rules_path=settings.twin_rules_path,

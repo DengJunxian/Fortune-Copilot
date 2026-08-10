@@ -34,10 +34,18 @@ const lifecycleLabels: Record<LifecycleStage, string> = {
 };
 
 const denominatorLabels: Record<DenominatorId, string> = {
-  total_assets: "占家庭总资产",
+  total_assets: "占家庭总资产（兼容）",
+  total_household_assets: "占家庭总资产",
   investable_financial_assets: "占可投资金融资产",
   annual_new_surplus: "占年度新增结余",
+  residual_long_term_plannable_capital: "占长期可规划资源",
 };
+
+const canonicalDenominators: DenominatorId[] = [
+  "total_household_assets",
+  "investable_financial_assets",
+  "residual_long_term_plannable_capital",
+];
 
 const initialGoal: GoalCreateInput = {
   name: "",
@@ -130,7 +138,7 @@ export function PlanningWorkspace({
   }, [load]);
 
   useEffect(() => {
-    setDisplayMode(preferredValueView === "ratio" ? "total_assets" : "amount");
+    setDisplayMode(preferredValueView === "ratio" ? "total_household_assets" : "amount");
   }, [preferredValueView]);
 
   const limitingConstraints = useMemo(
@@ -268,7 +276,7 @@ export function PlanningWorkspace({
           <span>显示口径</span>
           <div>
             <button type="button" aria-pressed={displayMode === "amount"} onClick={() => setDisplayMode("amount")}>金额</button>
-            {(Object.keys(denominatorLabels) as DenominatorId[]).map((id) => (
+            {canonicalDenominators.map((id) => (
               <button key={id} type="button" aria-pressed={displayMode === id} onClick={() => setDisplayMode(id)}>
                 {denominatorLabels[id].replace("占", "")}
               </button>
@@ -283,6 +291,8 @@ export function PlanningWorkspace({
         <p>{displayedPlan.lifecycle.explanation}</p>
         <ul>{displayedPlan.lifecycle.evidence.map((item) => <li key={item.factor}><strong>{item.label}</strong><span>{item.observed_value}</span><b>{Number(item.adjustment_months) >= 0 ? "+" : ""}{item.adjustment_months} 月</b></li>)}</ul>
       </details> : null}
+
+      {focus === "all" || focus === "accounts" ? <V4WealthOverview plan={displayedPlan} /> : null}
 
       {focus === "all" || focus === "accounts" ? <div className="account-cockpit">
         <div className="account-column-head" aria-hidden="true">
@@ -381,9 +391,120 @@ export function PlanningWorkspace({
       <footer className="planning-version">
         <span>公式 {displayedPlan.meta.formula_version}</span>
         <span>规则 {displayedPlan.meta.rule_version} · {displayedPlan.meta.rule_source_type}</span>
+        <span>方法论 {displayedPlan.meta.methodology_version}</span>
         <span>输入 {displayedPlan.meta.input_version.slice(0, 12)}</span>
         <span>{displayedPlan.meta.scenario_type === "counterfactual" ? "反事实视图" : "基线视图"}</span>
       </footer>
+    </section>
+  );
+}
+
+function V4WealthOverview({ plan }: { plan: PlanningResponse }) {
+  const threshold = plan.methodology.regional_threshold;
+  const pph = plan.methodology.purchasing_power_hurdle;
+  const pension = plan.methodology.personal_pension;
+  const grb = plan.methodology.grb;
+  const blocked = plan.constraints.filter(
+    (item) => item.constraint_type === "hard" && item.status !== "pass",
+  );
+  const pfnw = Number(plan.denominators.plannable_financial_net_worth);
+  const effectiveThreshold = Math.max(1, Number(threshold.effective_threshold));
+  const progress = Math.max(0, Math.min(100, (pfnw / effectiveThreshold) * 100));
+
+  return (
+    <section className="v4-wealth-overview" aria-label="家庭财富四域责任瀑布">
+      <article className="pfnw-threshold-card">
+        <header>
+          <div><span>PFNW · 可规划金融净值</span><h3>{formatMoney(plan.denominators.plannable_financial_net_worth)}</h3></div>
+          <StatusBadge tone={pfnw >= effectiveThreshold ? "success" : "warning"}>{plan.methodology.financial_journey.label}</StatusBadge>
+        </header>
+        <div className="threshold-track" aria-label={`PFNW 达到有效门槛的 ${progress.toFixed(0)}%`}><span style={{ width: `${progress}%` }} /></div>
+        <dl>
+          <div><dt>系统建议</dt><dd>{formatMoney(threshold.recommended_minimum)} - {formatMoney(threshold.recommended_maximum)}</dd></div>
+          <div><dt>客户选择</dt><dd>{formatMoney(threshold.customer_selected_threshold)}</dd></div>
+          <div><dt>最终有效值</dt><dd>{formatMoney(threshold.effective_threshold)}</dd></div>
+        </dl>
+        <p>{threshold.explanation}</p>
+        <details><summary>哪些因素影响了门槛</summary><ul>{threshold.evidence.map((item) => <li key={item.factor}><strong>{item.factor}</strong><span>{item.observed_value}</span><b>{Number(item.adjustment_amount) >= 0 ? "+" : ""}{formatMoney(item.adjustment_amount)}</b></li>)}</ul></details>
+      </article>
+
+      <article className="why-not-invest-card" data-clear={blocked.length === 0 ? "true" : "false"}>
+        <span>{blocked.length ? "为什么现在不建议增加投资？" : "为什么现在可以继续评估？"}</span>
+        <h3>{blocked.length ? `${blocked.length} 项硬约束尚未通过` : "家庭安全闸门已通过"}</h3>
+        {blocked.length ? <ol>{blocked.map((item) => <li key={item.constraint_id}><strong>{item.name}</strong><p>{item.observed_value}</p><small>{item.effect}</small></li>)}</ol> : <p>仍需完成具体产品、渠道和交易时点适当性检查。</p>}
+      </article>
+
+      <article className="stock-flow-card">
+        <header><span>存量与流量分开</span><h3>今天有多少，未来再存多少</h3></header>
+        <div>
+          <section><small>当前资产负债表</small><strong>{formatMoney(plan.current_allocation_plan.current_investable_balance)}</strong><p>债务处理后 {formatMoney(plan.current_allocation_plan.current_balance_available_after_debt)}</p></section>
+          <section><small>未来现金流贡献</small><strong>{formatMoney(plan.contribution_plan.annual_new_surplus)} / 年</strong><p>同期承诺后 {formatMoney(plan.contribution_plan.future_contribution_available)}</p></section>
+        </div>
+        <p>{plan.contribution_plan.explanation}</p>
+      </article>
+
+      <article className="grb-decision-card">
+        <header>
+          <div><span>GRB 动态账户模型</span><h3>目标、风险、行为共同决定本次配置</h3></div>
+          <strong>家庭是决策单位</strong>
+        </header>
+        <p>{plan.methodology.optimization_objective}</p>
+        <div className="grb-axis-grid" role="list" aria-label="GRB 三维决策状态">
+          <section role="listitem" data-status={grb.goal_status}>
+            <span>Goal / 家庭目标</span>
+            <strong>{grb.goal_count} 项责任</strong>
+            <dl>
+              <div><dt>刚性责任</dt><dd>{grb.rigid_goal_count} 项</dd></div>
+              <div><dt>最近期限</dt><dd>{grb.nearest_goal_date ? formatDate(grb.nearest_goal_date) : "待补充"}</dd></div>
+            </dl>
+            <p>{grb.goal_summary}</p>
+          </section>
+          <section role="listitem" data-status={grb.risk_status}>
+            <span>Risk / 风险状态</span>
+            <strong>{grb.effective_risk_limit ? formatDomainLabel(grb.effective_risk_limit) : "待评估"}</strong>
+            <dl>
+              <div><dt>客观能力</dt><dd>{grb.capacity_score ? formatRatio(grb.capacity_score) : "待补"}</dd></div>
+              <div><dt>主观意愿</dt><dd>{grb.willingness_score ? formatRatio(grb.willingness_score) : "待补"}</dd></div>
+            </dl>
+            <p>{grb.risk_summary}</p>
+          </section>
+          <section role="listitem" data-status={grb.behavior_status}>
+            <span>Behavior / 实际行为</span>
+            <strong>{grb.revealed_behavior_score ? formatRatio(grb.revealed_behavior_score) : "待观察"}</strong>
+            <dl>
+              <div><dt>已识别偏差</dt><dd>{grb.detected_biases.length} 类</dd></div>
+              <div><dt>风险作用</dt><dd>只下调</dd></div>
+            </dl>
+            <p>{grb.behavior_summary}</p>
+          </section>
+        </div>
+        <small>{grb.formula}。行为画像不能替代监管风险测评，也不能绕过具体产品适当性。</small>
+      </article>
+
+      <article className="pph-card">
+        <header><div><span>中国家庭购买力门槛 PPH</span><h3>{formatRatio(pph.rate)}</h3></div><small>家庭层目标 · 非收益承诺</small></header>
+        <dl>{pph.components.map((item) => <div key={item.code}><dt>{item.label}</dt><dd>{formatRatio(item.rate)}</dd><small>{item.status} · {item.data_as_of}</small></div>)}</dl>
+        <p>{pph.explanation}</p>
+        <small>地区最低工资信号不是 CPI；当前数据为 {plan.methodology.minimum_wage_snapshot.is_demo ? "受控演示快照" : "已核验快照"}。</small>
+      </article>
+
+      <article className="pension-copilot-card">
+        <header><div><span>Personal Pension Copilot</span><h3>个人养老金是制度账户，不是低风险等级</h3></div><strong>{formatMoney(pension.account_balance)}</strong></header>
+        <dl>
+          <div><dt>年度政策限额</dt><dd>{formatMoney(pension.contribution_limit)}</dd></div>
+          <div><dt>本年已缴</dt><dd>{formatMoney(pension.annual_contribution_amount)}</dd></div>
+          <div><dt>预估当年税收优惠</dt><dd>{formatMoney(pension.estimated_current_year_tax_benefit)}</dd></div>
+          <div><dt>锁定制度资产</dt><dd>{formatMoney(plan.asset_liquidity.locked_institutional_assets)}</dd></div>
+        </dl>
+        <p>{pension.explanation}</p>
+      </article>
+
+      <article className="explanation-level-card">
+        <span>三级解释</span><h3>这笔钱为什么这样安排？</h3>
+        <p><strong>小白版</strong>先把近期一定要用的钱留好，再让长期用不到的钱承担波动。</p>
+        <details><summary>普通版</summary><p>系统先扣除债务、日常周转、应急、保障与五年内刚性目标，再对剩余长期资源评估增长资格。</p></details>
+        <details><summary>专业版</summary><p>PFNW {formatMoney(plan.denominators.plannable_financial_net_worth)} · 长期分母 {formatMoney(plan.denominators.residual_long_term_plannable_capital)} · 市场快照 {plan.methodology.market_regime.snapshot_version} · 决策 {plan.decision_evidence.decision_hash.slice(0, 12)}</p></details>
+      </article>
     </section>
   );
 }

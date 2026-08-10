@@ -5,8 +5,11 @@ from datetime import date
 from decimal import Decimal
 
 from app.domain.enums import (
+    AccountWrapper,
     AssetCategory,
+    AssetPurposeDimension,
     CashFlowFrequency,
+    ComplexityLevel,
     EmploymentStability,
     ExpenseCategory,
     ExpenseNecessity,
@@ -71,6 +74,7 @@ class ExpenseFact:
 @dataclass(frozen=True, slots=True)
 class AssetFact:
     id: str
+    owner_member_id: str | None
     name: str
     category: AssetCategory
     subcategory: str | None
@@ -82,6 +86,18 @@ class AssetFact:
     purpose: str
     pledged: bool
     property_use: PropertyUse
+    purpose_dimension: AssetPurposeDimension
+    account_wrapper: AccountWrapper
+    principal_loss_possible: bool
+    legally_principal_guaranteed: bool
+    lock_up: bool
+    withdrawable_date: date | None
+    volatility: Decimal
+    product_complexity: ComplexityLevel
+    institution_type: str
+    source_kind: str
+    household_role: str
+    region_code: str | None
     valuation_date: date | None
     version: int
 
@@ -152,6 +168,25 @@ class GoalFact:
 
 
 @dataclass(frozen=True, slots=True)
+class ResponsibilityFact:
+    id: str
+    responsible_member_id: str | None
+    beneficiary: str
+    responsibility_type: str
+    target_amount: Decimal
+    minimum_acceptable_amount: Decimal
+    target_date: date
+    rigidity: GoalRigidity
+    deferrable: bool
+    annual_growth_assumption: Decimal
+    prepared_amount: Decimal
+    institutional_coverage: Decimal
+    funding_source: str
+    source_goal_id: str | None
+    version: int
+
+
+@dataclass(frozen=True, slots=True)
 class RiskAssessmentFact:
     id: str
     capacity_score: Decimal
@@ -193,5 +228,6 @@ class HouseholdFacts:
     insurance_policies: tuple[InsuranceFact, ...]
     social_security_accounts: tuple[SocialSecurityFact, ...]
     goals: tuple[GoalFact, ...]
+    responsibilities: tuple[ResponsibilityFact, ...]
     risk_assessments: tuple[RiskAssessmentFact, ...]
     behavior_assessments: tuple[BehaviorAssessmentFact, ...]

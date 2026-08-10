@@ -32,6 +32,7 @@ import { HealthRadar } from "../financial/HealthRadar";
 import { MetricInspector } from "../financial/MetricInspector";
 import { StatementWorkspace } from "../financial/StatementWorkspace";
 import { PlanningWorkspace } from "../planning/PlanningWorkspace";
+import { PersonalPensionWorkspace } from "../planning/PersonalPensionWorkspace";
 import { PortfolioWorkspace } from "../portfolio/PortfolioWorkspace";
 import { TrustWorkspace } from "../trust/TrustWorkspace";
 import { TwinWorkspace } from "../twin/TwinWorkspace";
@@ -51,6 +52,7 @@ const taskViews: Array<{ code: ClientView; label: string; short: string }> = [
   { code: "cashflow", label: "家庭现金流", short: "现金流" },
   { code: "health", label: "财务健康", short: "健康" },
   { code: "accounts", label: "四账户", short: "账户" },
+  { code: "pension", label: "个人养老金", short: "养老" },
   { code: "goals", label: "目标时间轴", short: "目标" },
   { code: "twin", label: "数字孪生", short: "孪生" },
   { code: "behavior", label: "行为实验", short: "行为" },
@@ -190,7 +192,7 @@ export function ClientExperienceWorkspace({
       <ClientPreferences />
 
       <nav className="client-task-nav" aria-label="客户任务工作区">
-        <div role="tablist" aria-label="十一项客户任务">
+        <div role="tablist" aria-label="十二项客户任务">
           {taskViews.map((item, index) => (
             <button
               key={item.code}
@@ -236,6 +238,13 @@ export function ClientExperienceWorkspace({
             <SensitiveRegion masked={maskAmounts} label="四账户金额与配置">
               <PlanningWorkspace householdId={householdId} focus="accounts" preferredValueView={valueView} />
               <PortfolioWorkspace householdId={householdId} />
+            </SensitiveRegion>
+          </TaskSection>
+        ) : null}
+        {activeView === "pension" ? (
+          <TaskSection kicker="Personal Pension Copilot" title="制度账户与底层风险分别核对" description="政策额度、税惠估算、账户锁定和产品风险均使用版本化事实；个人养老金不自动等于低风险。">
+            <SensitiveRegion masked={maskAmounts} label="个人养老金金额与税惠估算">
+              <PersonalPensionWorkspace plan={plan} />
             </SensitiveRegion>
           </TaskSection>
         ) : null}
@@ -339,7 +348,8 @@ function HealthView({ analysis, masked, onSelectMetric }: { analysis: FinancialA
   );
   return (
     <section className="client-view health-view">
-      <header className="client-view-header"><div><p className="page-kicker">财务健康体检</p><h2 id="client-view-heading" tabIndex={-1}>结论、依据与行动在同一页核对</h2><p>雷达图只定位薄弱维度；任何判断都能回到公式、代入、阈值与数据日。</p></div></header>
+      <header className="client-view-header"><div><p className="page-kicker">中国家庭财富健康指数 · CHFI</p><h2 id="client-view-heading" tabIndex={-1}>先看当前最重要的行动，再核对十个维度</h2><p>综合分采用几何平均，强项不能抵消现金流、偿债或保障短板；任何判断都能回到原始指标。</p></div></header>
+      <HealthIndexSummary analysis={analysis} />
       <div className="overview-layout">
         <SensitiveRegion masked={masked} label="财务健康指标金额">
           <div className="metric-ledger">
@@ -360,6 +370,48 @@ function HealthView({ analysis, masked, onSelectMetric }: { analysis: FinancialA
         <RiskAndPurchasingPower analysis={analysis} />
       </SensitiveRegion>
       <Diagnostics analysis={analysis} />
+    </section>
+  );
+}
+
+const healthStatusCopy: Record<FinancialAnalysis["health_assessment"]["status"], string> = {
+  healthy: "整体稳健",
+  attention: "需要关注",
+  risk: "优先处理短板",
+};
+
+function HealthIndexSummary({ analysis }: { analysis: FinancialAnalysis }) {
+  const health = analysis.health_assessment;
+  const passedGates = health.hard_gates.filter((gate) => gate.status === "pass").length;
+  return (
+    <section className="health-index-summary" data-status={health.status} aria-label="家庭财富健康指数摘要">
+      <div className="health-index-score">
+        <span>CHFI</span>
+        <strong>{Number(health.overall_score).toFixed(0)}</strong>
+        <small>/ 100</small>
+        <em>{healthStatusCopy[health.status]}</em>
+      </div>
+      <div className="health-priority-action">
+        <span>本月最值得做的一件事</span>
+        <h3>{health.priority_action.title}</h3>
+        <p>{health.priority_action.detail}</p>
+      </div>
+      <div className="health-gate-summary">
+        <span>不可补偿风险闸门</span>
+        <strong>{passedGates} / {health.hard_gates.length} 通过</strong>
+        <ul>
+          {health.hard_gates.map((gate) => (
+            <li key={gate.code} data-status={gate.status}>
+              <b>{gate.name}</b><small>{gate.status === "pass" ? "已通过" : gate.status === "risk" ? "需处理" : "不适用"}</small>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <details>
+        <summary>查看指数口径</summary>
+        <p>{health.formula}</p>
+        <p>{health.weighting_note} CHFI 只用于家庭诊断，不用于征信、贷款定价或歧视性营销。</p>
+      </details>
     </section>
   );
 }

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import date
 from decimal import Decimal
 
 from app.domain.enums import (
@@ -33,6 +34,7 @@ def _eligible_products(
     customer_gate: SuitabilityGateResult,
     facts: HouseholdFacts,
     rules: PortfolioRules,
+    analysis_date: date,
 ) -> list[ProductOut]:
     effective_risk = customer_gate.effective_risk_limit
     knowledge = facts.risk_assessments[-1].knowledge_score if facts.risk_assessments else ZERO
@@ -44,6 +46,8 @@ def _eligible_products(
             continue
         if not product.enabled or product.education_only or product.professional_only:
             continue
+        if product.sale_status != "available":
+            continue
         if "long_term_growth" not in product.suitable_accounts:
             continue
         if effective_risk is None or risk_rank(product.risk_level, rules) > risk_rank(
@@ -52,6 +56,10 @@ def _eligible_products(
         ):
             continue
         if product.minimum_holding_months > horizon_months:
+            continue
+        if product.lock_up and (
+            product.withdrawable_date is None or product.withdrawable_date > analysis_date
+        ):
             continue
         if allocation_amount > 0 and product.minimum_investment > allocation_amount:
             continue
@@ -79,6 +87,9 @@ def map_products(
     customer_gate: SuitabilityGateResult,
     facts: HouseholdFacts,
     rules: PortfolioRules,
+    *,
+    analysis_date: date,
+    catalog_executable: bool,
 ) -> list[ProductMapping]:
     mappings: list[ProductMapping] = []
     maximum = (
@@ -97,6 +108,7 @@ def map_products(
             customer_gate,
             facts,
             rules,
+            analysis_date,
         )
         if not eligible:
             mappings.append(
@@ -143,7 +155,10 @@ def map_products(
             if amount > 0 and product_amount < product.minimum_investment:
                 index += 1
                 continue
-            if family_gate.status != SuitabilityStatus.PASS or amount <= 0:
+            if not catalog_executable:
+                decision = SuitabilityDecision.EDUCATION_ONLY
+                reasons = ["产品快照已过期，禁止生成可执行购买建议"]
+            elif family_gate.status != SuitabilityStatus.PASS or amount <= 0:
                 decision = SuitabilityDecision.EDUCATION_ONLY
                 reasons = ["家庭安全闸门未通过或没有可执行长期金额，只展示产品类型教育"]
             elif customer_gate.status != SuitabilityStatus.PASS:

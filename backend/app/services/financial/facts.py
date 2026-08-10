@@ -15,6 +15,7 @@ from app.domain.financial import (
     InsuranceFact,
     LiabilityFact,
     MemberFact,
+    ResponsibilityFact,
     RiskAssessmentFact,
     SocialSecurityFact,
 )
@@ -28,6 +29,7 @@ from app.models.finance import (
     IncomeSource,
     InsurancePolicy,
     Liability,
+    Responsibility,
     SocialSecurityAccount,
 )
 from app.services.crud import ensure_household
@@ -59,6 +61,7 @@ def load_household_facts(session: Session, household_id: str) -> HouseholdFacts:
     policies = _active_records(session, InsurancePolicy, household_id)
     social_accounts = _active_records(session, SocialSecurityAccount, household_id)
     goals = _active_records(session, FinancialGoal, household_id)
+    responsibilities = _active_records(session, Responsibility, household_id)
     risk_assessments = _active_records(session, RiskAssessment, household_id)
     behavior_assessments = _active_records(session, BehaviorAssessment, household_id)
 
@@ -125,6 +128,7 @@ def load_household_facts(session: Session, household_id: str) -> HouseholdFacts:
         assets=tuple(
             AssetFact(
                 id=item.id,
+                owner_member_id=item.owner_member_id,
                 name=item.name,
                 category=item.category,
                 subcategory=item.subcategory,
@@ -136,6 +140,18 @@ def load_household_facts(session: Session, household_id: str) -> HouseholdFacts:
                 purpose=item.purpose,
                 pledged=item.pledged,
                 property_use=item.property_use,
+                purpose_dimension=item.purpose_dimension,
+                account_wrapper=item.account_wrapper,
+                principal_loss_possible=item.principal_loss_possible,
+                legally_principal_guaranteed=item.legally_principal_guaranteed,
+                lock_up=item.lock_up,
+                withdrawable_date=item.withdrawable_date,
+                volatility=item.volatility,
+                product_complexity=item.product_complexity,
+                institution_type=item.institution_type,
+                source_kind=item.source_kind,
+                household_role=item.household_role,
+                region_code=item.region_code,
                 valuation_date=item.valuation_date,
                 version=item.version,
             )
@@ -209,6 +225,26 @@ def load_household_facts(session: Session, household_id: str) -> HouseholdFacts:
                 version=item.version,
             )
             for item in goals
+        ),
+        responsibilities=tuple(
+            ResponsibilityFact(
+                id=item.id,
+                responsible_member_id=item.responsible_member_id,
+                beneficiary=item.beneficiary,
+                responsibility_type=item.responsibility_type,
+                target_amount=item.target_amount,
+                minimum_acceptable_amount=item.minimum_acceptable_amount,
+                target_date=item.target_date,
+                rigidity=item.rigidity,
+                deferrable=item.deferrable,
+                annual_growth_assumption=item.annual_growth_assumption,
+                prepared_amount=item.prepared_amount,
+                institutional_coverage=item.institutional_coverage,
+                funding_source=item.funding_source,
+                source_goal_id=item.source_goal_id,
+                version=item.version,
+            )
+            for item in responsibilities
         ),
         risk_assessments=tuple(
             RiskAssessmentFact(

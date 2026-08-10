@@ -1,0 +1,245 @@
+{
+  "schema_version": "authoritative-public-data-schema-v1.0.0",
+  "snapshot_version": "authoritative-public-cn-2026-08-08",
+  "publication_cutoff": "2026-08-08",
+  "ingested_at": "2026-08-08T12:00:00+08:00",
+  "official_cpi": {
+    "rate": "0.009000",
+    "statistic_label": "2026年1—4月全国居民消费价格同比平均涨幅",
+    "period_start": "2026-01-01",
+    "period_end": "2026-04-30",
+    "is_cpi": true,
+    "source_system": "国家统计局",
+    "source_reference": "https://www.stats.gov.cn/english/PressRelease/202605/t20260512_1963677.html",
+    "observed_at": "2026-05-12",
+    "effective_at": "2026-04-30",
+    "ingested_at": "2026-08-08T12:00:00+08:00",
+    "version": "nbs-cpi-2026-jan-apr-v1",
+    "data_quality": "verified_public_snapshot",
+    "is_live": false,
+    "is_demo": false,
+    "lineage": "国家统计局公开发布 -> 人工双人复核字段与统计口径 -> 只读版本化快照"
+  },
+  "living_cost_observation": {
+    "metric": "national_per_capita_consumption_expenditure",
+    "amount": "29476.00",
+    "year_on_year_rate": "0.044000",
+    "unit": "CNY/person/year",
+    "period_start": "2025-01-01",
+    "period_end": "2025-12-31",
+    "interpretation": "居民人均消费支出的名义变动观察，只用于地区生活成本管道的治理样例，不等于价格指数，也不直接替代家庭支出加权变化。",
+    "can_be_used_as_cpi": false,
+    "source_system": "国家统计局",
+    "source_reference": "https://www.stats.gov.cn/sj/zxfb/202601/t20260119_1962321.html",
+    "observed_at": "2026-01-19",
+    "effective_at": "2025-12-31",
+    "ingested_at": "2026-08-08T12:00:00+08:00",
+    "version": "nbs-household-consumption-2025-v1",
+    "data_quality": "verified_public_snapshot_not_price_index",
+    "is_live": false,
+    "is_demo": false,
+    "lineage": "国家统计局公开发布 -> 口径标注 -> 只读版本化快照"
+  },
+  "regional_living_cost_observations": {
+    "330100": {
+      "region_code": "330100",
+      "region_name": "浙江省杭州市",
+      "metric": "regional_per_capita_consumption_expenditure",
+      "amount": "37369.00",
+      "year_on_year_rate": "0.094000",
+      "unit": "CNY/person/year",
+      "period_start": "2018-01-01",
+      "period_end": "2018-12-31",
+      "interpretation": "杭州市全体居民人均生活消费支出的历史观察；因缺少同口径近期快照而明确标记 stale，不进入 PPH。",
+      "can_be_used_as_cpi": false,
+      "source_system": "杭州市统计局、国家统计局杭州调查队",
+      "source_reference": "https://tjj.hangzhou.gov.cn/art/2019/3/4/art_1229279682_2571106.html",
+      "observed_at": "2019-03-04",
+      "effective_at": "2018-12-31",
+      "ingested_at": "2026-08-08T12:00:00+08:00",
+      "version": "hangzhou-consumption-2018-historical-v1",
+      "data_quality": "verified_public_snapshot_historical_stale",
+      "is_live": false,
+      "is_demo": false,
+      "lineage": "杭州统计公报 -> 口径标注与时效降级 -> 地区生活成本观察快照"
+    },
+    "320100": {
+      "region_code": "320100",
+      "region_name": "江苏省南京市",
+      "metric": "regional_per_capita_consumption_expenditure",
+      "amount": "44578.00",
+      "year_on_year_rate": "0.032000",
+      "unit": "CNY/person/year",
+      "period_start": "2024-01-01",
+      "period_end": "2024-12-31",
+      "interpretation": "南京市居民人均消费支出的名义观察，不是地区 CPI，也不直接替代家庭支出通胀。",
+      "can_be_used_as_cpi": false,
+      "source_system": "南京市统计局",
+      "source_reference": "https://tjj.nanjing.gov.cn/njstjj/202504/t20250401_5108470.html",
+      "observed_at": "2025-04-01",
+      "effective_at": "2024-12-31",
+      "ingested_at": "2026-08-08T12:00:00+08:00",
+      "version": "nanjing-consumption-2024-v1",
+      "data_quality": "verified_public_snapshot",
+      "is_live": false,
+      "is_demo": false,
+      "lineage": "南京统计公报 -> 口径标注 -> 地区生活成本观察快照"
+    },
+    "440100": {
+      "region_code": "440100",
+      "region_name": "广东省广州市",
+      "metric": "regional_per_capita_consumption_expenditure",
+      "amount": "49177.00",
+      "year_on_year_rate": "0.031000",
+      "unit": "CNY/person/year",
+      "period_start": "2025-01-01",
+      "period_end": "2025-12-31",
+      "interpretation": "广州市居民家庭人均消费支出的名义观察，不是地区 CPI，也不直接替代家庭支出通胀。",
+      "can_be_used_as_cpi": false,
+      "source_system": "广州市统计局、国家统计局广州调查队",
+      "source_reference": "https://tjj.gz.gov.cn/zzfwzq/tjkx/content/post_10804061.html",
+      "observed_at": "2026-05-10",
+      "effective_at": "2025-12-31",
+      "ingested_at": "2026-08-08T12:00:00+08:00",
+      "version": "guangzhou-consumption-2025-v1",
+      "data_quality": "verified_public_snapshot",
+      "is_live": false,
+      "is_demo": false,
+      "lineage": "广州统计公报 -> 口径标注 -> 地区生活成本观察快照"
+    }
+  },
+  "regional_minimum_wages": {
+    "330100": {
+      "region_code": "330100",
+      "region_name": "浙江省杭州市",
+      "values": [
+        {
+          "date": "2021-08-01",
+          "monthly_amount": "2280.00",
+          "source_reference": "https://zfgb.hangzhou.gov.cn/10/105220253/t116220253054/518325.shtml"
+        },
+        {
+          "date": "2024-01-01",
+          "monthly_amount": "2490.00",
+          "source_reference": "https://zfgb.hangzhou.gov.cn/10/105220253/t117220253054/518480.shtml"
+        }
+      ],
+      "source_system": "杭州市人民政府公报",
+      "source_reference": "https://zfgb.hangzhou.gov.cn/10/105220253/t117220253054/518480.shtml",
+      "observed_at": "2026-08-08",
+      "effective_at": "2024-01-01",
+      "ingested_at": "2026-08-08T12:00:00+08:00",
+      "version": "minimum-wage-hangzhou-public-2024-v1",
+      "data_quality": "verified_public_snapshot",
+      "is_live": false,
+      "is_demo": false,
+      "lineage": "杭州市政府公报公开文件 -> 日期与金额交叉复核 -> 地区序列快照"
+    },
+    "320100": {
+      "region_code": "320100",
+      "region_name": "江苏省南京市",
+      "values": [
+        {
+          "date": "2024-01-01",
+          "monthly_amount": "2490.00",
+          "source_reference": "https://jshrss.jiangsu.gov.cn/art/2024/1/15/art_77279_11124963.html"
+        },
+        {
+          "date": "2026-01-01",
+          "monthly_amount": "2660.00",
+          "source_reference": "https://www.jiangsu.gov.cn/art/2025/12/30/art_90848_11702519.html"
+        }
+      ],
+      "source_system": "江苏省人民政府与江苏省人力资源和社会保障厅",
+      "source_reference": "https://www.jiangsu.gov.cn/art/2025/12/30/art_90848_11702519.html",
+      "observed_at": "2026-01-01",
+      "effective_at": "2026-01-01",
+      "ingested_at": "2026-08-08T12:00:00+08:00",
+      "version": "minimum-wage-nanjing-public-2026-v1",
+      "data_quality": "verified_public_snapshot_short_series",
+      "is_live": false,
+      "is_demo": false,
+      "lineage": "江苏省政府公开文件 -> 南京市区一类地区映射复核 -> 地区序列快照"
+    },
+    "440100": {
+      "region_code": "440100",
+      "region_name": "广东省广州市",
+      "values": [
+        {
+          "date": "2021-12-01",
+          "monthly_amount": "2300.00",
+          "source_reference": "https://cms.gz.gov.cn/gzzcwjk/storage/material/2023/10/18/1c09052e32b1fee9342ddcbfe3526afb.pdf"
+        },
+        {
+          "date": "2025-03-01",
+          "monthly_amount": "2500.00",
+          "source_reference": "https://www.gz.gov.cn/xw/tzgg/content/mpost_10134789.html"
+        }
+      ],
+      "source_system": "广州市人民政府",
+      "source_reference": "https://www.gz.gov.cn/xw/tzgg/content/mpost_10134789.html",
+      "observed_at": "2025-02-28",
+      "effective_at": "2025-03-01",
+      "ingested_at": "2026-08-08T12:00:00+08:00",
+      "version": "minimum-wage-guangzhou-public-2025-v1",
+      "data_quality": "verified_public_snapshot",
+      "is_live": false,
+      "is_demo": false,
+      "lineage": "广州市政府公开文件 -> 日期与金额交叉复核 -> 地区序列快照"
+    }
+  },
+  "policy_sources": [
+    {
+      "code": "pbo_cdd_2026",
+      "title": "金融机构客户尽职调查和客户身份资料及交易记录保存管理办法",
+      "authority": "中国人民银行、国家金融监督管理总局、中国证券监督管理委员会",
+      "publication_date": "2025-12-29",
+      "effective_from": "2026-01-01",
+      "control_scope": ["KYC", "CDD", "EDD", "持续尽职调查", "交易记录可重现"],
+      "source_reference": "https://www.pbc.gov.cn/zhengwugongkai/attachDir/2025/12/2025122909264498909.pdf"
+    },
+    {
+      "code": "nfra_suitability_2026",
+      "title": "金融机构产品适当性管理办法",
+      "authority": "国家金融监督管理总局",
+      "publication_date": "2025-07-11",
+      "effective_from": "2026-02-01",
+      "control_scope": ["了解客户", "了解产品", "动态风险管理", "渠道适配", "交易时点检查"],
+      "source_reference": "https://www.nfra.gov.cn/cn/view/pages/ItemDetail.html?docId=1217123&itemId=917"
+    },
+    {
+      "code": "nfra_data_security_2024",
+      "title": "银行保险机构数据安全管理办法",
+      "authority": "国家金融监督管理总局",
+      "publication_date": "2024-12-27",
+      "effective_from": "2024-12-27",
+      "control_scope": ["数据分类分级", "最小权限", "外部接口隔离", "AI模型治理", "备份与高可用"],
+      "source_reference": "https://www.nfra.gov.cn/cn/view/pages/governmentDetail.html?docId=1192311&generaltype=1&itemId=861"
+    },
+    {
+      "code": "nfra_ai_governance_2026",
+      "title": "银行业保险业人工智能安全开发应用指导意见",
+      "authority": "国家金融监督管理总局",
+      "publication_date": "2026-06-18",
+      "effective_from": "2026-06-18",
+      "control_scope": ["模型全生命周期", "准入", "独立验证", "公平性", "可追溯", "监控与退出"],
+      "source_reference": "https://www.nfra.gov.cn/cn/view/pages/governmentDetail.html?docId=1261784&generaltype=1&itemId="
+    }
+  ],
+  "integration_access_boundaries": [
+    {
+      "code": "icbc_open_api_platform",
+      "authority": "中国工商银行",
+      "access_model": "contract_and_credentials_required",
+      "public_description": "工行开放平台存在，但业务接口、身份、权限和生产凭据并非匿名公共资源。",
+      "source_reference": "https://gw.open.icbc.com.cn/ui/"
+    },
+    {
+      "code": "icbc_bank_enterprise_interconnection",
+      "authority": "中国工商银行",
+      "access_model": "application_agreement_integration_test_production",
+      "public_description": "银企互联需提交申请、分析场景、签署协议、联调测试后方可投产；公开资料不能替代客户授权、证书或业务权限。",
+      "source_reference": "https://www.icbc.com.cn/page/773213223851053056.html"
+    }
+  ]
+}

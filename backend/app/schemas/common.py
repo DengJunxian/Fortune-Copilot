@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
@@ -27,6 +27,20 @@ class HealthResponse(BaseModel):
     runtime_mode: str
     mock_mode: bool
     database: DependencyStatus
+
+
+class LivenessResponse(BaseModel):
+    status: Literal["alive"] = "alive"
+    version: str
+
+
+class ReadinessResponse(BaseModel):
+    status: Literal["ready", "not_ready"]
+    runtime_mode: str
+    database: DependencyStatus
+    production_integrations_ready: bool
+    blocking_dependencies: list[str] = Field(default_factory=list)
+    boundary_note: str
 
 
 class Capability(BaseModel):

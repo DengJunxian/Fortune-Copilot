@@ -1,6 +1,6 @@
 export type MarketScenario = "neutral" | "risk_off" | "risk_on";
 export type CandidateType = "conservative" | "balanced" | "growth";
-export type SuitabilityDecision = "allow" | "downgrade" | "reject" | "education_only";
+export type SuitabilityDecision = "allow" | "downgrade" | "reject" | "education_only" | "escalate";
 export type SuitabilityStatus = "pass" | "restrict" | "block";
 export type ProductRiskLevel = "r1" | "r2" | "r3" | "r4" | "r5";
 
@@ -15,7 +15,7 @@ export interface SuitabilityCheckItem {
 }
 
 export interface SuitabilityGate {
-  gate: "family_safety" | "customer" | "product";
+  gate: "family_safety" | "customer" | "product" | "channel" | "transaction_time";
   name: string;
   status: SuitabilityStatus;
   decision: SuitabilityDecision;
@@ -87,6 +87,12 @@ export interface PortfolioCandidate {
   liquidity_description: string;
   annual_fee_rate: string;
   annual_fee_estimate: string;
+  responsibility_breach_probability: string;
+  purchasing_power_success_probability: string;
+  liability_coverage: string;
+  liquidity_shortfall: string;
+  concentration: string;
+  real_return_after_fee: string;
   applicable_conditions: string[];
   primary_risks: string[];
   why_not_other_candidates: string;
@@ -143,6 +149,17 @@ export interface MockProduct {
   enabled: boolean;
   is_simulated: boolean;
   terms: Record<string, unknown>;
+  account_wrappers: string[];
+  principal_loss_possible: boolean;
+  legally_principal_guaranteed: boolean;
+  liquidity_days: number;
+  lock_up: boolean;
+  withdrawable_date: string | null;
+  volatility: string;
+  sale_status: "available" | "unavailable" | "education_only";
+  channel: string;
+  source_reference: string;
+  snapshot_version: string;
   catalog_version: string;
   data_date: string;
   source: string;
@@ -154,9 +171,26 @@ export interface ProductCatalog {
   data_date: string;
   source_type: "mock";
   source_summary: string;
+  source_system: string;
+  source_reference: string;
+  observed_at: string;
+  effective_at: string;
+  ingested_at: string;
+  version: string;
+  data_quality: string;
+  is_live: boolean;
+  is_demo: boolean;
+  lineage: string;
   product_count: number;
   products: MockProduct[];
   professional_hedge_lab_enabled: false;
+  snapshot_version: string;
+  snapshot_observed_at: string;
+  snapshot_age_days: number;
+  maximum_age_days: number;
+  catalog_stale: boolean;
+  executable_recommendations_allowed: boolean;
+  stale_action: "block_executable_allow_education";
 }
 
 export interface PortfolioResponse {
@@ -175,6 +209,9 @@ export interface PortfolioResponse {
     currency: string;
     synthetic_data: boolean;
     market_scenario: MarketScenario;
+    methodology_version: string;
+    market_regime_version: string;
+    product_snapshot_version: string;
   };
   context: {
     current_growth_assets: string;
@@ -183,6 +220,11 @@ export interface PortfolioResponse {
     long_term_goal_present_value_gap: string;
     simulation_horizon_months: number;
     annual_new_surplus: string;
+    purchasing_power_hurdle: string;
+    single_equity_amount: string;
+    largest_single_security_ratio: string;
+    single_equity_hhi: string;
+    security_concentration_treatment: "satellite_only";
     counting_note: string;
   };
   family_safety_gate: SuitabilityGate;

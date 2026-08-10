@@ -8,9 +8,11 @@ from app.api.v1.endpoints import (
     financial,
     fund_advisory,
     health,
+    integrations,
     meta,
     planning,
     portfolio,
+    public_data,
     reports,
     review,
     security,
@@ -21,7 +23,9 @@ from app.api.v1.endpoints import (
 
 api_router = APIRouter()
 api_router.include_router(health.router)
+api_router.include_router(integrations.router)
 api_router.include_router(meta.router)
+api_router.include_router(public_data.router)
 api_router.include_router(domain.router)
 api_router.include_router(financial.router)
 api_router.include_router(fund_advisory.router)

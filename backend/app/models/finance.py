@@ -8,8 +8,11 @@ from sqlalchemy import JSON, Boolean, Date, Enum, ForeignKey, Integer, Numeric, 
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.domain.enums import (
+    AccountWrapper,
     AssetCategory,
+    AssetPurposeDimension,
     CashFlowFrequency,
+    ComplexityLevel,
     ExpenseCategory,
     ExpenseNecessity,
     GoalRigidity,
@@ -110,6 +113,67 @@ class Asset(RecordMixin, Base):
         Enum(PropertyUse, native_enum=False, length=24),
         default=PropertyUse.NOT_PROPERTY,
         nullable=False,
+    )
+    purpose_dimension: Mapped[AssetPurposeDimension] = mapped_column(
+        Enum(AssetPurposeDimension, native_enum=False, length=16),
+        default=AssetPurposeDimension.STABLE,
+        nullable=False,
+    )
+    account_wrapper: Mapped[AccountWrapper] = mapped_column(
+        Enum(AccountWrapper, native_enum=False, length=32),
+        default=AccountWrapper.ORDINARY,
+        nullable=False,
+    )
+    principal_loss_possible: Mapped[bool] = mapped_column(
+        Boolean, default=True, nullable=False
+    )
+    legally_principal_guaranteed: Mapped[bool] = mapped_column(
+        Boolean, default=False, nullable=False
+    )
+    lock_up: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    withdrawable_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    volatility: Mapped[Decimal] = mapped_column(RATIO, default=0, nullable=False)
+    product_complexity: Mapped[ComplexityLevel] = mapped_column(
+        Enum(ComplexityLevel, native_enum=False, length=24),
+        default=ComplexityLevel.BASIC,
+        nullable=False,
+    )
+    institution_type: Mapped[str] = mapped_column(
+        String(48), default="ordinary", nullable=False
+    )
+    source_kind: Mapped[str] = mapped_column(
+        String(40), default="user_self_report", nullable=False
+    )
+    household_role: Mapped[str] = mapped_column(
+        String(40), default="household_shared", nullable=False
+    )
+    region_code: Mapped[str | None] = mapped_column(String(24), nullable=True)
+
+
+class Responsibility(RecordMixin, Base):
+    __tablename__ = "responsibilities"
+
+    household_id: Mapped[str] = mapped_column(
+        ForeignKey("households.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    responsible_member_id: Mapped[str | None] = mapped_column(
+        ForeignKey("household_members.id", ondelete="SET NULL"), nullable=True
+    )
+    beneficiary: Mapped[str] = mapped_column(String(120), nullable=False)
+    responsibility_type: Mapped[str] = mapped_column(String(48), nullable=False)
+    target_amount: Mapped[Decimal] = mapped_column(MONEY, nullable=False)
+    minimum_acceptable_amount: Mapped[Decimal] = mapped_column(MONEY, nullable=False)
+    target_date: Mapped[date] = mapped_column(Date, nullable=False)
+    rigidity: Mapped[GoalRigidity] = mapped_column(
+        Enum(GoalRigidity, native_enum=False, length=16), nullable=False
+    )
+    deferrable: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    annual_growth_assumption: Mapped[Decimal] = mapped_column(RATIO, nullable=False)
+    prepared_amount: Mapped[Decimal] = mapped_column(MONEY, nullable=False)
+    institutional_coverage: Mapped[Decimal] = mapped_column(MONEY, nullable=False)
+    funding_source: Mapped[str] = mapped_column(String(120), nullable=False)
+    source_goal_id: Mapped[str | None] = mapped_column(
+        ForeignKey("financial_goals.id", ondelete="SET NULL"), nullable=True
     )
 
 

@@ -133,6 +133,7 @@ def _seed(session: Session, settings: Settings, *, reset: bool = False) -> Any:
         settings.synthetic_data_path,
         rules_path=settings.financial_rules_path,
         planning_rules_path=settings.planning_rules_path,
+        methodology_rules_path=settings.methodology_rules_path,
         portfolio_rules_path=settings.portfolio_rules_path,
         product_catalog_path=settings.product_catalog_path,
         twin_rules_path=settings.twin_rules_path,

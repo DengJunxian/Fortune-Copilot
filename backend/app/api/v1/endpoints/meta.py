@@ -69,7 +69,7 @@ def capabilities() -> CapabilitiesResponse:
                 implementation="real",
                 notes=(
                     "Versioned Mock catalog, deterministic multi-objective grid optimizer, "
-                    "three candidates, three suitability gates and bounded rebalancing"
+                    "three candidates, five suitability gates and bounded rebalancing"
                 ),
             ),
             Capability(
@@ -78,7 +78,7 @@ def capabilities() -> CapabilitiesResponse:
                 implementation="real",
                 notes=(
                     "Monthly household state transitions, reproducible Monte Carlo, "
-                    "19 composable stress scenarios, staged progress/cancel and audit export"
+                    "22 composable stress scenarios, staged progress/cancel and audit export"
                 ),
             ),
             Capability(
@@ -106,7 +106,7 @@ def capabilities() -> CapabilitiesResponse:
                 status="available",
                 implementation="real",
                 notes=(
-                    "Eleven client task workspaces, ECharts data-table contract, strict "
+                    "Twelve client task workspaces, ECharts data-table contract, strict "
                     "eight-chapter preview, action calendar, privacy export, consent "
                     "withdrawal and human-review audit entry"
                 ),
@@ -149,12 +149,31 @@ def capabilities() -> CapabilitiesResponse:
                 ),
             ),
             Capability(
-                id="bank_adapter",
+                id="authoritative_public_data",
                 status="available",
+                implementation="real",
+                notes=(
+                    "Official-domain allowlist, schema validation, statistical-semantic labels, "
+                    "versioned CPI/minimum-wage/policy snapshots and integrity hash; not live APIs"
+                ),
+            ),
+            Capability(
+                id="production_integration_readiness",
+                status="available",
+                implementation="real",
+                notes=(
+                    "Typed IAM/CDD/data/product/transaction/CRM/committee ports, fail-closed "
+                    "default adapters and explicit SRE/DR production blockers"
+                ),
+            ),
+            Capability(
+                id="bank_adapter",
+                status="blocked",
                 implementation="mock_only",
                 notes=(
-                    "Eight synthetic account interfaces through a project-owned Mock adapter; "
-                    "credit limit is information-only and no production ICBC connection is claimed"
+                    "Eight synthetic account interfaces remain education-only; all production "
+                    "ICBC ports fail closed until contract, consent, credentials and "
+                    "approvals exist"
                 ),
             ),
         ],

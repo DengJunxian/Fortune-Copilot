@@ -28,6 +28,10 @@ from app.models.security import IdentityAccessGrant
 from app.schemas.seed import SyntheticDataset
 from app.services.behavior.rules import ensure_behavior_rule_version, load_behavior_rules
 from app.services.financial.rules import ensure_rule_version, load_financial_rules
+from app.services.methodology.rules import (
+    ensure_methodology_rule_version,
+    load_methodology_rules,
+)
 from app.services.planning.rules import ensure_planning_rule_version, load_planning_rules
 from app.services.portfolio.catalog import ensure_mock_product_catalog, load_product_catalog
 from app.services.portfolio.rules import ensure_portfolio_rule_version, load_portfolio_rules
@@ -219,6 +223,7 @@ def seed_synthetic_data(
     *,
     rules_path: str | None = None,
     planning_rules_path: str | None = None,
+    methodology_rules_path: str | None = None,
     portfolio_rules_path: str | None = None,
     product_catalog_path: str | None = None,
     twin_rules_path: str | None = None,
@@ -233,6 +238,11 @@ def seed_synthetic_data(
         ensure_rule_version(session, load_financial_rules(rules_path))
     if planning_rules_path is not None:
         ensure_planning_rule_version(session, load_planning_rules(planning_rules_path))
+    if methodology_rules_path is not None:
+        ensure_methodology_rule_version(
+            session,
+            load_methodology_rules(methodology_rules_path),
+        )
     if portfolio_rules_path is not None:
         ensure_portfolio_rule_version(session, load_portfolio_rules(portfolio_rules_path))
     product_count = 0

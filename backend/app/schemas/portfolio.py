@@ -16,6 +16,7 @@ from app.domain.enums import (
     SuitabilityGateType,
     SuitabilityStatus,
 )
+from app.schemas.methodology import DecisionEvidencePackage
 from app.schemas.records import Money, Ratio
 
 
@@ -45,9 +46,28 @@ class ProductCatalogItem(BaseModel):
     enabled: bool
     is_simulated: bool
     terms: dict[str, object] = Field(default_factory=dict)
+    account_wrappers: list[str] = Field(default_factory=lambda: ["ordinary"])
+    principal_loss_possible: bool | None = None
+    legally_principal_guaranteed: bool | None = None
+    liquidity_days: int = Field(default=0, ge=0, le=36500)
+    lock_up: bool = False
+    withdrawable_date: date | None = None
+    volatility: Ratio = Decimal("0")
+    sale_status: Literal["available", "unavailable", "education_only"] = "available"
+    channel: str = "demo_catalog"
+    source_reference: str = "Fortune Copilot internal demo catalog"
+    snapshot_version: str = "mock-product-snapshot-v1.0.0"
 
     @model_validator(mode="after")
     def validate_product_boundaries(self) -> ProductCatalogItem:
+        if self.legally_principal_guaranteed is None:
+            self.legally_principal_guaranteed = self.principal_guaranteed
+        if self.principal_loss_possible is None:
+            self.principal_loss_possible = not self.legally_principal_guaranteed
+        if self.legally_principal_guaranteed != self.principal_guaranteed:
+            raise ValueError("兼容保本字段与法律本金保证标签必须一致")
+        if self.legally_principal_guaranteed and self.principal_loss_possible:
+            raise ValueError("法律本金保证产品不能同时标记本金可损失")
         if self.historical_volatility_min > self.historical_volatility_max:
             raise ValueError("产品波动区间下限不能高于上限")
         if not self.is_simulated:
@@ -75,6 +95,16 @@ class ProductCatalogFile(BaseModel):
     data_date: date
     source: str
     source_summary: str
+    source_system: str
+    source_reference: str
+    observed_at: date
+    effective_at: date
+    ingested_at: datetime
+    version: str
+    data_quality: str
+    is_live: bool
+    is_demo: bool
+    lineage: str
     products: list[ProductCatalogItem] = Field(min_length=14)
 
     @model_validator(mode="after")
@@ -92,6 +122,7 @@ class ProductOut(ProductCatalogItem):
     catalog_version: str
     data_date: date
     source: str
+    snapshot_observed_at: date
 
 
 class ProductCatalogResponse(BaseModel):
@@ -100,9 +131,26 @@ class ProductCatalogResponse(BaseModel):
     data_date: date
     source_type: Literal["mock"] = "mock"
     source_summary: str
+    source_system: str
+    source_reference: str
+    observed_at: date
+    effective_at: date
+    ingested_at: datetime
+    version: str
+    data_quality: str
+    is_live: bool
+    is_demo: bool
+    lineage: str
     product_count: int
     products: list[ProductOut]
     professional_hedge_lab_enabled: bool = False
+    snapshot_version: str
+    snapshot_observed_at: date
+    snapshot_age_days: int
+    maximum_age_days: int
+    catalog_stale: bool
+    executable_recommendations_allowed: bool
+    stale_action: Literal["block_executable_allow_education"]
 
 
 class SuitabilityCheckItem(BaseModel):
@@ -212,6 +260,12 @@ class PortfolioCandidate(BaseModel):
     liquidity_description: str
     annual_fee_rate: Ratio
     annual_fee_estimate: Money
+    responsibility_breach_probability: Ratio
+    purchasing_power_success_probability: Ratio
+    liability_coverage: Ratio
+    liquidity_shortfall: Ratio
+    concentration: Ratio
+    real_return_after_fee: Decimal
     applicable_conditions: list[str]
     primary_risks: list[str]
     why_not_other_candidates: str
@@ -228,6 +282,11 @@ class PortfolioContext(BaseModel):
     long_term_goal_present_value_gap: Money
     simulation_horizon_months: int
     annual_new_surplus: Money
+    purchasing_power_hurdle: Ratio
+    single_equity_amount: Money
+    largest_single_security_ratio: Ratio
+    single_equity_hhi: Ratio
+    security_concentration_treatment: Literal["satellite_only"] = "satellite_only"
     counting_note: str
 
 
@@ -246,6 +305,9 @@ class PortfolioMeta(BaseModel):
     currency: str = "CNY"
     synthetic_data: bool
     market_scenario: MarketScenario
+    methodology_version: str
+    market_regime_version: str
+    product_snapshot_version: str
 
 
 class EducationCard(BaseModel):
@@ -272,6 +334,7 @@ class PortfolioResponse(BaseModel):
     catalog: ProductCatalogResponse
     education_cards: list[EducationCard]
     professional_hedge_lab: HedgeLabBoundary
+    decision_evidence: DecisionEvidencePackage
     counting_note: str
 
 

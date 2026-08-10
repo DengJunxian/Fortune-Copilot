@@ -17,15 +17,16 @@ from app.domain.enums import (
     PortfolioCandidateType,
     RecommendationStatus,
     SuitabilityDecision,
+    SuitabilityGateType,
     SuitabilityStatus,
 )
+from app.domain.financial import HouseholdFacts
 from app.models.assessment import PortfolioPlan, SuitabilityCheck
 from app.models.common import utc_now
 from app.models.governance import AuditEvent, Recommendation
 from app.schemas.planning import PlanningResponse
 from app.schemas.portfolio import (
     EducationCard,
-    HedgeLabBoundary,
     PersistedPortfolioRun,
     PortfolioCandidate,
     PortfolioContext,
@@ -42,9 +43,16 @@ from app.services.financial.engine import analyze_facts
 from app.services.financial.facts import load_household_facts
 from app.services.financial.rules import load_financial_rules
 from app.services.financial.utils import ZERO, money
-from app.services.planning.engine import empty_counterfactual, plan_facts
+from app.services.methodology.evidence import build_decision_evidence
+from app.services.methodology.rules import load_methodology_rules
+from app.services.planning.engine import (
+    DEFAULT_METHODOLOGY_RULES_PATH,
+    empty_counterfactual,
+    plan_facts,
+)
 from app.services.planning.rules import load_planning_rules
 from app.services.portfolio.catalog import build_catalog_response
+from app.services.portfolio.hedging import professional_hedging_boundary
 from app.services.portfolio.mapping import map_products, product_gate_from_mappings
 from app.services.portfolio.optimizer import current_growth_weights, optimize_candidate
 from app.services.portfolio.rules import (
@@ -81,6 +89,7 @@ def _portfolio_input_version(
 
 def _portfolio_context(
     planning: PlanningResponse,
+    facts: HouseholdFacts,
     stable_goal_months: int,
 ) -> PortfolioContext:
     growth = next(
@@ -95,6 +104,14 @@ def _portfolio_context(
         ZERO,
     )
     horizon = max(60, int(weighted_months_numerator / long_term_gap)) if long_term_gap > 0 else 120
+    single_equities = [item for item in facts.assets if item.category.value == "stock"]
+    single_equity_amount = money(
+        sum((item.market_value for item in single_equities), ZERO)
+    )
+    investable = planning.denominators.investable_financial_assets
+    stock_ratios = [
+        item.market_value / investable for item in single_equities if investable > ZERO
+    ]
     return PortfolioContext(
         current_growth_assets=growth.current_amount,
         eligible_long_term_amount=growth.recommended_amount,
@@ -104,6 +121,16 @@ def _portfolio_context(
         long_term_goal_present_value_gap=long_term_gap,
         simulation_horizon_months=horizon,
         annual_new_surplus=planning.denominators.annual_new_surplus,
+        purchasing_power_hurdle=planning.methodology.purchasing_power_hurdle.rate,
+        single_equity_amount=single_equity_amount,
+        largest_single_security_ratio=(
+            max(stock_ratios, default=ZERO).quantize(Decimal("0.000001"))
+        ),
+        single_equity_hhi=(
+            sum((value * value for value in stock_ratios), ZERO).quantize(
+                Decimal("0.000001")
+            )
+        ),
         counting_note=(
             "组合金额只取动态四账户中通过前置顺序后的正式长期建议额或小额学习仓；"
             "当前增长资产与应补回安全层的金额分开显示，不重复增加可投资本金。"
@@ -152,32 +179,78 @@ def _education_cards() -> list[EducationCard]:
     ]
 
 
-def _hedge_lab() -> HedgeLabBoundary:
-    return HedgeLabBoundary(
-        title="专业对冲实验室默认关闭",
-        reason="普通家庭自动推荐不提供股指期货、杠杆或交易入口。",
-        prerequisites=[
-            "专业投资者资格与知识测试",
-            "真实、明确且可核验的套期保值头寸",
-            "交易经验、最大损失和保证金压力测试",
-            "人工复核和独立风险确认",
-        ],
-    )
-
-
 def _candidate_decision(
     family_gate: SuitabilityGateResult,
     customer_gate: SuitabilityGateResult,
     product_gate: SuitabilityGateResult,
+    channel_gate: SuitabilityGateResult,
+    transaction_gate: SuitabilityGateResult,
     solver_method: str,
 ) -> SuitabilityDecision:
     if family_gate.status != SuitabilityStatus.PASS:
         return SuitabilityDecision.EDUCATION_ONLY
     if product_gate.status == SuitabilityStatus.BLOCK:
         return SuitabilityDecision.REJECT
+    if channel_gate.status == SuitabilityStatus.BLOCK:
+        return SuitabilityDecision.EDUCATION_ONLY
     if customer_gate.status != SuitabilityStatus.PASS or solver_method == "rule_based_fallback":
         return SuitabilityDecision.DOWNGRADE
+    if (
+        channel_gate.status != SuitabilityStatus.PASS
+        or transaction_gate.status != SuitabilityStatus.PASS
+    ):
+        return SuitabilityDecision.ESCALATE
     return SuitabilityDecision.ALLOW
+
+
+def _channel_gate(catalog: ProductCatalogResponse) -> SuitabilityGateResult:
+    stale = catalog.catalog_stale
+    check = SuitabilityCheckItem(
+        check_code="channel_product_snapshot",
+        label="渠道与产品快照",
+        status=SuitabilityStatus.BLOCK if stale else SuitabilityStatus.RESTRICT,
+        observed_value=(
+            f"快照 {catalog.snapshot_version}，年龄 {catalog.snapshot_age_days} 天，"
+            f"最大 {catalog.maximum_age_days} 天"
+        ),
+        rule="过期快照不得产生可执行建议；Mock 目录不代表真实在售渠道",
+        reason=(
+            "快照已过期，仅允许教育展示。"
+            if stale
+            else "快照时效通过，但仍需真实银行渠道核验。"
+        ),
+    )
+    return SuitabilityGateResult(
+        gate=SuitabilityGateType.CHANNEL,
+        name="渠道闸门",
+        status=check.status,
+        decision=(
+            SuitabilityDecision.EDUCATION_ONLY if stale else SuitabilityDecision.ESCALATE
+        ),
+        checks=[check],
+        failed_check_codes=[check.check_code],
+        explanation=check.reason,
+    )
+
+
+def _transaction_gate() -> SuitabilityGateResult:
+    check = SuitabilityCheckItem(
+        check_code="transaction_time_adapter",
+        label="交易时点实时检查",
+        status=SuitabilityStatus.RESTRICT,
+        observed_value="开源比赛版未接入真实交易、库存或清算系统",
+        rule="下单前必须重新核验适当性、可售状态、限额和渠道",
+        reason="当前只能生成规划与教育证据，需转真实交易前检查。",
+    )
+    return SuitabilityGateResult(
+        gate=SuitabilityGateType.TRANSACTION_TIME,
+        name="交易时点闸门",
+        status=SuitabilityStatus.RESTRICT,
+        decision=SuitabilityDecision.ESCALATE,
+        checks=[check],
+        failed_check_codes=[check.check_code],
+        explanation=check.reason,
+    )
 
 
 def _candidate_copy(
@@ -221,11 +294,13 @@ def portfolio_household(
     product_catalog_path: str,
     analysis_date: date,
     market_scenario: MarketScenario = MarketScenario.NEUTRAL,
+    methodology_rules_path: str = DEFAULT_METHODOLOGY_RULES_PATH,
 ) -> PortfolioResponse:
     facts = load_household_facts(session, household_id)
     financial_rules = load_financial_rules(financial_rules_path)
     planning_rules = load_planning_rules(planning_rules_path)
     portfolio_rules = load_portfolio_rules(portfolio_rules_path)
+    methodology_rules = load_methodology_rules(methodology_rules_path)
     financial = analyze_facts(facts, financial_rules, analysis_date)
     planning = plan_facts(
         facts,
@@ -233,13 +308,21 @@ def portfolio_household(
         planning_rules,
         analysis_date,
         empty_counterfactual(),
+        methodology_rules,
     )
-    catalog = build_catalog_response(session, product_catalog_path)
-    context = _portfolio_context(planning, planning_rules.goals.stable_goal_months)
+    catalog = build_catalog_response(
+        session,
+        product_catalog_path,
+        analysis_date=analysis_date,
+        maximum_age_days=methodology_rules.product_snapshot_policy.maximum_age_days,
+    )
+    context = _portfolio_context(planning, facts, planning_rules.goals.stable_goal_months)
     family_gate = family_safety_gate(planning, portfolio_rules)
     customer_gate = customer_suitability_gate(facts, portfolio_rules)
     current_weights = current_growth_weights(facts, portfolio_rules)
-    inflation_rate = financial.purchasing_power.family_weighted_inflation.rate
+    purchasing_power_hurdle = planning.methodology.purchasing_power_hurdle.rate
+    channel_gate = _channel_gate(catalog)
+    transaction_gate = _transaction_gate()
     products = catalog.products
     candidates: list[PortfolioCandidate] = []
     for candidate_type in PortfolioCandidateType:
@@ -259,7 +342,7 @@ def portfolio_household(
             context.long_term_goal_present_value_gap,
             context.simulation_horizon_months,
             current_weights,
-            inflation_rate,
+            purchasing_power_hurdle,
             high_risk_cap,
             analysis_date,
             market_scenario,
@@ -276,6 +359,8 @@ def portfolio_household(
             candidate_customer,
             facts,
             portfolio_rules,
+            analysis_date=analysis_date,
+            catalog_executable=catalog.executable_recommendations_allowed,
         )
         product_gate = product_gate_from_mappings(
             mappings,
@@ -286,6 +371,8 @@ def portfolio_household(
             family_gate,
             candidate_customer,
             product_gate,
+            channel_gate,
+            transaction_gate,
             optimized.diagnostics.method,
         )
         conditions, risks, why = _candidate_copy(candidate_type, decision)
@@ -322,10 +409,26 @@ def portfolio_household(
                 annual_fee_estimate=money(
                     context.eligible_long_term_amount * optimized.metrics.annual_fee_rate
                 ),
+                responsibility_breach_probability=(
+                    optimized.metrics.responsibility_breach_probability
+                ),
+                purchasing_power_success_probability=(
+                    optimized.metrics.purchasing_power_success_probability
+                ),
+                liability_coverage=optimized.metrics.liability_coverage,
+                liquidity_shortfall=optimized.metrics.liquidity_shortfall,
+                concentration=optimized.metrics.concentration,
+                real_return_after_fee=optimized.metrics.real_return_after_fee,
                 applicable_conditions=conditions,
                 primary_risks=risks,
                 why_not_other_candidates=why,
-                gates=[family_gate, candidate_customer, product_gate],
+                gates=[
+                    family_gate,
+                    candidate_customer,
+                    product_gate,
+                    channel_gate,
+                    transaction_gate,
+                ],
                 product_mappings=mappings,
                 optimization=optimized.diagnostics,
                 rebalancing=optimized.rebalancing,
@@ -352,6 +455,9 @@ def portfolio_household(
             currency=facts.currency,
             synthetic_data=facts.is_synthetic,
             market_scenario=market_scenario,
+            methodology_version=planning.meta.methodology_version,
+            market_regime_version=planning.meta.market_regime_version,
+            product_snapshot_version=catalog.snapshot_version,
         ),
         context=context,
         family_safety_gate=family_gate,
@@ -359,7 +465,21 @@ def portfolio_household(
         candidates=candidates,
         catalog=catalog,
         education_cards=_education_cards(),
-        professional_hedge_lab=_hedge_lab(),
+        professional_hedge_lab=professional_hedging_boundary(),
+        decision_evidence=build_decision_evidence(
+            facts=facts,
+            household_input_version=planning.meta.input_version,
+            financial_rule_version=financial.meta.rule_version,
+            planning_rule_version=planning.meta.rule_version,
+            methodology=planning.methodology,
+            hard_gate_results={
+                item.constraint_id: item.status
+                for item in planning.constraints
+                if item.constraint_type == "hard"
+            },
+            portfolio_version=portfolio_rules.semantic_version,
+            product_snapshot_version=catalog.snapshot_version,
+        ),
         counting_note=(
             "三套比例来自确定性多目标网格优化或有版本的规则降级；情景区间是离线加权情景，"
             "不是历史回测、Monte Carlo 或收益承诺。"
@@ -428,6 +548,7 @@ def evaluate_suitability_probe(
     planning_rules_path: str,
     portfolio_rules_path: str,
     product_catalog_path: str,
+    methodology_rules_path: str = DEFAULT_METHODOLOGY_RULES_PATH,
 ) -> SuitabilityProbeResponse:
     analysis_date = request.analysis_date or date.today()
     portfolio = portfolio_household(
@@ -438,6 +559,7 @@ def evaluate_suitability_probe(
         portfolio_rules_path,
         product_catalog_path,
         analysis_date,
+        methodology_rules_path=methodology_rules_path,
     )
     facts = load_household_facts(session, household_id)
     rules = load_portfolio_rules(portfolio_rules_path)
@@ -454,9 +576,23 @@ def evaluate_suitability_probe(
     family_gate = _probe_family_gate(portfolio.family_safety_gate, request)
     customer_gate = _probe_customer_gate(portfolio.customer_suitability_gate, request)
     product_gate = product_gate_for_probe(selected, request, customer_gate, facts, rules)
-    gates = [family_gate, customer_gate, product_gate]
+    channel_gate = _channel_gate(portfolio.catalog)
+    transaction_gate = _transaction_gate()
+    gates = [
+        family_gate,
+        customer_gate,
+        product_gate,
+        channel_gate,
+        transaction_gate,
+    ]
     failed = [code for gate in gates for code in gate.failed_check_codes]
-    decision = SuitabilityDecision.REJECT if failed else SuitabilityDecision.ALLOW
+    decision = (
+        SuitabilityDecision.REJECT
+        if any(gate.status == SuitabilityStatus.BLOCK for gate in gates)
+        else SuitabilityDecision.ESCALATE
+        if any(gate.status == SuitabilityStatus.RESTRICT for gate in gates)
+        else SuitabilityDecision.ALLOW
+    )
     event = AuditEvent(
         household_id=household_id,
         event_type=AuditEventType.SUITABILITY_EVALUATED,
@@ -492,9 +628,13 @@ def evaluate_suitability_probe(
         audit_event_id=event.id,
         rule_version=rules.semantic_version,
         explanation=(
-            "不匹配请求已拒绝并写入审计事件；不会因客户主动要求而绕过三道闸门。"
+            "不匹配请求已拒绝并写入审计事件；不会因客户主动要求而绕过五道闸门。"
             if decision == SuitabilityDecision.REJECT
-            else "请求通过当前三道闸门；仍需在真实业务中完成身份、授权与人工复核。"
+            else (
+                "当前请求需转人工与真实交易时点复核，状态为 ESCALATE。"
+                if decision == SuitabilityDecision.ESCALATE
+                else "请求通过全部闸门。"
+            )
         ),
     )
 
@@ -522,6 +662,9 @@ def persist_portfolio(
                 item.candidate_type.value: item.decision.value for item in portfolio.candidates
             },
         },
+        methodology_version=portfolio.meta.methodology_version,
+        decision_evidence=portfolio.decision_evidence.model_dump(mode="json"),
+        decision_hash=portfolio.decision_evidence.decision_hash,
         rule_version_id=rule_version.id,
         currency=portfolio.meta.currency,
         valuation_date=portfolio.meta.analysis_date,

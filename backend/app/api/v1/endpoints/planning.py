@@ -10,6 +10,7 @@ from app.core.auth import ActorContext, require_actor
 from app.core.config import get_settings
 from app.core.database import get_session
 from app.domain.enums import LifecycleStage
+from app.schemas.methodology import PersonalPensionPlan
 from app.schemas.planning import (
     CounterfactualRequest,
     CounterfactualResponse,
@@ -53,6 +54,8 @@ def _planning(
         settings.planning_rules_path,
         analysis_date or date.today(),
         request,
+        settings.methodology_rules_path,
+        settings.public_data_snapshot_path,
     )
 
 
@@ -68,6 +71,20 @@ def get_planning(
     lifecycle_override: LifecycleOverride = None,
 ) -> PlanningResponse:
     return _planning(session, household_id, analysis_date, lifecycle_override)
+
+
+@router.get(
+    "/households/{household_id}/personal-pension",
+    response_model=PersonalPensionPlan,
+)
+def get_personal_pension(
+    household_id: str,
+    session: SessionDependency,
+    _actor: ActorDependency,
+    analysis_date: AnalysisDate = None,
+) -> PersonalPensionPlan:
+    """Expose the governed pension overlay without inventing account or policy data."""
+    return _planning(session, household_id, analysis_date, None).methodology.personal_pension
 
 
 @router.post(
@@ -87,6 +104,8 @@ def post_counterfactual(
         settings.financial_rules_path,
         settings.planning_rules_path,
         request,
+        settings.methodology_rules_path,
+        settings.public_data_snapshot_path,
     )
 
 
@@ -105,7 +124,13 @@ def create_planning_run(
     settings = get_settings()
     plan = _planning(session, household_id, analysis_date, lifecycle_override)
     rules = load_planning_rules(settings.planning_rules_path)
-    return persist_planning(session, plan, rules, actor)
+    return persist_planning(
+        session,
+        plan,
+        rules,
+        actor,
+        settings.methodology_rules_path,
+    )
 
 
 @router.get("/households/{household_id}/planning/export")

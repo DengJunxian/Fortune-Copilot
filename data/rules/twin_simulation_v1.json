@@ -106,6 +106,15 @@
       "is_composable": true
     },
     {
+      "code": "elder_care_10y",
+      "name": "父母照护支出持续 10 年",
+      "category": "family",
+      "description": "每月新增 5,000 元赡养与长期照护费用，持续十年。",
+      "parameters": {"family_support_monthly_increase": "5000.00", "family_support_duration_months": 120},
+      "explanation": "用于检验照护责任增加后的刚性目标存活和流动性失效月份。",
+      "is_composable": true
+    },
+    {
       "code": "education_overrun",
       "name": "教育费用超支",
       "category": "goal",
@@ -148,6 +157,15 @@
       "description": "投资房租金中断 12 个月并发生 20% 估值折价。",
       "parameters": {"investment_property_vacancy_months": 12, "property_value_shock": "-0.200000"},
       "explanation": "没有投资房的家庭返回不适用证据，不把自住房虚构成出租资产。",
+      "is_composable": true
+    },
+    {
+      "code": "housing_value_down_20",
+      "name": "住房价值下降 20%",
+      "category": "property",
+      "description": "住房估值一次性下调 20%，同时保留其非流动属性。",
+      "parameters": {"property_value_shock": "-0.200000"},
+      "explanation": "用于检验家庭净值与住房集中风险，不把自住房当作可用增长资本。",
       "is_composable": true
     },
     {
@@ -220,6 +238,15 @@
       "description": "家庭消费和目标成本年化增速额外上升 2 个百分点。",
       "parameters": {"inflation_increase": "0.020000"},
       "explanation": "最低工资参数不参与该冲击，也不被当作 CPI。",
+      "is_composable": true
+    },
+    {
+      "code": "regional_living_cost_hurdle_up",
+      "name": "地区生活成本门槛上移",
+      "category": "inflation",
+      "description": "家庭生活成本压力年化上升 1.5 个百分点。",
+      "parameters": {"inflation_increase": "0.015000"},
+      "explanation": "与地区最低工资辅助信号对照展示；该信号不标记为 CPI。",
       "is_composable": true
     },
     {

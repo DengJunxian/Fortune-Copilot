@@ -1,0 +1,64 @@
+{
+  "formula_version": "portfolio-gates-v2.0.0",
+  "rule_version": "2.0.0",
+  "optimizer_version": "hierarchical-deterministic-grid-v2.0.0",
+  "catalog_version": "1.0.0",
+  "methodology_version": "3.1.0",
+  "context": {
+    "current_growth_assets": "120000.00",
+    "eligible_long_term_amount": "0.00",
+    "amount_to_restore_safety_layers": "120000.00",
+    "long_term_goal_present_value_gap": "3261660.15",
+    "simulation_horizon_months": 258,
+    "annual_new_surplus": "72000.00",
+    "purchasing_power_hurdle": "0.033550",
+    "single_equity_amount": "0.00",
+    "largest_single_security_ratio": "0.000000",
+    "single_equity_hhi": "0.000000",
+    "security_concentration_treatment": "satellite_only"
+  },
+  "family_status": "block",
+  "customer_limit": "r3",
+  "candidates": {
+    "conservative": {
+      "decision": "education_only",
+      "weights": {"cash_equivalent": "0.400000", "fixed_income": "0.600000", "diversified_equity": "0.000000", "real_assets": "0.000000", "gold": "0.000000"},
+      "expected_nominal_return": "0.027000",
+      "expected_real_return": "-0.006550",
+      "goal_success_probability": "0.000000",
+      "extreme_loss_ratio": "0.048400",
+      "max_drawdown_estimate": "0.060400",
+      "liquidity_score": "0.820000",
+      "annual_fee_rate": "0.003400",
+      "method": "deterministic_grid_search",
+      "product_gate": "restrict"
+    },
+    "balanced": {
+      "decision": "education_only",
+      "weights": {"cash_equivalent": "0.200000", "fixed_income": "0.700000", "diversified_equity": "0.000000", "real_assets": "0.000000", "gold": "0.100000"},
+      "expected_nominal_return": "0.032000",
+      "expected_real_return": "-0.001550",
+      "goal_success_probability": "0.000000",
+      "extreme_loss_ratio": "0.084200",
+      "max_drawdown_estimate": "0.105200",
+      "liquidity_score": "0.775000",
+      "annual_fee_rate": "0.004300",
+      "method": "rule_based_fallback",
+      "product_gate": "restrict"
+    },
+    "growth": {
+      "decision": "education_only",
+      "weights": {"cash_equivalent": "0.150000", "fixed_income": "0.700000", "diversified_equity": "0.000000", "real_assets": "0.000000", "gold": "0.150000"},
+      "expected_nominal_return": "0.033500",
+      "expected_real_return": "-0.000050",
+      "goal_success_probability": "0.000000",
+      "extreme_loss_ratio": "0.098150",
+      "max_drawdown_estimate": "0.122650",
+      "liquidity_score": "0.767500",
+      "annual_fee_rate": "0.004550",
+      "method": "rule_based_fallback",
+      "product_gate": "restrict"
+    }
+  },
+  "product_count": 19
+}

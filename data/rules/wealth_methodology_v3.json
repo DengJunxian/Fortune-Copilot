@@ -1,0 +1,214 @@
+{
+  "code": "chfh_grb_four_account_waterfall",
+  "semantic_version": "3.1.0",
+  "formula_version": "fortune-copilot-methodology-v3.1.0",
+  "effective_from": "2026-08-10",
+  "effective_to": null,
+  "source_type": "internal_demo",
+  "source_summary": "Fortune Copilot 比赛版 CHFH 中国家庭财富健康理论与 GRB 动态四账户模型；参数是可审核演示快照，不是工行内部规则或实时政府数据。",
+  "constitution": [
+    {
+      "code": "responsibility_before_investment",
+      "title": "先责任，后投资",
+      "rule": "刚性家庭责任、现金流安全和制度覆盖优先于收益优化。",
+      "hard": true
+    },
+    {
+      "code": "purpose_not_fixed_ratio",
+      "title": "四域是用途而非固定比例",
+      "rule": "不将标准普尔固定百分比用于家庭资金计算。",
+      "hard": true
+    },
+    {
+      "code": "insurance_is_risk_transfer",
+      "title": "保险归保险，投资归投资",
+      "rule": "保费是风险转移成本，保额不是可投资资产，不以储蓄收益推荐保障。",
+      "hard": true
+    },
+    {
+      "code": "stability_name_disclaimer",
+      "title": "保本的钱不等于产品保本",
+      "rule": "‘保本的钱’是家庭资金用途名称，不代表账户内所有产品保证本金。",
+      "hard": true
+    },
+    {
+      "code": "growth_denominator_discipline",
+      "title": "70%只作用于长期剩余资金",
+      "rule": "长期增长战略目标的分母只能是完成全部前置安排后的长期可规划资源，不得是家庭总资产。",
+      "hard": true
+    },
+    {
+      "code": "minimum_wage_not_cpi",
+      "title": "最低工资不是 CPI",
+      "rule": "地区最低工资趋势只是长期购买力辅助信号，不是 CPI 也不是收益保证。",
+      "hard": true
+    },
+    {
+      "code": "deterministic_authority",
+      "title": "确定性规则拥有计算权",
+      "rule": "LLM 无权计算金额、比例、市场状态、适当性或覆盖硬约束。",
+      "hard": true
+    }
+  ],
+  "denominators": {
+    "total_household_assets": "家庭总资产，只用于资产负债表、杠杆和集中度观察。",
+    "investable_financial_assets": "排除自住房、车辆、保额和社保权益后的合格金融资产。",
+    "residual_long_term_plannable_capital": "完成债务、日用、应急、保障与五年内责任后的长期剩余资金。"
+  },
+  "daily_liquidity": {
+    "strategy": "quarter_month_clamped",
+    "operating_months": "0.25",
+    "minimum_amount": "3000.00",
+    "maximum_amount": "20000.00",
+    "forecast_port": "CashFlowForecastPort",
+    "future_forecast_horizons_days": [14, 30],
+    "future_quantile": "0.95"
+  },
+  "regional_growth_threshold": {
+    "policy_version": "regional-growth-threshold-v1.0.0",
+    "minimum": "300000.00",
+    "default": "500000.00",
+    "maximum": "1000000.00",
+    "recommended_band_width": "150000.00",
+    "region_profiles": {
+      "北京市": {"region_code": "110000", "city_tier": "tier_one_or_new_tier_one", "base": "550000.00"},
+      "上海市": {"region_code": "310000", "city_tier": "tier_one_or_new_tier_one", "base": "550000.00"},
+      "广东省广州市": {"region_code": "440100", "city_tier": "tier_one_or_new_tier_one", "base": "500000.00"},
+      "浙江省杭州市": {"region_code": "330100", "city_tier": "tier_one_or_new_tier_one", "base": "500000.00"},
+      "江苏省南京市": {"region_code": "320100", "city_tier": "developed_city", "base": "450000.00"}
+    },
+    "city_tier_bases": {
+      "tier_one_or_new_tier_one": "500000.00",
+      "developed_city": "450000.00",
+      "other_city": "350000.00"
+    },
+    "employment_adjustments": {"high": "-25000.00", "medium": "25000.00", "low": "75000.00"},
+    "volatility_adjustments": {"low": "0.00", "medium": "25000.00", "high": "75000.00"},
+    "interruption_probability_breaks": {"medium": "0.100000", "high": "0.250000"},
+    "interruption_adjustments": {"low": "0.00", "medium": "30000.00", "high": "80000.00"},
+    "dependent_adjustment_each": "25000.00",
+    "single_income_adjustment": "50000.00",
+    "debt_burden_breaks": {"medium": "0.300000", "high": "0.600000"},
+    "debt_adjustments": {"low": "0.00", "medium": "30000.00", "high": "75000.00"},
+    "lifecycle_adjustments": {
+      "early_career": "-25000.00",
+      "family_formation": "0.00",
+      "parenting": "50000.00",
+      "mature_family": "25000.00",
+      "retirement_preparation": "75000.00",
+      "retirement_and_legacy": "75000.00"
+    }
+  },
+  "market_regime_snapshot": {
+    "snapshot_version": "market-regime-demo-2026-08-04",
+    "regime": "neutral",
+    "label": "中性",
+    "valuation_date": "2026-08-04",
+    "effective_from": "2026-08-04",
+    "effective_to": "2026-12-31",
+    "source": "Fortune Copilot 比赛版投研治理快照",
+    "methodology": "由受控投研规则发布，不由客户或 LLM 判断。",
+    "evidence": ["演示版保留中性战术锚 15%", "家庭责任与硬约束始终优先"],
+    "rule_version": "market-regime-policy-v1.0.0",
+    "approved_by": "demo_investment_governance",
+    "is_demo": true,
+    "source_system": "controlled_research_snapshot",
+    "source_reference": "Fortune Copilot 比赛版投研治理快照",
+    "observed_at": "2026-08-04",
+    "effective_at": "2026-08-04",
+    "ingested_at": "2026-08-04T00:00:00+08:00",
+    "version": "market-regime-demo-2026-08-04",
+    "data_quality": "demo_not_live_requires_committee_review",
+    "is_live": false,
+    "lineage": "demo research evidence -> approval snapshot -> methodology rule"
+  },
+  "regional_minimum_wage_snapshots": {
+    "330100": {
+      "region_name": "浙江省杭州市",
+      "values": [{"date": "2021-08-01", "monthly_amount": "2280.00"}, {"date": "2024-01-01", "monthly_amount": "2490.00"}],
+      "source_system": "杭州市人民政府公报",
+      "source_reference": "https://zfgb.hangzhou.gov.cn/10/105220253/t117220253054/518480.shtml",
+      "observed_at": "2026-08-08",
+      "effective_at": "2024-01-01",
+      "ingested_at": "2026-08-08T12:00:00+08:00",
+      "version": "minimum-wage-hangzhou-public-2024-v1",
+      "data_quality": "verified_public_snapshot",
+      "is_live": false,
+      "is_demo": false,
+      "lineage": "杭州市政府公报公开文件 -> 日期与金额交叉复核 -> 方法论兼容快照"
+    },
+    "320100": {
+      "region_name": "江苏省南京市",
+      "values": [{"date": "2024-01-01", "monthly_amount": "2490.00"}, {"date": "2026-01-01", "monthly_amount": "2660.00"}],
+      "source_system": "江苏省人民政府与江苏省人力资源和社会保障厅",
+      "source_reference": "https://www.jiangsu.gov.cn/art/2025/12/30/art_90848_11702519.html",
+      "observed_at": "2026-01-01",
+      "effective_at": "2026-01-01",
+      "ingested_at": "2026-08-08T12:00:00+08:00",
+      "version": "minimum-wage-nanjing-public-2026-v1",
+      "data_quality": "verified_public_snapshot_short_series",
+      "is_live": false,
+      "is_demo": false,
+      "lineage": "江苏省政府公开文件 -> 南京市区一类地区映射复核 -> 方法论兼容快照"
+    },
+    "440100": {
+      "region_name": "广东省广州市",
+      "values": [{"date": "2021-12-01", "monthly_amount": "2300.00"}, {"date": "2025-03-01", "monthly_amount": "2500.00"}],
+      "source_system": "广州市人民政府",
+      "source_reference": "https://www.gz.gov.cn/xw/tzgg/content/mpost_10134789.html",
+      "observed_at": "2025-02-28",
+      "effective_at": "2025-03-01",
+      "ingested_at": "2026-08-08T12:00:00+08:00",
+      "version": "minimum-wage-guangzhou-public-2025-v1",
+      "data_quality": "verified_public_snapshot",
+      "is_live": false,
+      "is_demo": false,
+      "lineage": "广州市政府公开文件 -> 日期与金额交叉复核 -> 方法论兼容快照"
+    }
+  },
+  "minimum_wage_fallback_rate": "0.030000",
+  "pension_policy_snapshot": {
+    "policy_version": "personal-pension-demo-v1.0.0",
+    "annual_contribution_limit": "12000.00",
+    "withdrawal_tax_rate": "0.030000",
+    "effective_from": "2026-01-01",
+    "effective_to": null,
+    "source_system": "controlled_policy_snapshot",
+    "source_reference": "Fortune Copilot 个人养老金政策演示快照，办理前必须复核当日政策",
+    "observed_at": "2026-08-04",
+    "effective_at": "2026-01-01",
+    "ingested_at": "2026-08-04T00:00:00+08:00",
+    "version": "personal-pension-demo-v1.0.0",
+    "data_quality": "demo_not_live_requires_policy_review",
+    "is_live": false,
+    "is_demo": true,
+    "lineage": "controlled policy input -> validation -> pension policy snapshot"
+  },
+  "property_policy_snapshot": {
+    "policy_version": "property-regime-demo-v1.0.0",
+    "status": "restricted_by_default",
+    "valuation_date": "2026-08-04",
+    "source": "Fortune Copilot 比赛版房地产投资策略快照",
+    "is_demo": true,
+    "source_system": "controlled_property_policy_snapshot",
+    "source_reference": "Fortune Copilot 比赛版房地产投资策略快照",
+    "observed_at": "2026-08-04",
+    "effective_at": "2026-08-04",
+    "ingested_at": "2026-08-04T00:00:00+08:00",
+    "version": "property-regime-demo-v1.0.0",
+    "data_quality": "demo_not_live_requires_research_review",
+    "is_live": false,
+    "lineage": "demo property observations -> governance snapshot -> methodology rule",
+    "rules": ["自住房不计入长期增长资金", "新增投资性房产必须通过集中度、杠杆、租金收益、流动性和家庭目标检查"]
+  },
+  "product_snapshot_policy": {
+    "policy_version": "product-snapshot-governance-v1.0.0",
+    "maximum_age_days": 30,
+    "stale_action": "block_executable_allow_education"
+  },
+  "data_governance": {
+    "version": "external-snapshot-governance-v1.0.0",
+    "required_fields": ["source_system", "source_reference", "observed_at", "effective_at", "ingested_at", "version", "data_quality", "is_live", "is_demo", "lineage"],
+    "source_kinds": ["user_self_report", "bank_fact", "external_authorized", "algorithm_inference", "controlled_demo_snapshot"]
+  }
+}
