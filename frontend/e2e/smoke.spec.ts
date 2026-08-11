@@ -12,6 +12,28 @@ async function openRiskTechnicalEvidence(page: Page) {
   await summary.click();
 }
 
+async function openAdvisorWorkflow(page: Page) {
+  await page.getByText("打开方案流程与面谈工作区", { exact: true }).click();
+  await expect(
+    page.getByRole("heading", { name: "从面谈底稿推进到合规与客户确认" }),
+  ).toBeVisible();
+}
+
+const v5ResponsiveRoutes = [
+  ["/", /让专业财富规划/],
+  ["/wealth?case=DEMO_D", /今天先看最重要的四件事/],
+  ["/wealth/profile?case=DEMO_D", "先看清家庭，再安排财富。"],
+  ["/wealth/goals?case=DEMO_H", "把未来责任，落到每一笔现金流。"],
+  ["/wealth/cfs?case=DEMO_D", "先决定家庭该做什么，再谈用什么产品。"],
+  ["/wealth/twin?case=DEMO_D", /Scenario Lab/],
+  ["/wealth/family-enterprise?case=DEMO_D", "家庭资产之外，还要看企业这一张风险底稿。"],
+  ["/wealth/retirement?case=DEMO_H", "养老不是一个目标金额，而是一条持续到晚年的收入底线。"],
+  ["/wealth/global?case=DEMO_G", "先看收入、资产与未来责任是否使用同一种货币。"],
+  ["/wealth/family?case=DEMO_F", "把照护、代际安排与公益意愿写进家庭财务底稿。"],
+  ["/wealth/history?case=DEMO_D", "每次家庭变化，都能追溯到对应快照。"],
+  ["/advisor/actions", "客户行动中心"],
+] as const;
+
 test("offline demo exposes all three portal routes", async ({ page }) => {
   await page.route("**/api/**", (route) => route.abort("internetdisconnected"));
   const browserErrors: string[] = [];
@@ -24,8 +46,10 @@ test("offline demo exposes all three portal routes", async ({ page }) => {
   page.on("pageerror", (error) => browserErrors.push(error.message));
 
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: /把家庭财务看清楚/ })).toBeVisible();
-  await expect(page.getByText("规划结果仅供财务规划参考，不构成任何金融产品的收益或本金保证。")).toBeVisible();
+  await expect(page.getByRole("heading", { name: /让专业财富规划/ })).toBeVisible();
+  await expect(page.getByRole("img", { name: /中国家庭财富管理主视觉/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "中国家庭，不能直接套用一张海外比例表" })).toBeVisible();
+  await expect(page.getByText("规划结果用于辅助家庭决策，不构成投资建议，也不承诺任何金融产品的本金或收益。")).toBeVisible();
 
   await page.goto("/client");
   await expect(page.getByRole("heading", { name: "先了解您和家人" })).toBeVisible();
@@ -50,6 +74,107 @@ test("keyboard users can reach the main content", async ({ page }) => {
   await expect(page.locator("#main-content")).toBeInViewport();
 });
 
+test("connected V5 release benchmark covers A-H and the complete founder story", async ({ page }) => {
+  test.skip(!process.env.PLAYWRIGHT_BASE_URL, "requires the connected Compose demo");
+  const headers = {
+    "X-Actor-ID": "playwright-v5-release",
+    "X-Actor-Role": "admin",
+  };
+  const benchmark = await page.request.post("/api/v1/demo/v5/release-benchmark", {
+    headers: { ...headers, "X-Confirm-Action": "run_v5_release_benchmark" },
+  });
+  expect(benchmark.ok()).toBeTruthy();
+  const benchmarkPayload = await benchmark.json() as {
+    passed: boolean;
+    personas: Array<{ household_code: string; passed: boolean }>;
+    metrics: Array<{ code: string; passed: boolean }>;
+    external_network_calls: number;
+  };
+  expect(benchmarkPayload.passed).toBe(true);
+  expect(benchmarkPayload.personas.map((item) => item.household_code)).toEqual(
+    "ABCDEFGH".split("").map((letter) => `DEMO_${letter}`),
+  );
+  expect(benchmarkPayload.personas.every((item) => item.passed)).toBe(true);
+  expect(benchmarkPayload.metrics).toHaveLength(9);
+  expect(benchmarkPayload.metrics.every((item) => item.passed)).toBe(true);
+  expect(benchmarkPayload.external_network_calls).toBe(0);
+
+  const story = await page.request.post("/api/v1/demo/v5/founder-story", {
+    headers: { ...headers, "X-Confirm-Action": "run_founder_story" },
+  });
+  expect(story.ok()).toBeTruthy();
+  const storyPayload = await story.json() as {
+    passed: boolean;
+    household_code: string;
+    stages: Array<{ code: string; passed: boolean }>;
+    initial_snapshot_id: string;
+    funding_snapshot_id: string;
+    confirmed_snapshot_id: string;
+  };
+  expect(storyPayload.passed).toBe(true);
+  expect(storyPayload.household_code).toBe("DEMO_D");
+  expect(storyPayload.stages).toHaveLength(14);
+  expect(storyPayload.stages.every((item) => item.passed)).toBe(true);
+  expect(new Set([
+    storyPayload.initial_snapshot_id,
+    storyPayload.funding_snapshot_id,
+    storyPayload.confirmed_snapshot_id,
+  ]).size).toBe(3);
+
+  await page.goto("/wealth/twin?case=DEMO_D");
+  await expect(page.getByRole("heading", { name: /Scenario Lab/ })).toBeVisible();
+  await page.goto("/wealth/family-enterprise?case=DEMO_D");
+  await expect(page.getByRole("heading", { name: "家庭资产之外，还要看企业这一张风险底稿。" })).toBeVisible();
+  await page.goto("/advisor/actions");
+  await expect(page.getByRole("heading", { name: "客户行动中心" })).toBeVisible();
+});
+
+test("connected planning journey includes detailed assets and the enterprise bridge", async ({ page }) => {
+  test.skip(!process.env.PLAYWRIGHT_BASE_URL, "requires the connected Compose demo");
+  await page.goto("/");
+  await page.evaluate(() => {
+    window.sessionStorage.setItem("fortune-copilot:selected-case", "DEMO_D");
+  });
+  await page.goto("/planning");
+  await expect(page.getByRole("heading", { name: "财务比率逐项分析" })).toBeVisible();
+  await page.getByRole("button", { name: /精细资产/ }).click();
+  await expect(page.getByRole("heading", { name: "完善账户与持仓细节" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "补充企业关联" })).toHaveAttribute(
+    "href",
+    "/wealth/family-enterprise",
+  );
+  await page.getByRole("button", { name: "继续查看财务分析" }).click();
+  await expect(page.getByRole("heading", { name: "财务比率逐项分析" })).toBeVisible();
+});
+
+for (const viewport of [
+  { width: 1440, height: 1000 },
+  { width: 1024, height: 900 },
+  { width: 768, height: 900 },
+  { width: 390, height: 844 },
+]) {
+  test(`connected V5 routes remain usable at ${viewport.width}px`, async ({ page }) => {
+    test.skip(!process.env.PLAYWRIGHT_BASE_URL, "requires the connected Compose demo");
+    await page.setViewportSize(viewport);
+    const browserIssues: string[] = [];
+    page.on("console", (message) => {
+      if (["error", "warning"].includes(message.type())) browserIssues.push(message.text());
+    });
+    page.on("pageerror", (error) => browserIssues.push(error.message));
+
+    for (const [path, heading] of v5ResponsiveRoutes) {
+      await page.goto(path);
+      await expect(page.getByRole("heading", { name: heading }).first()).toBeVisible();
+      await expect(page.locator("#main-content")).toBeVisible();
+      const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - window.innerWidth,
+      );
+      expect(overflow, `${path} overflowed at ${viewport.width}px`).toBeLessThanOrEqual(1);
+    }
+    expect(browserIssues).toEqual([]);
+  });
+}
+
 test("connected release page runs the complete offline Demo and seven bounded experiments", async ({ page }) => {
   test.skip(!process.env.PLAYWRIGHT_BASE_URL, "requires the connected Compose demo");
   await page.setViewportSize({ width: 1440, height: 900 });
@@ -71,7 +196,7 @@ test("connected release page runs the complete offline Demo and seven bounded ex
 
   await page.getByRole("button", { name: "重置合成数据" }).click();
   await expect(page.getByText(/只删除并重建了标记为合成数据的家庭/)).toBeVisible();
-  await page.getByRole("button", { name: "一键运行完整 Demo" }).click();
+  await page.getByRole("button", { name: "运行完整演示" }).click();
   const timeline = page.getByRole("list", { name: "主 Demo 十阶段进度" });
   await expect(timeline.getByRole("listitem")).toHaveCount(10, { timeout: 60_000 });
   await expect(page.getByText("8 / 8", { exact: true })).toBeVisible();
@@ -105,10 +230,10 @@ test("connected advisor, compliance, and client share one immutable plan workflo
   page.on("pageerror", (error) => browserIssues.push(error.message));
 
   await page.goto("/advisor");
-  await expect(page.getByRole("heading", { name: "从面谈底稿推进到合规与客户确认" })).toBeVisible();
+  await openAdvisorWorkflow(page);
   const demoCRow = page.getByRole("row").filter({ hasText: "DEMO_C" });
   await demoCRow.getByRole("button", { name: "打开底稿" }).click();
-  await expect(page.getByRole("heading", { name: /家庭 C｜退休准备/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /家庭 C｜高收入专业人士/ })).toBeVisible();
   await expect(page.locator(".review-reminders > ol > li")).toHaveCount(12);
 
   await page.getByRole("button", { name: "创建方案草稿" }).click();
@@ -121,7 +246,7 @@ test("connected advisor, compliance, and client share one immutable plan workflo
   await page.getByRole("button", { name: "完成客户经理复核" }).click();
   await expect(page.getByText(/当前为 V4/)).toBeVisible();
 
-  const draft = page.getByRole("textbox", { name: /AI 沟通话术草稿/ });
+  const draft = page.getByRole("textbox", { name: /客户沟通草稿/ });
   await draft.fill(`${await draft.inputValue()} 本次沟通顺序已经由客户经理人工调整。`);
   await page.getByRole("button", { name: "仅保存沟通稿" }).click();
   await expect(page.getByText(/当前为 V5/)).toBeVisible();
@@ -149,6 +274,7 @@ test("connected advisor, compliance, and client share one immutable plan workflo
   await expect(page.getByText(/客户已逐项确认/)).toBeVisible();
 
   await page.goto("/advisor");
+  await openAdvisorWorkflow(page);
   await demoCRow.getByRole("button", { name: "打开底稿" }).click();
   await page.getByRole("button", { name: "激活已确认方案" }).click();
   await expect(page.getByText(/当前为 V9/)).toBeVisible();
@@ -180,6 +306,7 @@ test("connected formal report is shared, exportable, recalculated, and visible i
   page.on("pageerror", (error) => browserIssues.push(error.message));
 
   await page.goto("/advisor");
+  await openAdvisorWorkflow(page);
   await page.getByRole("row").filter({ hasText: "DEMO_C" }).getByRole("button", { name: "打开底稿" }).click();
   await expect(page.getByRole("heading", { name: "客户与顾问读取同一份报告快照" })).toBeVisible();
   await page.getByRole("button", { name: "生成完整八章规划书" }).click();
@@ -577,7 +704,7 @@ test("connected demo traces controlled knowledge, confirmed intake, graph infere
 
   await page.goto("/risk");
   await openRiskTechnicalEvidence(page);
-  await expect(page.getByRole("heading", { name: "每一步都要有工具、Schema、禁令和审计" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "每一步都有工具约束、数据契约、禁令和审计" })).toBeVisible();
   await page.getByRole("button", { name: "运行可信编排" }).click();
   await expect(page.getByText("终检通过")).toBeVisible({ timeout: 30_000 });
   await expect(page.locator(".agent-timeline > li")).toHaveCount(9);

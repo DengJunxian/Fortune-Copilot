@@ -10,6 +10,12 @@ class LifecycleStage(StrEnum):
     RETIREMENT_AND_LEGACY = "retirement_and_legacy"
 
 
+class CalibrationMode(StrEnum):
+    CONTROLLED_DEMO = "controlled_demo"
+    EMPIRICALLY_CALIBRATED = "empirically_calibrated"
+    BANK_AUTHORIZED = "bank_authorized"
+
+
 class AccountBucket(StrEnum):
     DAILY_LIQUIDITY = "daily_liquidity"
     RISK_PROTECTION = "risk_protection"
@@ -34,6 +40,87 @@ class AccountWrapper(StrEnum):
     PROVIDENT_FUND = "provident_fund"
     INSURANCE = "insurance"
     OTHER = "other"
+
+
+class FinancialEntityType(StrEnum):
+    HOUSEHOLD = "household"
+    PERSON = "person"
+    ENTERPRISE = "enterprise"
+    TRUST = "trust"
+    OTHER = "other"
+
+
+class OwnershipType(StrEnum):
+    HOUSEHOLD_MEMBER = "household_member"
+    DIRECT = "direct"
+    JOINT = "joint"
+    BENEFICIAL = "beneficial"
+    CONTROL = "control"
+    OTHER = "other"
+
+
+class WealthTier(StrEnum):
+    FOUNDATIONAL = "foundational"
+    EMERGING_AFFLUENT = "emerging_affluent"
+    AFFLUENT = "affluent"
+    HIGH_NET_WORTH = "high_net_worth"
+
+
+class ServiceComplexity(StrEnum):
+    STANDARD = "standard"
+    ENHANCED = "enhanced"
+    COMPLEX = "complex"
+    SPECIALIST = "specialist"
+
+
+class ComplexityBand(StrEnum):
+    NONE = "none"
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+
+
+class PensionStage(StrEnum):
+    NOT_STARTED = "not_started"
+    ACCUMULATION = "accumulation"
+    TRANSITION = "transition"
+    RETIREMENT = "retirement"
+
+
+class ClientProfileStatus(StrEnum):
+    ACTIVE = "active"
+    SUPERSEDED = "superseded"
+    NEEDS_REVIEW = "needs_review"
+
+
+class ProfileTagSeverity(StrEnum):
+    INFO = "info"
+    WATCH = "watch"
+    HIGH = "high"
+
+
+class WealthNeedType(StrEnum):
+    LIQUIDITY = "liquidity"
+    EMERGENCY = "emergency"
+    DEBT_REPAYMENT = "debt_repayment"
+    MEDICAL_PROTECTION = "medical_protection"
+    DEATH_PROTECTION = "death_protection"
+    EDUCATION = "education"
+    HOUSING = "housing"
+    RETIREMENT = "retirement"
+    LONG_TERM_GROWTH = "long_term_growth"
+    ENTERPRISE_CONCENTRATION = "enterprise_concentration"
+    CURRENCY_MATCHING = "currency_matching"
+    SUCCESSION = "succession"
+    TRUST = "trust"
+    PHILANTHROPY = "philanthropy"
+
+
+class WealthNeedStatus(StrEnum):
+    IDENTIFIED = "identified"
+    PARTIALLY_PREPARED = "partially_prepared"
+    PREPARED = "prepared"
+    NEEDS_REVIEW = "needs_review"
 
 
 class AssetCategory(StrEnum):
@@ -66,6 +153,239 @@ class LiabilityCategory(StrEnum):
     OTHER = "other"
 
 
+class LiabilityStreamType(StrEnum):
+    EDUCATION = "education"
+    HOUSING = "housing"
+    RETIREMENT = "retirement"
+    MEDICAL = "medical"
+    FAMILY_SUPPORT = "family_support"
+    DEBT_SERVICE = "debt_service"
+    PROTECTION = "protection"
+    LIVING = "living"
+    SUCCESSION = "succession"
+    PHILANTHROPY = "philanthropy"
+    OTHER = "other"
+
+
+class HouseholdSnapshotStatus(StrEnum):
+    ACTIVE = "active"
+    SUPERSEDED = "superseded"
+
+
+class FinancialEventDomain(StrEnum):
+    LIFE = "life"
+    ENTERPRISE = "enterprise"
+
+
+class FinancialEventStatus(StrEnum):
+    CONFIRMED = "confirmed"
+    APPLIED = "applied"
+    PROCESSED = "processed"
+    FAILED = "failed"
+
+
+class LifeEventType(StrEnum):
+    SALARY_CHANGE = "salary_change"
+
+
+class EnterpriseStage(StrEnum):
+    STARTUP = "startup"
+    GROWTH = "growth"
+    MATURE = "mature"
+    PRE_IPO = "pre_ipo"
+    PUBLIC = "public"
+    EXITING = "exiting"
+
+
+class EnterpriseListedStatus(StrEnum):
+    UNLISTED = "unlisted"
+    LISTED = "listed"
+    DELISTED = "delisted"
+
+
+class EnterpriseType(StrEnum):
+    OPERATING_COMPANY = "operating_company"
+    HOLDING_COMPANY = "holding_company"
+    PARTNERSHIP = "partnership"
+    SOLE_PROPRIETORSHIP = "sole_proprietorship"
+    FAMILY_BUSINESS = "family_business"
+    OTHER = "other"
+
+
+class EnterpriseInstrumentType(StrEnum):
+    COMMON_EQUITY = "common_equity"
+    PREFERRED_EQUITY = "preferred_equity"
+    PARTNERSHIP_INTEREST = "partnership_interest"
+    RESTRICTED_STOCK = "restricted_stock"
+    STOCK_OPTION = "stock_option"
+    OTHER = "other"
+
+
+class EnterpriseValuationMethod(StrEnum):
+    TRANSACTION = "transaction"
+    MARKET_MULTIPLE = "market_multiple"
+    DISCOUNTED_CASH_FLOW = "discounted_cash_flow"
+    NET_ASSET = "net_asset"
+    USER_ESTIMATE = "user_estimate"
+    OTHER = "other"
+
+
+class EvidenceConfidence(StrEnum):
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+
+
+class EnterpriseCashflowType(StrEnum):
+    SALARY = "salary"
+    DIVIDEND = "dividend"
+    BUSINESS_DISTRIBUTION = "business_distribution"
+    MANAGEMENT_FEE = "management_fee"
+    OTHER = "other"
+
+
+class EnterpriseCashflowStability(StrEnum):
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+
+
+class EnterpriseGuaranteeType(StrEnum):
+    PERSONAL = "personal"
+    JOINT_AND_SEVERAL = "joint_and_several"
+    PROPERTY = "property"
+    CROSS_GUARANTEE = "cross_guarantee"
+    OTHER = "other"
+
+
+class EnterpriseEventType(StrEnum):
+    FUNDING = "funding"
+    IPO = "ipo"
+    LOCKUP_EXPIRY = "lockup_expiry"
+    EQUITY_SALE = "equity_sale"
+    DIVIDEND_CHANGE = "dividend_change"
+    VALUATION_CHANGE = "valuation_change"
+    GUARANTEE_CHANGE = "guarantee_change"
+    CASHFLOW_DETERIORATION = "cashflow_deterioration"
+
+
+class EnterpriseEventStatus(StrEnum):
+    PLANNED = "planned"
+    CONFIRMED = "confirmed"
+    COMPLETED = "completed"
+    CANCELLED = "cancelled"
+
+
+class CFSSolutionStatus(StrEnum):
+    ACTIVE = "active"
+    SUPERSEDED = "superseded"
+    NEEDS_REVIEW = "needs_review"
+
+
+class CFSComponentType(StrEnum):
+    LIQUIDITY = "liquidity"
+    DEBT = "debt"
+    PROTECTION = "protection"
+    HOUSING = "housing"
+    EDUCATION = "education"
+    RETIREMENT = "retirement"
+    INVESTMENT = "investment"
+    ENTERPRISE_RISK = "enterprise_risk"
+    CROSS_BORDER = "cross_border"
+    SUCCESSION = "succession"
+    TRUST = "trust"
+    PHILANTHROPY = "philanthropy"
+    PROFESSIONAL_SERVICE = "professional_service"
+    NO_ACTION = "no_action"
+
+
+class CFSComponentStatus(StrEnum):
+    RECOMMENDED = "recommended"
+    NO_ACTION_REQUIRED = "no_action_required"
+    PROFESSIONAL_REVIEW_REQUIRED = "professional_review_required"
+    COMPLETED = "completed"
+
+
+class CFSTimeHorizon(StrEnum):
+    IMMEDIATE = "immediate"
+    SHORT_TERM = "short_term"
+    MEDIUM_TERM = "medium_term"
+    LONG_TERM = "long_term"
+    ONGOING = "ongoing"
+
+
+class ProfessionalSpecialistType(StrEnum):
+    PRIVATE_BANKER = "private_banker"
+    INVESTMENT_ADVISOR = "investment_advisor"
+    PENSION_SPECIALIST = "pension_specialist"
+    INSURANCE_SPECIALIST = "insurance_specialist"
+    CROSS_BORDER_SPECIALIST = "cross_border_specialist"
+    TRUST_SPECIALIST = "trust_specialist"
+    LEGAL_TAX_PROFESSIONAL = "legal_tax_professional"
+    PHILANTHROPY_SPECIALIST = "philanthropy_specialist"
+
+
+class ProfessionalReferralUrgency(StrEnum):
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    URGENT = "urgent"
+
+
+class ProfessionalReferralStatus(StrEnum):
+    OPEN = "open"
+    ACCEPTED = "accepted"
+    COMPLETED = "completed"
+    CANCELLED = "cancelled"
+
+
+class InstitutionalEntitlementType(StrEnum):
+    SOCIAL_SECURITY = "social_security"
+    ENTERPRISE_PENSION = "enterprise_pension"
+    OCCUPATIONAL_PENSION = "occupational_pension"
+    PERSONAL_PENSION = "personal_pension"
+    ANNUITY = "annuity"
+    RENTAL = "rental"
+    FINANCIAL_WITHDRAWAL = "financial_withdrawal"
+
+
+class CurrencyExposureType(StrEnum):
+    ASSET_CURRENCY = "asset_currency"
+    INCOME_CURRENCY = "income_currency"
+    LIABILITY_CURRENCY = "liability_currency"
+    EDUCATION_LIABILITY = "education_liability"
+    ENTERPRISE_REVENUE = "enterprise_revenue"
+    FUTURE_OBLIGATION = "future_obligation"
+
+
+class CurrencyExposureDirection(StrEnum):
+    INFLOW = "inflow"
+    OUTFLOW = "outflow"
+
+
+class CurrencyExposureHorizon(StrEnum):
+    CURRENT = "current"
+    SHORT_TERM = "short_term"
+    MEDIUM_TERM = "medium_term"
+    LONG_TERM = "long_term"
+
+
+class SpecializedComplexity(StrEnum):
+    NONE = "none"
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+
+
+class TrustSuccessionNeedType(StrEnum):
+    MINOR_BENEFICIARY = "minor_beneficiary"
+    SPECIAL_CARE = "special_care"
+    MULTI_GENERATION = "multi_generation"
+    ENTERPRISE_SUCCESSION = "enterprise_succession"
+    OWNERSHIP_COMPLEXITY = "ownership_complexity"
+    INSURANCE_TRUST_COORDINATION = "insurance_trust_coordination"
+
+
 class GoalType(StrEnum):
     EMERGENCY_FUND = "emergency_fund"
     EDUCATION = "education"
@@ -93,6 +413,28 @@ class ProductRiskLevel(StrEnum):
     R3 = "r3"
     R4 = "r4"
     R5 = "r5"
+
+
+class ProductFamily(StrEnum):
+    DEPOSIT = "deposit"
+    BANK_WEALTH_MANAGEMENT = "bank_wealth_management"
+    MONEY_MARKET_FUND = "money_market_fund"
+    BOND_FUND = "bond_fund"
+    EQUITY_INDEX_FUND = "equity_index_fund"
+    BOND_TREASURY = "bond_treasury"
+    GOLD = "gold"
+    INSURANCE = "insurance"
+    PERSONAL_PENSION_PRODUCT = "personal_pension_product"
+    TRUST_WEALTH_TRANSFER_TOOL = "trust_wealth_transfer_tool"
+    CASH_MANAGEMENT = "cash_management"
+
+
+class ProductEligibilityDecision(StrEnum):
+    ELIGIBLE = "eligible"
+    RESTRICTED = "restricted"
+    BLOCKED = "blocked"
+    EDUCATION_ONLY = "education_only"
+    PROFESSIONAL_REVIEW = "professional_review"
 
 
 class PortfolioCandidateType(StrEnum):
@@ -147,6 +489,74 @@ class BehaviorInterventionStatus(StrEnum):
     ACTIVE = "active"
     COMPLETED = "completed"
     DISMISSED = "dismissed"
+
+
+class MonitoringPolicyType(StrEnum):
+    GOAL_FUNDING_DRIFT = "goal_funding_drift"
+    ELTC_CHANGE = "eltc_change"
+    RISK_BUDGET_BREACH = "risk_budget_breach"
+    ASSET_CONCENTRATION = "asset_concentration"
+    ENTERPRISE_DEPENDENCY = "enterprise_dependency"
+    CURRENCY_MISMATCH = "currency_mismatch"
+    PRODUCT_MATURITY = "product_maturity"
+    SNAPSHOT_STALENESS = "snapshot_staleness"
+    RETIREMENT_GAP = "retirement_gap"
+    LIFE_EVENT = "life_event"
+    BEHAVIOR_DRIFT = "behavior_drift"
+
+
+class MonitoringComparator(StrEnum):
+    GREATER_THAN = "gt"
+    GREATER_THAN_OR_EQUAL = "gte"
+    LESS_THAN = "lt"
+    LESS_THAN_OR_EQUAL = "lte"
+    EQUAL = "eq"
+    ABSOLUTE_CHANGE_AT_LEAST = "absolute_change_gte"
+    EVENT_OCCURRED = "event_occurred"
+
+
+class MonitoringCadence(StrEnum):
+    REALTIME = "realtime"
+    DAILY = "daily"
+    WEEKLY = "weekly"
+    MONTHLY = "monthly"
+    EVENT_DRIVEN = "event_driven"
+
+
+class MonitoringSeverity(StrEnum):
+    INFO = "info"
+    WATCH = "watch"
+    HIGH = "high"
+    CRITICAL = "critical"
+
+
+class MonitoringAlertStatus(StrEnum):
+    OPEN = "open"
+    ACKNOWLEDGED = "acknowledged"
+    RESOLVED = "resolved"
+    DISMISSED = "dismissed"
+
+
+class AdvisorTriggerStatus(StrEnum):
+    OPEN = "open"
+    IN_PROGRESS = "in_progress"
+    COMPLETED = "completed"
+    DISMISSED = "dismissed"
+
+
+class BehaviorObservationType(StrEnum):
+    PERFORMANCE_CHASING = "performance_chasing"
+    PANIC_REDEMPTION = "panic_redemption"
+    FREQUENT_OVERRIDES = "frequent_overrides"
+    GOAL_CHANGES = "goal_changes"
+    EARLY_WITHDRAWAL = "early_withdrawal"
+    HIGH_FREQUENCY_ATTENTION = "high_frequency_attention"
+    IGNORED_PROTECTION = "ignored_protection"
+
+
+class RiskLimitEffect(StrEnum):
+    MAINTAIN = "maintain"
+    REDUCE = "reduce"
 
 
 class ComplexityLevel(StrEnum):

@@ -12,7 +12,8 @@
 | --- | --- | --- |
 | 家庭成员、资产、负债、收入、支出、保单、目标、风险、授权 CRUD | 已实现 | `backend/app/api/v1/endpoints/domain.py`；`backend/tests/test_domain_api.py` |
 | 金额 Decimal、统一版本、来源、确认、软删除和家庭边界 | 已实现 | `backend/app/models/domain.py`；`backend/tests/test_domain_data.py` |
-| A/B/C 三套家庭 | Mock | `data/synthetic/families.json`；`GET /api/v1/demo/manifest` |
+| A-H 八类 Canonical Persona V2 | Mock | `data/synthetic/v5_personas/`；Golden Outcomes V2；`GET /api/v1/demo/manifest` |
+| A/B/C 三家庭兼容对照 | Mock | 同一 A-H 数据集的 A/B/C 视图；三个唯一配置签名 |
 | 信用卡额度不计入资产，未付余额计入负债 | 已实现 | 财务事实装载与标准答案；`backend/tests/test_financial_engine.py` |
 | 五张财务底表与数据诊断 | 已实现 | `backend/app/services/financial/`；`GET .../financial-analysis` |
 | 20 项独立财务指标 | 已实现 | `backend/app/services/financial/metrics.py`；标准答案回归 |
@@ -20,6 +21,24 @@
 | CPI、家庭 CPI、目标专项成本、最低工资辅助基准分开 | 已实现 | `backend/app/services/financial/purchasing_power.py`；信任基准 |
 | 自然语言待确认录入 | 已实现 | `/trust/intake/drafts`；`backend/tests/test_trust.py` |
 | 外部模型理解/解释 | Mock | 默认 `mock_template`；可选兼容 Provider 需环境变量 |
+
+## V5 全生命周期财富操作链
+
+| 能力 | 状态 | 实现与证据 |
+| --- | --- | --- |
+| Canonical Financial Graph 与 V4 projection parity | 已实现 | `services/financial_graph/`；账户、币种、用途、期限、所有权与精细资产可选录入 |
+| 动态 Client Profile 与 14 类 Wealth Need | 已实现 | 画像、标签、完整度、风险审慎下限、需要优先级与专业复核边界 |
+| Liability Streams、责任日历与 ELTC 七步桥 | 已实现 | 刚性责任不消失；锁定资产不进入短期责任；HCI/GCI/IAI 分开 |
+| Persistent Financial Twin 与生活事件账本 | 已实现 | 事件确认、哈希幂等、新快照、差异账本与历史回放 |
+| Family–Enterprise Twin | 已实现 | 企业股权、估值、现金流、担保、质押、依赖度与家庭风险隔离 |
+| CFS Composer、联合风险预算与 Wealth Orchestrator | 已实现 | Need/Liability/Risk Budget first；`NO_ACTION_REQUIRED` 为正式结果 |
+| Buy-side Product Ontology、Eligibility 与 Ranking | 已实现 | 0—N 候选、过期阻断、费用与冲突披露；渠道激励不得提权 |
+| Decision Evidence V2 与冻结回放 | 已实现 | 14 域证据包、决策材料哈希；最新产品变化不改写历史结论 |
+| 养老、币种、信托传承与公益 Specialized CFS | 已实现 | 只识别需要、缺口和资料；法律／税务／外汇／信托结论走专业转介 |
+| Continuous Monitoring、行为观察与 NBA | 已实现 | 11 类策略、`do_not_sell`、冷静期、专业转介与 `NO_ACTION_REQUIRED` |
+| 六类受限工具型金融 Agent | 已实现 | deny-by-default 工具 Allowlist；自然语言只生成草稿／解释，不取得金融决策权 |
+| HCI/GCI/IAI Calibration Registry | 已实现 | controlled demo／empirical／bank-authorized 分层；缺失验证参数时 `needs_review` |
+| Continuous Wealth 与 Action Center 前端 | 已实现 | `/wealth/*`、`/advisor/actions`；11 路由通过 1440/1024/768/390 浏览器回归 |
 
 ## 目标、四账户、组合与孪生
 
@@ -58,7 +77,7 @@
 
 | 能力 | 状态 | 实现与证据 |
 | --- | --- | --- |
-| 客户端 13 步旅程/11 任务 | 已实现 | `/client`；`backend/tests/test_client_experience.py` |
+| 客户端 13 步数据旅程/12 项界面任务 | 已实现 | `/client`；`backend/tests/test_client_experience.py`；Playwright 键盘与移动端回归 |
 | 客户经理工作台 | 已实现 | `/advisor`；队列、底稿、三方案、版本和复盘 |
 | 风险合规工作台 | 已实现 | `/risk`；十类控制、门禁、投诉和审计包 |
 | 四角色模拟 RBAC | Mock | client/advisor/compliance/admin；顶栏模拟账号 |
@@ -80,7 +99,9 @@
 | 能力 | 状态 | 实现与证据 |
 | --- | --- | --- |
 | 十阶段一键主 Demo | 已实现 | `/demo`；运行持久化、进度、恢复 |
-| A/B/C 三家庭唯一配置对照 | 已实现 | 3 个唯一签名，`fixed_ratio_model=false` |
+| A-H V5 Release Benchmark V2 | 已实现 | 8/8 Persona、9/9 指标、无效告警率 0、冻结决策回放 |
+| 创始人融资事件 14 阶段故事 | 已实现 | 初始／融资／确认快照互异，完成画像、需要、风险预算、CFS、审核与客户确认 |
+| A/B/C 三家庭唯一配置对照 | 已实现 | 兼容 V4 现场剧情；3 个唯一签名，`fixed_ratio_model=false` |
 | 无外部服务离线主链 | 已实现 | `mock_mode=true`、外部调用 0、Compose 黑盒验收 |
 | Docker Compose、SQLite、可选 PostgreSQL | 已实现 | `docker-compose.yml`；默认 SQLite，Postgres 显式 profile |
 | 合成数据备份与隔离恢复 | 已实现 | `make backup-demo` / `make restore-demo` |

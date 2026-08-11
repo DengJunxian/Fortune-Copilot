@@ -9,7 +9,7 @@ export function PersonalPensionWorkspace({ plan }: { plan: PlanningResponse | nu
   return (
     <section className="personal-pension-workspace" aria-labelledby="personal-pension-heading">
       <header className="planning-header">
-        <div><p className="section-index">制度账户 · Personal Pension Copilot</p><h2 id="personal-pension-heading">个人养老金不是低风险资产类别</h2><p>{pension.explanation}</p></div>
+        <div><p className="section-index">个人养老金规划</p><h2 id="personal-pension-heading">个人养老金不是低风险资产类别</h2><p>{pension.explanation}</p></div>
         <span className="methodology-version">{pension.policy.policy_version}</span>
       </header>
 

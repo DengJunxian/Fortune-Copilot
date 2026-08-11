@@ -1,0 +1,124 @@
+{
+  "code": "v5-cfs-composer",
+  "semantic_version": "1.0.0",
+  "formula_version": "cfs-orchestration-v1",
+  "effective_from": "2026-08-10",
+  "effective_to": null,
+  "source_type": "internal_demo",
+  "source_summary": "Fortune Copilot V5 E06 deterministic CFS composition policy; not product advice or an execution instruction.",
+  "risk_ceiling_by_level": {
+    "low": "0.200000",
+    "medium_low": "0.300000",
+    "medium": "0.450000",
+    "medium_high": "0.550000",
+    "high": "0.650000"
+  },
+  "short_horizon_days": 1095,
+  "high_liability_rigidity_ratio": "0.350000",
+  "referral_due_days": {
+    "low": 30,
+    "medium": 14,
+    "high": 7,
+    "urgent": 2
+  },
+  "need_policies": {
+    "liquidity": {
+      "component_type": "liquidity",
+      "recommended_action": "先补足日常周转资金，并保持可随时支取。",
+      "deterministic_tool": "financial_health",
+      "product_mapping_allowed": false,
+      "specialist": null
+    },
+    "emergency": {
+      "component_type": "liquidity",
+      "recommended_action": "按家庭必要支出补足应急储备，不占用长期风险预算。",
+      "deterministic_tool": "financial_health",
+      "product_mapping_allowed": false,
+      "specialist": null
+    },
+    "debt_repayment": {
+      "component_type": "debt",
+      "recommended_action": "优先偿还高息债务，再评估长期配置。",
+      "deterministic_tool": "liability_calendar",
+      "product_mapping_allowed": false,
+      "specialist": null
+    },
+    "medical_protection": {
+      "component_type": "protection",
+      "recommended_action": "先核对医疗保障缺口与可持续保费，再询价合适的保障工具。",
+      "deterministic_tool": "protection_planner",
+      "product_mapping_allowed": false,
+      "specialist": "insurance_specialist"
+    },
+    "death_protection": {
+      "component_type": "protection",
+      "recommended_action": "按家庭责任与收入替代缺口补足身故保障。",
+      "deterministic_tool": "protection_planner",
+      "product_mapping_allowed": false,
+      "specialist": "insurance_specialist"
+    },
+    "education": {
+      "component_type": "education",
+      "recommended_action": "按教育现金流日期分期准备，不把近期学费投入高波动资产。",
+      "deterministic_tool": "liability_calendar",
+      "product_mapping_allowed": false,
+      "specialist": null
+    },
+    "housing": {
+      "component_type": "housing",
+      "recommended_action": "按首付、贷款和交付日期拆分住房资金安排。",
+      "deterministic_tool": "liability_calendar",
+      "product_mapping_allowed": false,
+      "specialist": null
+    },
+    "retirement": {
+      "component_type": "retirement",
+      "recommended_action": "联合制度养老金、退休责任流和长期可配置资本安排退休资金。",
+      "deterministic_tool": "pension_planner",
+      "product_mapping_allowed": false,
+      "specialist": "pension_specialist"
+    },
+    "long_term_growth": {
+      "component_type": "investment",
+      "recommended_action": "仅使用通过前置责任扣减和适当性门的 ELTC 进入长期配置。",
+      "deterministic_tool": "portfolio_optimizer",
+      "product_mapping_allowed": true,
+      "specialist": "investment_advisor"
+    },
+    "enterprise_concentration": {
+      "component_type": "enterprise_risk",
+      "recommended_action": "降低家庭金融资产与企业经营风险的同向暴露，并审查担保隔离。",
+      "deterministic_tool": "family_enterprise",
+      "product_mapping_allowed": false,
+      "specialist": "private_banker"
+    },
+    "currency_matching": {
+      "component_type": "cross_border",
+      "recommended_action": "按责任币种核对资产、现金流、税务与合规边界，不伪造实时汇率。",
+      "deterministic_tool": "professional_routing",
+      "product_mapping_allowed": false,
+      "specialist": "cross_border_specialist"
+    },
+    "succession": {
+      "component_type": "succession",
+      "recommended_action": "先澄清受益人、控制权、税务和法律安排，再选择传承工具。",
+      "deterministic_tool": "professional_routing",
+      "product_mapping_allowed": false,
+      "specialist": "legal_tax_professional"
+    },
+    "trust": {
+      "component_type": "trust",
+      "recommended_action": "由信托与法律税务专业人员核对设立目的、资产适格性和治理结构。",
+      "deterministic_tool": "professional_routing",
+      "product_mapping_allowed": false,
+      "specialist": "trust_specialist"
+    },
+    "philanthropy": {
+      "component_type": "philanthropy",
+      "recommended_action": "明确公益目标、期限、治理与信息披露后再选择承接结构。",
+      "deterministic_tool": "professional_routing",
+      "product_mapping_allowed": false,
+      "specialist": "philanthropy_specialist"
+    }
+  }
+}

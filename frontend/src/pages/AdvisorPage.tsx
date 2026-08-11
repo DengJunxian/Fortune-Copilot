@@ -5,6 +5,7 @@ import { TwinPortalWorkspace } from "../components/twin/TwinWorkspace";
 import { BehaviorPortalWorkspace } from "../components/behavior/BehaviorWorkspace";
 import { TrustPortalWorkspace } from "../components/trust/TrustWorkspace";
 import { AdvisorWorkflowWorkspace } from "../components/workflow/AdvisorWorkflowWorkspace";
+import { AdvisorActionCenter } from "../components/advisor/AdvisorActionCenter";
 
 export function AdvisorPage() {
   const { capabilities } = usePortalContext();
@@ -18,10 +19,15 @@ export function AdvisorPage() {
       <header className="page-intro">
         <p className="page-kicker">顾问端</p>
         <h1>客户经理工作台</h1>
-        <p>以共享方案版本组织客户队列、面谈准备、三方案、沟通稿、合规提交、客户确认与月度复盘。</p>
+        <p>先处理客户变化与安全边界，再进入面谈准备、方案复核、合规提交和专项证据工作区。</p>
       </header>
 
-      <AdvisorWorkflowWorkspace />
+      <AdvisorActionCenter compact />
+
+      <details className="technical-evidence-drawer advisor-workflow-drawer">
+        <summary>打开方案流程与面谈工作区</summary>
+        <AdvisorWorkflowWorkspace />
+      </details>
 
       <details className="technical-evidence-drawer">
         <summary>查看底层能力与专项证据工作区</summary>

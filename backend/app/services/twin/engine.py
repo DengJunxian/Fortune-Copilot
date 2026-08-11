@@ -23,6 +23,7 @@ from app.schemas.twin import (
     TwinRunStatusResponse,
 )
 from app.services.financial.facts import load_household_facts
+from app.services.financial_twin.snapshot import load_snapshot, load_twin_model_input
 from app.services.planning.engine import empty_counterfactual, plan_facts
 from app.services.planning.rules import load_planning_rules
 from app.services.twin.rules import (
@@ -119,26 +120,42 @@ def start_twin_run(
             "数字孪生参数未通过规则校验",
             status_code=422,
         ) from exc
-    planning = plan_facts(
-        facts,
-        financial_rules_path,
-        load_planning_rules(planning_rules_path),
-        request.analysis_date or date.today(),
-        empty_counterfactual(),
+    persistent_snapshot = (
+        load_snapshot(session, household_id, request.household_snapshot_id)
+        if request.household_snapshot_id is not None
+        else None
     )
+    if persistent_snapshot is not None:
+        load_twin_model_input(session, household_id, persistent_snapshot.id)
+        planning_input_version = persistent_snapshot.input_hash
+        data_as_of = persistent_snapshot.snapshot_date
+    else:
+        planning = plan_facts(
+            facts,
+            financial_rules_path,
+            load_planning_rules(planning_rules_path),
+            request.analysis_date or date.today(),
+            empty_counterfactual(),
+        )
+        planning_input_version = planning.meta.input_version
+        data_as_of = planning.meta.data_as_of
     parameter_hash = request_parameter_hash(request, rules.semantic_version)
-    input_version = _input_version(planning.meta.input_version, parameter_hash, rules)
+    input_version = _input_version(planning_input_version, parameter_hash, rules)
     run = SimulationRun(
         household_id=household_id,
         scenario_id=scenario.id,
         snapshot_id=None,
+        household_snapshot_id=(persistent_snapshot.id if persistent_snapshot is not None else None),
         random_seed=request.seed,
         engine_version=rules.engine_version,
         inputs={
             "request": request.model_dump(mode="json"),
             "rule_version": rules.semantic_version,
-            "planning_input_version": planning.meta.input_version,
-            "data_as_of": planning.meta.data_as_of.isoformat(),
+            "planning_input_version": planning_input_version,
+            "data_as_of": data_as_of.isoformat(),
+            "household_snapshot_hash": (
+                persistent_snapshot.snapshot_hash if persistent_snapshot is not None else None
+            ),
             "actor_id": actor.actor_id,
             "actor_role": actor.role,
         },
@@ -348,8 +365,11 @@ def advance_twin_run(
     if not isinstance(request_raw, dict):
         raise AppError("twin_run_corrupt", "数字孪生运行输入损坏", status_code=500)
     request = TwinRunRequest.model_validate(request_raw)
-    facts = load_household_facts(session, household_id)
-    model = build_twin_model_input(facts, run.valuation_date or date.today())
+    if run.household_snapshot_id is not None:
+        model = load_twin_model_input(session, household_id, run.household_snapshot_id)
+    else:
+        facts = load_household_facts(session, household_id)
+        model = build_twin_model_input(facts, run.valuation_date or date.today())
     partial_raw = run.outputs.get("partial", {})
     partial: dict[str, object] = dict(partial_raw) if isinstance(partial_raw, dict) else {}
     run.status = SimulationStatus.RUNNING
@@ -425,9 +445,9 @@ def advance_twin_run(
                     actor,
                     rules,
                     request,
-                    facts.code,
-                    facts.is_synthetic,
-                    facts.currency,
+                    model.household_code,
+                    model.synthetic_data,
+                    model.currency,
                     date.fromisoformat(str(run.inputs["data_as_of"])),
                     model,
                     partial,
@@ -528,6 +548,7 @@ def run_status_response(run: SimulationRun) -> TwinRunStatusResponse:
     return TwinRunStatusResponse(
         run_id=run.id,
         household_id=run.household_id,
+        household_snapshot_id=run.household_snapshot_id,
         status=run.status,
         progress_percent=run.progress_percent,
         phase=str(phase_raw or run.status.value),

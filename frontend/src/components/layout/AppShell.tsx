@@ -6,6 +6,8 @@ import {
   type CapabilitySource,
 } from "../../api/capabilities";
 import { demoActor, portalDefaultRole } from "../../api/actor";
+import { cfsFeatureEnabled } from "../../api/cfs";
+import { liabilityFeatureEnabled } from "../../api/liability";
 import { PortalContext } from "../../contexts/PortalContext";
 import {
   DisplayPreferencesProvider,
@@ -19,7 +21,18 @@ const portalDensity: Record<string, string> = {
   "/client": "client",
   "/planning": "client",
   "/client/advanced": "client",
+  "/wealth": "client",
+  "/wealth/profile": "client",
+  "/wealth/goals": "client",
+  "/wealth/twin": "client",
+  "/wealth/family-enterprise": "client",
+  "/wealth/cfs": "client",
+  "/wealth/retirement": "client",
+  "/wealth/global": "client",
+  "/wealth/family": "client",
+  "/wealth/history": "client",
   "/advisor": "advisor",
+  "/advisor/actions": "advisor",
   "/risk": "risk",
 };
 
@@ -57,10 +70,11 @@ function AppShellContent({ children }: { children: ReactNode }) {
   }, []);
 
   const density = useMemo(() => portalDensity[path] ?? "client", [path]);
-  const internalWorkspace = ["/advisor", "/risk", "/demo", "/client/advanced"].includes(path);
+  const internalWorkspace = ["/advisor", "/advisor/actions", "/risk", "/demo", "/client/advanced"].includes(path);
 
   return (
     <div
+      className={path === "/" ? "app-root app-root-home" : "app-root"}
       data-density={density}
       data-theme={theme}
       data-text-scale={largeText ? "large" : "default"}
@@ -77,29 +91,35 @@ function AppShellContent({ children }: { children: ReactNode }) {
             </span>
             <span className="brand-copy">
               <strong>智运财富</strong>
-              <span>普慧金融 · Fortune Copilot</span>
+              <span>中国家庭财富管理系统</span>
             </span>
           </AppLink>
           <nav className="primary-nav" aria-label="主导航">
             {internalWorkspace ? (
               <>
-                <NavItem to="/planning">客户规划</NavItem>
-                <NavItem to="/advisor">客户经理工作台</NavItem>
-                <NavItem to="/risk">合规管理</NavItem>
+                <NavItem to="/planning">家庭规划</NavItem>
+                <NavItem to="/advisor/actions">顾问行动</NavItem>
+                <NavItem to="/advisor">客户管理</NavItem>
+                <NavItem to="/risk">合规审查</NavItem>
               </>
             ) : (
               <>
                 <NavItem to="/">首页</NavItem>
-                <NavItem to="/planning">开始规划</NavItem>
+                <NavItem to="/planning">家庭建档</NavItem>
+                <NavItem to="/wealth">财富总览</NavItem>
+                {liabilityFeatureEnabled ? (
+                  <NavItem to="/wealth/goals">目标责任</NavItem>
+                ) : null}
+                {cfsFeatureEnabled ? <NavItem to="/wealth/cfs">综合方案</NavItem> : null}
               </>
             )}
           </nav>
           {internalWorkspace ? (
             <div className="staff-context"><ShieldCheckIcon size={18} weight="duotone" aria-hidden="true" /><span>内部工作区</span></div>
-          ) : path === "/planning" || path === "/client" ? (
+          ) : path === "/planning" || path === "/client" || path === "/wealth" || path.startsWith("/wealth/") ? (
             <AppLink className="header-exit" to="/"><ArrowLeftIcon size={17} aria-hidden="true" /> 保存并返回</AppLink>
           ) : (
-            <AppLink className="header-cta" to="/planning">建立我的规划 <ArrowRightIcon size={17} aria-hidden="true" /></AppLink>
+            <AppLink className="header-cta" to="/planning">建立家庭规划 <ArrowRightIcon size={17} aria-hidden="true" /></AppLink>
           )}
         </div>
       </header>
@@ -113,8 +133,8 @@ function AppShellContent({ children }: { children: ReactNode }) {
       >
         {children}
         <footer className="product-footer">
-          <div><strong>智运财富</strong><span>普慧金融，让家庭财务现状、目标和行动安排更清楚。</span></div>
-          <p>规划结果仅供财务规划参考，不构成任何金融产品的收益或本金保证。</p>
+          <div><strong>智运财富</strong><span>面向中国家庭的财富管理与规划服务。</span></div>
+          <p>规划结果用于辅助家庭决策，不构成投资建议，也不承诺任何金融产品的本金或收益。</p>
         </footer>
       </PortalContext.Provider>
     </div>

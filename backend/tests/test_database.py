@@ -14,13 +14,48 @@ def test_database_engine_supports_sqlite_without_external_service() -> None:
     table_names = inspect(target).get_table_names()
     assert "households" in table_names
     assert "audit_events" in table_names
-    assert len(table_names) == 47
+    assert len(table_names) == 80
     assert {
         "identity_access_grants",
         "privacy_requests",
         "quality_gate_runs",
         "evaluation_runs",
     } <= set(table_names)
+    assert {
+        "cfs_solutions",
+        "cfs_solution_components",
+        "professional_service_referrals",
+    } <= set(table_names)
+    assert {
+        "financial_entities",
+        "financial_accounts",
+        "positions",
+        "ownership_edges",
+    } <= set(table_names)
+    assert {
+        "client_wealth_profiles",
+        "client_profile_tags",
+        "wealth_needs",
+        "wealth_need_priorities",
+    } <= set(table_names)
+    assert {"household_snapshots", "financial_events", "life_events"} <= set(table_names)
+    assert {
+        "monitoring_policies",
+        "monitoring_alerts",
+        "advisor_triggers",
+        "behavior_observations",
+    } <= set(table_names)
+    assert {
+        "enterprise_profiles",
+        "enterprise_ownerships",
+        "enterprise_valuations",
+        "enterprise_cashflows",
+        "enterprise_guarantees",
+        "enterprise_liquidity_events",
+    } <= set(table_names)
+    assert "enterprise_id" in {
+        column["name"] for column in inspect(target).get_columns("positions")
+    }
 
 
 def test_workflow_state_uses_the_lowercase_values_enforced_by_the_migration() -> None:

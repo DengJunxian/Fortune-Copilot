@@ -30,6 +30,7 @@ import {
   advisorHouseholdsFixture,
   complianceEvidenceFixture,
   complianceQueueFixture,
+  decisionEvidenceFixture,
   workflowFixture,
 } from "./reviewWorkflowFixture";
 import {
@@ -280,6 +281,24 @@ function connectedFetch() {
         integrity_status: "verified",
         package_hash: "a".repeat(64),
         boundary_note: "投诉回放未修改历史。",
+      }));
+    }
+    if (url.includes("/api/v1/decisions/") && url.endsWith("/evidence")) {
+      return Promise.resolve(jsonResponse(decisionEvidenceFixture));
+    }
+    if (url.includes("/api/v1/decisions/") && url.endsWith("/replay")) {
+      return Promise.resolve(jsonResponse({
+        decision_id: decisionEvidenceFixture.decision_id,
+        decision_type: decisionEvidenceFixture.decision_type,
+        household_id: decisionEvidenceFixture.household_id,
+        replayed_from: "frozen_decision_evidence",
+        stored_decision_hash: decisionEvidenceFixture.decision_hash,
+        replay_decision_hash: decisionEvidenceFixture.decision_hash,
+        hash_identical: true,
+        used_snapshot_versions: {},
+        latest_product_data_used: false,
+        replayed_at: "2026-08-04T10:30:00Z",
+        evidence: decisionEvidenceFixture,
       }));
     }
     if (url.endsWith("/api/v1/households/household-b/financial-analysis")) {
@@ -562,13 +581,15 @@ describe("Fortune Copilot routes", () => {
     ["/demo", "从一句家庭描述，到八章规划书与可追溯审核"],
     ["/client", "先了解您和家人"],
     ["/planning", "先了解您和家人"],
+    ["/wealth", "家庭，今天先看最重要的四件事。"],
     ["/client/advanced", "家庭财富驾驶舱"],
     ["/advisor", "客户经理工作台"],
+    ["/advisor/actions", "客户行动中心"],
     ["/risk", "风险与审计控制台"],
   ])("renders %s as a real portal route", async (path, heading) => {
     render(<AppRoutes initialPath={path} />);
     expect(await screen.findByRole("heading", { level: 1, name: heading })).toBeInTheDocument();
-    expect(screen.getByText(/规划结果仅供财务规划参考/)).toBeInTheDocument();
+    expect(screen.getByText(/规划结果用于辅助家庭决策/)).toBeInTheDocument();
   });
 
   it("shows verified public data separately from blocked ICBC production ports", async () => {
@@ -609,7 +630,7 @@ describe("Fortune Copilot routes", () => {
     render(<AppRoutes initialPath="/demo" />);
 
     await screen.findByRole("heading", { name: "演示控制台" });
-    await user.click(screen.getByRole("button", { name: "一键运行完整 Demo" }));
+    await user.click(screen.getByRole("button", { name: "运行完整演示" }));
     const timeline = await screen.findByRole("list", { name: "主 Demo 十阶段进度" });
     expect(within(timeline).getAllByRole("listitem")).toHaveLength(10);
     expect(screen.getByText("8 / 8")).toBeInTheDocument();
@@ -630,7 +651,10 @@ describe("Fortune Copilot routes", () => {
 
   it("has no automatically detectable accessibility violations on the entry page", async () => {
     const { container } = render(<AppRoutes initialPath="/" />);
-    expect(await screen.findByRole("heading", { name: /把家庭财务看清楚/ })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: /让专业财富规划/ })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: /中国家庭财富管理主视觉/ })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "中国家庭，不能直接套用一张海外比例表" })).toBeInTheDocument();
+    expect(screen.getByText(/标普家庭资产配置图/)).toBeInTheDocument();
     const result = await run(container, {
       rules: {
         "color-contrast": { enabled: false },
@@ -648,7 +672,7 @@ describe("Fortune Copilot routes", () => {
 
     const caseCard = screen.getByRole("heading", { name: "双收入三口之家" }).closest("article");
     expect(caseCard).not.toBeNull();
-    await user.click(within(caseCard!).getByRole("button", { name: /查看这类家庭的分析/ }));
+    await user.click(within(caseCard!).getByRole("button", { name: /查看家庭方案/ }));
 
     expect(window.location.pathname).toBe("/planning");
     expect(window.location.search).toBe("");
@@ -780,7 +804,7 @@ describe("Fortune Copilot routes", () => {
     render(<AppRoutes initialPath="/client/advanced" />);
 
     await openClientTask(user, "家庭规划书");
-    await user.click(await screen.findByRole("button", { name: "一键生成完整八章规划书" }));
+    await user.click(await screen.findByRole("button", { name: "生成完整八章规划书" }));
     expect(await screen.findByText("当前 R1")).toBeInTheDocument();
     const navigation = screen.getByRole("navigation", { name: "规划书八章" });
     expect(within(navigation).getAllByRole("button")).toHaveLength(8);
@@ -810,7 +834,7 @@ describe("Fortune Copilot routes", () => {
     expect(screen.getByText("为什么现在不建议增加投资？")).toBeInTheDocument();
     expect(screen.getByText("中国家庭购买力门槛 PPH")).toBeInTheDocument();
     expect(screen.getByText(/地区最低工资信号不是 CPI/)).toBeInTheDocument();
-    expect(screen.getByText("Personal Pension Copilot")).toBeInTheDocument();
+    expect(screen.getAllByText("个人养老金规划").length).toBeGreaterThan(0);
     expect(screen.getByText("个人养老金是制度账户，不是低风险等级")).toBeInTheDocument();
     for (const name of ["要花的钱", "保命的钱", "保本的钱", "生钱的钱"]) {
       expect(screen.getAllByRole("heading", { name }).length).toBeGreaterThan(0);
@@ -1088,7 +1112,7 @@ describe("Fortune Copilot routes", () => {
     const user = userEvent.setup();
     render(<AppRoutes initialPath="/risk" />);
 
-    expect(await screen.findByRole("heading", { name: "每一步都要有工具、Schema、禁令和审计" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "每一步都有工具约束、数据契约、禁令和审计" })).toBeInTheDocument();
     expect(screen.getByText(/尚无真实调用链/)).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "运行可信编排" }));
     expect(await screen.findByText("终检通过")).toBeInTheDocument();
@@ -1140,11 +1164,15 @@ describe("Fortune Copilot routes", () => {
 
     expect(await screen.findByRole("heading", { name: "从阻断原因回到每一条证据" })).toBeInTheDocument();
     expect(await screen.findByRole("heading", { name: "规则允许进入人工复核" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "这次决定，当时依据了什么" })).toBeInTheDocument();
+    expect(screen.getByText("8 份快照")).toBeInTheDocument();
     expect(screen.getByRole("region", { name: "合规控制矩阵，可横向滚动" })).toBeInTheDocument();
     expect(screen.getByText("模型、Prompt、规则、知识、产品与方案")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "回放投诉场景" }));
     expect(await screen.findByText(/完整性 verified/)).toBeInTheDocument();
     expect(fetchMock.mock.calls.some(([input]) => String(input).endsWith("/complaint-replays"))).toBe(true);
+    await user.click(screen.getByRole("button", { name: "使用冻结快照回放" }));
+    expect(await screen.findByText(/未读取最新产品资料/)).toBeInTheDocument();
   });
 
   it("shows the compliance reviewer a read-only verified formal-report generation chain", async () => {

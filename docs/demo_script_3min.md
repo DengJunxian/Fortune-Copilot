@@ -4,11 +4,11 @@
 对应页面：http://localhost:8080/demo  
 备用端口：http://localhost:18080/demo  
 演示账号：顶栏“演示管理员”启动主流程；跳转三端后按脚本切换模拟账号  
-数据边界：三套合成家庭、Mock LLM、Mock 银行适配器、离线规则；非工商银行官方产品
+数据边界：A-H 八类合成 Persona、Mock LLM、Mock 银行适配器、离线规则；非工商银行官方产品
 
 ## 演示前准备
 
-1. 执行 `docker compose up --build`，确认 `/api/v1/health` 返回 `0.13.0 / demo / mock`。
+1. 执行 `docker compose up --build`，确认 `/api/v1/health` 返回 `0.14.0 / demo / mock`。
 2. 执行 `make warmup`；若使用备用端口，执行 `API_URL=http://127.0.0.1:18000 make warmup`。
 3. 打开 `/demo`，确认发布清单为“可演示”、三套家庭已加载、外部网络依赖为“否”。
 4. 点击一次“一键运行完整 Demo”。正式演示时可以直接使用已完成记录，也可以现场重新运行。

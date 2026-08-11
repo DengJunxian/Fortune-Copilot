@@ -1,0 +1,144 @@
+{
+  "golden_version": "v5-persona-golden-outcomes-v2.0.0",
+  "dataset_version": "synthetic-v5-personas-v2.0.0",
+  "as_of_date": "2026-08-10",
+  "boundary": "结构性期望只约束流程、状态、类型、门禁和专业路由，不写死最终规划金额。",
+  "personas": {
+    "DEMO_A": {
+      "expected_no_action": true,
+      "expected_alert_types": [
+        "goal_funding_drift",
+        "risk_budget_breach",
+        "asset_concentration"
+      ],
+      "assertions": [
+        {"code": "a_complete", "path": "profile.completeness_score", "operator": "gte", "expected": "1.000000"},
+        {"code": "a_needs", "path": "needs.types", "operator": "contains_all", "expected": ["emergency", "debt_repayment", "housing", "retirement"]},
+        {"code": "a_liabilities", "path": "liability.types", "operator": "contains_all", "expected": ["housing", "retirement"]},
+        {"code": "a_no_action", "path": "cfs.no_action_required", "operator": "eq", "expected": true},
+        {"code": "a_no_risk_increase", "path": "cfs.additional_risk_allowed", "operator": "eq", "expected": false}
+      ]
+    },
+    "DEMO_B": {
+      "expected_no_action": true,
+      "expected_alert_types": [
+        "goal_funding_drift",
+        "risk_budget_breach",
+        "asset_concentration",
+        "retirement_gap"
+      ],
+      "assertions": [
+        {"code": "b_complete", "path": "profile.completeness_score", "operator": "gte", "expected": "1.000000"},
+        {"code": "b_needs", "path": "needs.types", "operator": "contains_all", "expected": ["debt_repayment", "education", "retirement", "death_protection"]},
+        {"code": "b_liabilities", "path": "liability.types", "operator": "contains_all", "expected": ["education", "family_support", "retirement"]},
+        {"code": "b_no_action", "path": "cfs.no_action_required", "operator": "eq", "expected": true},
+        {"code": "b_no_risk_increase", "path": "cfs.additional_risk_allowed", "operator": "eq", "expected": false}
+      ]
+    },
+    "DEMO_C": {
+      "expected_no_action": false,
+      "expected_alert_types": [
+        "goal_funding_drift",
+        "asset_concentration",
+        "retirement_gap"
+      ],
+      "assertions": [
+        {"code": "c_complete", "path": "profile.completeness_score", "operator": "gte", "expected": "1.000000"},
+        {"code": "c_high_income", "path": "profile.tags", "operator": "contains", "expected": "high_income_professional"},
+        {"code": "c_needs", "path": "needs.types", "operator": "contains_all", "expected": ["education", "retirement", "long_term_growth"]},
+        {"code": "c_cfs", "path": "cfs.component_types", "operator": "contains_all", "expected": ["investment", "retirement", "education"]},
+        {"code": "c_investment_open", "path": "cfs.additional_risk_allowed", "operator": "eq", "expected": true}
+      ]
+    },
+    "DEMO_D": {
+      "expected_no_action": true,
+      "expected_alert_types": [
+        "goal_funding_drift",
+        "risk_budget_breach",
+        "asset_concentration",
+        "enterprise_dependency",
+        "currency_mismatch",
+        "retirement_gap"
+      ],
+      "assertions": [
+        {"code": "d_complete", "path": "profile.completeness_score", "operator": "gte", "expected": "1.000000"},
+        {"code": "d_enterprise_high", "path": "profile.enterprise_dependency_level", "operator": "eq", "expected": "high"},
+        {"code": "d_enterprise_need", "path": "needs.types", "operator": "contains", "expected": "enterprise_concentration"},
+        {"code": "d_liquidity_isolation", "path": "enterprise.family_liquidity_isolation_exists", "operator": "eq", "expected": true},
+        {"code": "d_enterprise_cfs", "path": "cfs.component_types", "operator": "contains", "expected": "enterprise_risk"},
+        {"code": "d_no_equity_increase", "path": "cfs.additional_risk_allowed", "operator": "eq", "expected": false},
+        {"code": "d_specialists", "path": "specialists.types", "operator": "contains_all", "expected": ["private_banker", "cross_border_specialist", "legal_tax_professional"]}
+      ]
+    },
+    "DEMO_E": {
+      "expected_no_action": true,
+      "expected_alert_types": [
+        "goal_funding_drift",
+        "risk_budget_breach",
+        "asset_concentration",
+        "currency_mismatch",
+        "retirement_gap"
+      ],
+      "assertions": [
+        {"code": "e_complete", "path": "profile.completeness_score", "operator": "gte", "expected": "1.000000"},
+        {"code": "e_scientist", "path": "profile.tags", "operator": "contains_all", "expected": ["scientist", "equity_incentive_holder", "single_security_concentration"]},
+        {"code": "e_enterprise_need", "path": "needs.types", "operator": "contains", "expected": "enterprise_concentration"},
+        {"code": "e_no_equity_increase", "path": "cfs.additional_risk_allowed", "operator": "eq", "expected": false},
+        {"code": "e_cross_border_route", "path": "specialists.types", "operator": "contains", "expected": "cross_border_specialist"}
+      ]
+    },
+    "DEMO_F": {
+      "expected_no_action": true,
+      "expected_alert_types": [
+        "goal_funding_drift",
+        "risk_budget_breach",
+        "asset_concentration",
+        "enterprise_dependency",
+        "retirement_gap"
+      ],
+      "assertions": [
+        {"code": "f_complete", "path": "profile.completeness_score", "operator": "gte", "expected": "1.000000"},
+        {"code": "f_family_complexity", "path": "profile.tags", "operator": "contains", "expected": "family_complexity"},
+        {"code": "f_needs", "path": "needs.types", "operator": "contains_all", "expected": ["enterprise_concentration", "succession", "trust", "philanthropy"]},
+        {"code": "f_cfs", "path": "cfs.component_types", "operator": "contains_all", "expected": ["enterprise_risk", "succession", "trust", "philanthropy"]},
+        {"code": "f_specialists", "path": "specialists.types", "operator": "contains_all", "expected": ["private_banker", "trust_specialist", "legal_tax_professional", "philanthropy_specialist"]},
+        {"code": "f_no_equity_increase", "path": "cfs.additional_risk_allowed", "operator": "eq", "expected": false}
+      ]
+    },
+    "DEMO_G": {
+      "expected_no_action": true,
+      "expected_alert_types": [
+        "goal_funding_drift",
+        "risk_budget_breach",
+        "asset_concentration",
+        "currency_mismatch",
+        "retirement_gap"
+      ],
+      "assertions": [
+        {"code": "g_complete", "path": "profile.completeness_score", "operator": "gte", "expected": "1.000000"},
+        {"code": "g_cross_border_high", "path": "profile.cross_border_complexity", "operator": "eq", "expected": "high"},
+        {"code": "g_currencies", "path": "currency.currencies", "operator": "contains_all", "expected": ["USD", "HKD"]},
+        {"code": "g_currency_need", "path": "needs.types", "operator": "contains", "expected": "currency_matching"},
+        {"code": "g_cross_border_cfs", "path": "cfs.component_types", "operator": "contains", "expected": "cross_border"},
+        {"code": "g_route", "path": "specialists.types", "operator": "contains", "expected": "cross_border_specialist"}
+      ]
+    },
+    "DEMO_H": {
+      "expected_no_action": true,
+      "expected_alert_types": [
+        "goal_funding_drift",
+        "risk_budget_breach",
+        "asset_concentration"
+      ],
+      "assertions": [
+        {"code": "h_complete", "path": "profile.completeness_score", "operator": "gte", "expected": "1.000000"},
+        {"code": "h_retirement_stage", "path": "profile.pension_stage", "operator": "eq", "expected": "retirement"},
+        {"code": "h_property", "path": "profile.tags", "operator": "contains", "expected": "property_concentration"},
+        {"code": "h_needs", "path": "needs.types", "operator": "contains_all", "expected": ["medical_protection", "retirement", "succession"]},
+        {"code": "h_liabilities", "path": "liability.types", "operator": "contains_all", "expected": ["retirement", "medical", "succession"]},
+        {"code": "h_cfs", "path": "cfs.component_types", "operator": "contains_all", "expected": ["protection", "retirement", "succession"]},
+        {"code": "h_pension_route", "path": "specialists.types", "operator": "contains", "expected": "pension_specialist"}
+      ]
+    }
+  }
+}

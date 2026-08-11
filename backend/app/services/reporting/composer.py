@@ -8,6 +8,7 @@ from typing import Literal
 
 from app.domain.financial import HouseholdFacts
 from app.schemas.behavior import BehaviorOverviewResponse
+from app.schemas.calibration import CalibrationCatalogResponse
 from app.schemas.financial_analysis import FinancialAnalysisResponse, MetricResult
 from app.schemas.formal_report import (
     FORMAL_CHAPTER_TITLES,
@@ -215,6 +216,7 @@ def compose_formal_report(
     knowledge_version: str,
     model_version: str,
     prompt_version: str,
+    calibration: CalibrationCatalogResponse | None = None,
 ) -> FormalReportDocument:
     ledger = _NumericLedger()
     balance = analysis.statements.balance_sheet
@@ -225,6 +227,60 @@ def compose_formal_report(
     conflict_by_goal = {
         goal_id: conflict for conflict in plan.conflicts for goal_id in conflict.affected_goal_ids
     }
+    calibration_version = (
+        calibration.registry_version if calibration is not None else "calibration-not-enabled"
+    )
+    calibration_modes = (
+        {item.mode.value: item for item in calibration.modes} if calibration is not None else {}
+    )
+    calibration_rows = (
+        [
+            (
+                "HCI",
+                "empirically_calibrated + controlled_demo",
+                "全国官方 CPI 仅作锚点；家庭分类支出率仍为受控演示",
+                "降级／人工复核",
+            ),
+            (
+                "GCI",
+                "controlled_demo",
+                "目标或责任记录中的增长率逐流绑定，不冒充官方 CPI",
+                "降级／逐项确认",
+            ),
+            (
+                "IAI",
+                "empirically_calibrated + controlled_demo",
+                "地区最低工资 CAGR 为经验观察；分层阈值为受控演示",
+                "降级／人工复核",
+            ),
+            (
+                "银行授权",
+                "bank_authorized",
+                (
+                    "已绑定授权数据"
+                    if calibration_modes.get("bank_authorized")
+                    and calibration_modes["bank_authorized"].available
+                    else "当前不可用；禁止自动回退后标成银行授权"
+                ),
+                (
+                    "可用"
+                    if calibration_modes.get("bank_authorized")
+                    and calibration_modes["bank_authorized"].available
+                    else "待接入"
+                ),
+            ),
+        ]
+        if calibration is not None
+        else [
+            (
+                index,
+                "not_enabled",
+                "校准功能未启用；沿用旧报告口径但不声明任何校准模式",
+                "不适用",
+            )
+            for index in ("HCI", "GCI", "IAI", "银行授权")
+        ]
+    )
 
     total_assets = ledger.money(
         "balance.total_assets",
@@ -636,7 +692,13 @@ def compose_formal_report(
                         "基础与成本假设",
                         ["假设", "当前值", "来源／版本", "生效或数据日", "敏感性"],
                         assumption_rows,
-                    )
+                    ),
+                    _table(
+                        "HCI／GCI／IAI 校准模式",
+                        ["指标", "校准模式", "口径边界", "当前状态"],
+                        calibration_rows,
+                        source=calibration_version,
+                    ),
                 ],
             ),
             _section(
@@ -1580,6 +1642,7 @@ def compose_formal_report(
         ("知识", knowledge_version),
         ("产品目录", portfolio.meta.catalog_version),
         ("真实基金投顾目录", fund_advisory.meta.catalog_version),
+        ("中国本地化校准", calibration_version),
         ("方案工作流", workflow_version_label or "未关联"),
     ]
     chapter_8 = FormalReportChapter(
@@ -1755,14 +1818,42 @@ def compose_formal_report(
                             item.name,
                             item.category,
                             item.tracked_index or "—",
-                            "是，执行时仍需App确认"
-                            if item.icbc_publicly_listed
-                            else "未核验",
+                            "是，执行时仍需App确认" if item.icbc_publicly_listed else "未核验",
                             "是" if item.personal_pension_eligible else "否",
                             "是",
                             "；".join(dict.fromkeys(evidence.url for evidence in item.evidence)),
                         )
                         for item in fund_advisory.catalog.products
+                    ),
+                )
+            ],
+        ),
+        ReportAppendix(
+            code="F",
+            title="中国本地化校准附录",
+            narratives=[
+                "controlled_demo、empirically_calibrated 与 bank_authorized 三种模式必须分开展示。",
+                "缺少经验证或银行授权参数时，结果保持降级／待复核，禁止静默猜测。",
+            ],
+            tables=[
+                _table(
+                    "校准数据集",
+                    ["代码", "模式", "来源", "样本期", "版本", "参数数", "限制"],
+                    (
+                        (
+                            item.code,
+                            item.mode.value,
+                            item.source,
+                            item.sample_period,
+                            item.version,
+                            item.parameter_count,
+                            "；".join(item.limitations),
+                        )
+                        for item in (calibration.datasets if calibration is not None else [])
+                    ),
+                    source=calibration_version,
+                    note=(
+                        "校准功能未启用。" if calibration is None else "数据集模式不可相互冒充。"
                     ),
                 )
             ],
@@ -1809,6 +1900,22 @@ def compose_formal_report(
             ),
         ),
     ]
+    if calibration is not None:
+        controlled_demo_active = bool(
+            calibration_modes.get("controlled_demo")
+            and calibration_modes["controlled_demo"].available
+        )
+        checks.append(
+            ReportConsistencyCheck(
+                code="calibration_mode_separation",
+                status="needs_review" if controlled_demo_active else "passed",
+                explanation=(
+                    "HCI、GCI、IAI 已分栏披露，但仍含受控演示参数，正式使用前必须人工复核。"
+                    if controlled_demo_active
+                    else "HCI、GCI、IAI 已按经验校准与银行授权模式分栏披露。"
+                ),
+            )
+        )
     consistency = "passed" if all(item.status == "passed" for item in checks) else "needs_review"
     versions = ReportVersionLedger(
         report_version=f"formal-report-v1.0.0-r{sequence}",
@@ -1822,6 +1929,7 @@ def compose_formal_report(
         knowledge_version=knowledge_version,
         product_catalog_version=portfolio.meta.catalog_version,
         fund_advisory_catalog_version=fund_advisory.meta.catalog_version,
+        calibration_version=calibration_version,
         workflow_version=workflow_version_label,
     )
     return FormalReportDocument(

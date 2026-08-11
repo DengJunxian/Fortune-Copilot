@@ -30,7 +30,7 @@ export function actorHeaders(actor: DemoActor): Record<string, string> {
 
 export function portalDefaultRole(path: string): ActorRole {
   if (path === "/demo") return "admin";
-  if (path === "/advisor") return "advisor";
+  if (path === "/advisor" || path.startsWith("/advisor/")) return "advisor";
   if (path === "/risk") return "compliance";
   return "client";
 }

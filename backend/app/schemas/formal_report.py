@@ -105,6 +105,7 @@ class ReportVersionLedger(BaseModel):
     knowledge_version: str
     product_catalog_version: str
     fund_advisory_catalog_version: str | None = None
+    calibration_version: str | None = None
     workflow_version: str | None
 
 

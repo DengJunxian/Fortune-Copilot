@@ -1,0 +1,101 @@
+{
+  "schema_version": "calibration-registry-schema-v1.0.0",
+  "registry_version": "china-purchasing-power-calibration-v1.0.0",
+  "datasets": [
+    {
+      "code": "fortune_copilot_controlled_purchasing_power",
+      "mode": "controlled_demo",
+      "source": "Fortune Copilot 版本化演示规则",
+      "source_reference": "data/rules/financial_health_v1.json + data/rules/liability_engine_v1.json",
+      "population": "Fortune Copilot 合成演示家庭",
+      "sample_period": "非抽样；规则生效期自 2026-08-10 起",
+      "effective_date": "2026-08-10",
+      "version": "controlled-purchasing-power-v1.0.0",
+      "license_or_access_note": "仓库内受控演示规则，可审计但不可声称为银行或统计实证参数。",
+      "limitations": [
+        "参数未经过银行历史客户样本估计。",
+        "不得将 controlled_demo 输出表述为经验校准或银行授权结论。"
+      ],
+      "data_quality": "controlled_demo_versioned_rule",
+      "parameters": [
+        {"code":"HCI.expense_category_rate","value":"0.020000","lower_bound":null,"upper_bound":null,"estimation_method":"versioned_demo_rule","segment":"basic_living","region":"CN","effective_from":"2026-08-10","effective_to":null,"version":"hci-basic-living-demo-v1","confidence":"0.400000","limitations":["生活支出类别演示假设，非官方分类 CPI。"]},
+        {"code":"HCI.expense_category_rate","value":"0.025000","lower_bound":null,"upper_bound":null,"estimation_method":"versioned_demo_rule","segment":"discretionary","region":"CN","effective_from":"2026-08-10","effective_to":null,"version":"hci-discretionary-demo-v1","confidence":"0.400000","limitations":["可选支出类别演示假设，非官方分类 CPI。"]},
+        {"code":"HCI.expense_category_rate","value":"0.040000","lower_bound":null,"upper_bound":null,"estimation_method":"versioned_demo_rule","segment":"parent_support","region":"CN","effective_from":"2026-08-10","effective_to":null,"version":"hci-parent-support-demo-v1","confidence":"0.400000","limitations":["赡养支出类别演示假设，需家庭复核。"]},
+        {"code":"HCI.expense_category_rate","value":"0.050000","lower_bound":null,"upper_bound":null,"estimation_method":"versioned_demo_rule","segment":"child_education","region":"CN","effective_from":"2026-08-10","effective_to":null,"version":"hci-child-education-demo-v1","confidence":"0.400000","limitations":["教育支出类别演示假设，不替代具体学校或留学费用证据。"]},
+        {"code":"HCI.expense_category_rate","value":"0.050000","lower_bound":null,"upper_bound":null,"estimation_method":"versioned_demo_rule","segment":"medical","region":"CN","effective_from":"2026-08-10","effective_to":null,"version":"hci-medical-demo-v1","confidence":"0.400000","limitations":["医疗支出类别演示假设，不替代保险或医疗报价。"]},
+        {"code":"HCI.expense_category_rate","value":"0.025000","lower_bound":null,"upper_bound":null,"estimation_method":"versioned_demo_rule","segment":"insurance_premium","region":"CN","effective_from":"2026-08-10","effective_to":null,"version":"hci-insurance-demo-v1","confidence":"0.400000","limitations":["保费类别演示假设，不替代合同续期费率。"]},
+        {"code":"HCI.expense_category_rate","value":"0.000000","lower_bound":null,"upper_bound":null,"estimation_method":"exclude_contractual_debt_service","segment":"debt_service","region":"CN","effective_from":"2026-08-10","effective_to":null,"version":"hci-debt-exclusion-v1","confidence":"0.950000","limitations":["债务本金与合同利率不进入 HCI。"]},
+        {"code":"HCI.expense_category_rate","value":"0.000000","lower_bound":null,"upper_bound":null,"estimation_method":"versioned_demo_rule","segment":"tax","region":"CN","effective_from":"2026-08-10","effective_to":null,"version":"hci-tax-demo-v1","confidence":"0.400000","limitations":["未提供税负指数，保持显式零值并标记演示。"]},
+        {"code":"HCI.expense_category_rate","value":"0.030000","lower_bound":null,"upper_bound":null,"estimation_method":"versioned_demo_rule","segment":"other","region":"CN","effective_from":"2026-08-10","effective_to":null,"version":"hci-other-demo-v1","confidence":"0.300000","limitations":["其他支出是混合类别，估计不确定性高。"]},
+        {"code":"GCI.unconfirmed_rate_fallback","value":"0.000000","lower_bound":"0.000000","upper_bound":"0.000000","estimation_method":"fail_closed_zero_growth_placeholder","segment":"all","region":"CN","effective_from":"2026-08-10","effective_to":null,"version":"gci-unconfirmed-fail-closed-v1","confidence":"0.000000","limitations":["仅在缺少客户确认或合同证据时表达未校准状态，不得作为正式目标成本预测。"]},
+        {"code":"IAI.threshold.critical_below","value":"0.800000","lower_bound":null,"upper_bound":null,"estimation_method":"versioned_demo_rule","segment":"all","region":"CN","effective_from":"2026-08-10","effective_to":null,"version":"iai-critical-demo-v1","confidence":"0.400000","limitations":["收入充足度分层阈值为受控演示规则。"]},
+        {"code":"IAI.threshold.watch_below","value":"1.000000","lower_bound":null,"upper_bound":null,"estimation_method":"versioned_demo_rule","segment":"all","region":"CN","effective_from":"2026-08-10","effective_to":null,"version":"iai-watch-demo-v1","confidence":"0.400000","limitations":["收入充足度分层阈值为受控演示规则。"]},
+        {"code":"IAI.threshold.comfortable_at","value":"1.200000","lower_bound":null,"upper_bound":null,"estimation_method":"versioned_demo_rule","segment":"all","region":"CN","effective_from":"2026-08-10","effective_to":null,"version":"iai-comfortable-demo-v1","confidence":"0.400000","limitations":["收入充足度分层阈值为受控演示规则。"]}
+      ]
+    },
+    {
+      "code": "nbs_official_cpi_2026_jan_apr",
+      "mode": "empirically_calibrated",
+      "source": "国家统计局",
+      "source_reference": "https://www.stats.gov.cn/english/PressRelease/202605/t20260512_1963677.html",
+      "population": "全国居民消费价格",
+      "sample_period": "2026-01-01 至 2026-04-30",
+      "effective_date": "2026-04-30",
+      "version": "nbs-cpi-2026-jan-apr-v1",
+      "license_or_access_note": "公开统计发布的只读快照；使用时保留来源与统计口径。",
+      "limitations": ["全国 CPI 只能作为 HCI 锚点，不能替代家庭分类支出权重。", "当前为 1—4 月同比平均值，不代表未来通胀预测。"],
+      "data_quality": "verified_public_snapshot",
+      "parameters": [
+        {"code":"HCI.official_cpi_anchor","value":"0.009000","lower_bound":null,"upper_bound":null,"estimation_method":"published_year_on_year_jan_apr_average","segment":"all","region":"CN","effective_from":"2026-04-30","effective_to":"2026-12-31","version":"nbs-cpi-2026-jan-apr-v1","confidence":"0.990000","limitations":["观察值不是未来预测，也不是家庭个体通胀率。"],"metadata":{"is_cpi":true,"publication_cutoff":"2026-08-08"}}
+      ]
+    },
+    {
+      "code": "hangzhou_minimum_wage_2021_2024",
+      "mode": "empirically_calibrated",
+      "source": "杭州市人民政府公报",
+      "source_reference": "https://zfgb.hangzhou.gov.cn/10/105220253/t117220253054/518480.shtml",
+      "population": "杭州市区最低月工资标准",
+      "sample_period": "2021-08-01 至 2024-01-01",
+      "effective_date": "2024-01-01",
+      "version": "minimum-wage-hangzhou-public-2024-v1",
+      "license_or_access_note": "政府公开文件只读快照。",
+      "limitations": ["最低工资 CAGR 只用于 IAI 收入追赶观察，不是 CPI 或投资收益门槛。", "样本仅含两个政策时点。"],
+      "data_quality": "verified_public_snapshot_short_series",
+      "parameters": [
+        {"code":"IAI.minimum_wage_cagr","value":"0.037074","lower_bound":null,"upper_bound":null,"estimation_method":"two_point_cagr_actual_day_fraction","segment":"all","region":"330100","effective_from":"2024-01-01","effective_to":null,"version":"minimum-wage-hangzhou-cagr-v1","confidence":"0.850000","limitations":["政策调整为离散事件，两点 CAGR 不代表逐年工资增速。"],"metadata":{"start_amount":"2280.00","end_amount":"2490.00"}}
+      ]
+    },
+    {
+      "code": "nanjing_minimum_wage_2024_2026",
+      "mode": "empirically_calibrated",
+      "source": "江苏省人民政府与江苏省人力资源和社会保障厅",
+      "source_reference": "https://www.jiangsu.gov.cn/art/2025/12/30/art_90848_11702519.html",
+      "population": "南京市区一类地区最低月工资标准",
+      "sample_period": "2024-01-01 至 2026-01-01",
+      "effective_date": "2026-01-01",
+      "version": "minimum-wage-nanjing-public-2026-v1",
+      "license_or_access_note": "政府公开文件只读快照。",
+      "limitations": ["最低工资 CAGR 只用于 IAI 收入追赶观察，不是 CPI 或投资收益门槛。", "样本仅含两个政策时点。"],
+      "data_quality": "verified_public_snapshot_short_series",
+      "parameters": [
+        {"code":"IAI.minimum_wage_cagr","value":"0.033549","lower_bound":null,"upper_bound":null,"estimation_method":"two_point_cagr_actual_day_fraction","segment":"all","region":"320100","effective_from":"2026-01-01","effective_to":null,"version":"minimum-wage-nanjing-cagr-v1","confidence":"0.850000","limitations":["政策调整为离散事件，两点 CAGR 不代表逐年工资增速。"],"metadata":{"start_amount":"2490.00","end_amount":"2660.00"}}
+      ]
+    },
+    {
+      "code": "guangzhou_minimum_wage_2021_2025",
+      "mode": "empirically_calibrated",
+      "source": "广州市人民政府",
+      "source_reference": "https://www.gz.gov.cn/xw/tzgg/content/mpost_10134789.html",
+      "population": "广州市最低月工资标准",
+      "sample_period": "2021-12-01 至 2025-03-01",
+      "effective_date": "2025-03-01",
+      "version": "minimum-wage-guangzhou-public-2025-v1",
+      "license_or_access_note": "政府公开文件只读快照。",
+      "limitations": ["最低工资 CAGR 只用于 IAI 收入追赶观察，不是 CPI 或投资收益门槛。", "样本仅含两个政策时点。"],
+      "data_quality": "verified_public_snapshot_short_series",
+      "parameters": [
+        {"code":"IAI.minimum_wage_cagr","value":"0.026011","lower_bound":null,"upper_bound":null,"estimation_method":"two_point_cagr_actual_day_fraction","segment":"all","region":"440100","effective_from":"2025-03-01","effective_to":null,"version":"minimum-wage-guangzhou-cagr-v1","confidence":"0.850000","limitations":["政策调整为离散事件，两点 CAGR 不代表逐年工资增速。"],"metadata":{"start_amount":"2300.00","end_amount":"2500.00"}}
+      ]
+    }
+  ]
+}

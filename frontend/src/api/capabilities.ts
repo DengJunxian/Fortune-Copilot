@@ -25,7 +25,7 @@ export interface CapabilitiesResponse {
 export type CapabilitySource = "api" | "offline-fallback";
 
 export const offlineCapabilities: CapabilitiesResponse = {
-  version: "0.13.0",
+  version: "0.14.0",
   runtime_mode: "offline-demo",
   mock_mode: true,
   database: {

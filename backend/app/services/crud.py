@@ -85,7 +85,7 @@ def _household_id(record: RecordMixin) -> str | None:
     return str(value) if value is not None else None
 
 
-def _add_audit_event(
+def add_audit_event(
     session: Session,
     record: RecordMixin,
     actor: ActorContext,
@@ -108,7 +108,7 @@ def _add_audit_event(
     session.add(event)
 
 
-def _commit(session: Session) -> None:
+def commit_session(session: Session) -> None:
     try:
         session.commit()
     except IntegrityError as exc:
@@ -135,14 +135,14 @@ def create_record[ModelT: RecordMixin](
     session.add(record)
     try:
         session.flush()
-        _add_audit_event(
+        add_audit_event(
             session,
             record,
             actor,
             AuditEventType.DATA_CREATED,
             "创建记录",
         )
-        _commit(session)
+        commit_session(session)
     except IntegrityError as exc:
         session.rollback()
         raise AppError(
@@ -173,14 +173,14 @@ def update_record[ModelT: RecordMixin](
         setattr(record, field, value)
     record.version += 1
     record.updated_at = utc_now()
-    _add_audit_event(
+    add_audit_event(
         session,
         record,
         actor,
         AuditEventType.DATA_UPDATED,
         "更新记录",
     )
-    _commit(session)
+    commit_session(session)
     session.refresh(record)
     return record
 
@@ -204,11 +204,11 @@ def soft_delete_record(
     record.deleted_at = now
     record.updated_at = now
     record.version += 1
-    _add_audit_event(
+    add_audit_event(
         session,
         record,
         actor,
         AuditEventType.DATA_DELETED,
         "软删除记录",
     )
-    _commit(session)
+    commit_session(session)

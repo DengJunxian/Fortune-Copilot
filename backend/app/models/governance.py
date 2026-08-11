@@ -26,6 +26,7 @@ from app.domain.enums import (
     ComplexityLevel,
     LiquidityLevel,
     PlanWorkflowState,
+    ProductFamily,
     ProductRiskLevel,
     RecommendationStatus,
     SimulationStatus,
@@ -98,6 +99,59 @@ class Product(RecordMixin, Base):
     snapshot_version: Mapped[str] = mapped_column(
         String(64), default="unknown", nullable=False
     )
+    issuer: Mapped[str] = mapped_column(String(160), default="unknown", nullable=False)
+    jurisdiction: Mapped[str] = mapped_column(String(64), default="CN", nullable=False)
+    product_family: Mapped[ProductFamily] = mapped_column(
+        Enum(ProductFamily, native_enum=False, length=40),
+        default=ProductFamily.CASH_MANAGEMENT,
+        nullable=False,
+    )
+    product_subtype: Mapped[str] = mapped_column(String(80), default="unknown", nullable=False)
+    all_in_cost: Mapped[Decimal | None] = mapped_column(Numeric(9, 6), nullable=True)
+    distribution_incentive_disclosure: Mapped[str] = mapped_column(
+        String(800), default="未披露", nullable=False
+    )
+    conflict_of_interest_flag: Mapped[bool] = mapped_column(
+        Boolean, default=False, nullable=False
+    )
+    professional_review_required: Mapped[bool] = mapped_column(
+        Boolean, default=False, nullable=False
+    )
+    client_role_in_cfs: Mapped[list[str]] = mapped_column(JSON, default=list, nullable=False)
+    classification_version: Mapped[str] = mapped_column(
+        String(64), default="legacy-v1", nullable=False
+    )
+    evidence_json: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict, nullable=False)
+
+
+class ProductSnapshot(RecordMixin, Base):
+    __tablename__ = "product_snapshots"
+    __table_args__ = (
+        UniqueConstraint(
+            "product_id",
+            "snapshot_hash",
+            name="uq_product_snapshots_product_hash",
+        ),
+    )
+
+    product_id: Mapped[str] = mapped_column(
+        ForeignKey("products.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    as_of_date: Mapped[date] = mapped_column(Date, nullable=False, index=True)
+    sale_status: Mapped[str] = mapped_column(String(40), nullable=False, index=True)
+    risk_level: Mapped[ProductRiskLevel] = mapped_column(
+        Enum(ProductRiskLevel, native_enum=False, length=8), nullable=False
+    )
+    fee_snapshot: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict, nullable=False)
+    liquidity_snapshot: Mapped[dict[str, Any]] = mapped_column(
+        JSON, default=dict, nullable=False
+    )
+    terms_snapshot: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict, nullable=False)
+    channel: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    source_reference: Mapped[str] = mapped_column(String(1200), nullable=False)
+    evidence: Mapped[list[dict[str, Any]]] = mapped_column(JSON, default=list, nullable=False)
+    snapshot_hash: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    snapshot_version: Mapped[str] = mapped_column(String(96), nullable=False)
 
 
 class PolicyDocument(RecordMixin, Base):
@@ -147,6 +201,9 @@ class SimulationRun(RecordMixin, Base):
     )
     snapshot_id: Mapped[str | None] = mapped_column(
         ForeignKey("financial_snapshots.id", ondelete="SET NULL"), nullable=True
+    )
+    household_snapshot_id: Mapped[str | None] = mapped_column(
+        ForeignKey("household_snapshots.id", ondelete="SET NULL"), nullable=True, index=True
     )
     random_seed: Mapped[int] = mapped_column(Integer, nullable=False)
     engine_version: Mapped[str] = mapped_column(String(64), nullable=False)
@@ -202,6 +259,28 @@ class Recommendation(RecordMixin, Base):
         JSON, default=dict, nullable=False
     )
     decision_hash: Mapped[str] = mapped_column(String(64), default="pending", nullable=False)
+    client_profile_version: Mapped[str | None] = mapped_column(
+        String(96), nullable=True, index=True
+    )
+    wealth_need_set_hash: Mapped[str | None] = mapped_column(
+        String(96), nullable=True, index=True
+    )
+    liability_version: Mapped[str | None] = mapped_column(
+        String(96), nullable=True, index=True
+    )
+    twin_snapshot_version: Mapped[str | None] = mapped_column(
+        String(96), nullable=True, index=True
+    )
+    enterprise_snapshot_version: Mapped[str | None] = mapped_column(
+        String(96), nullable=True, index=True
+    )
+    cfs_solution_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
+    calibration_version: Mapped[str | None] = mapped_column(
+        String(96), nullable=True, index=True
+    )
+    monitoring_trigger_id: Mapped[str | None] = mapped_column(
+        String(96), nullable=True, index=True
+    )
 
 
 class ActionItem(RecordMixin, Base):
@@ -223,7 +302,13 @@ class ActionItem(RecordMixin, Base):
     report_id: Mapped[str | None] = mapped_column(
         ForeignKey("plan_reports.id", ondelete="SET NULL"), nullable=True, index=True
     )
+    advisor_trigger_id: Mapped[str | None] = mapped_column(
+        ForeignKey("advisor_triggers.id", ondelete="SET NULL"), nullable=True, index=True
+    )
     action_code: Mapped[str | None] = mapped_column(String(96), nullable=True, index=True)
+    action_type: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    do_not_sell_flag: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    required_specialist: Mapped[str | None] = mapped_column(String(40), nullable=True)
     group_code: Mapped[str | None] = mapped_column(String(40), nullable=True)
     title: Mapped[str] = mapped_column(String(200), nullable=False)
     due_date: Mapped[date | None] = mapped_column(Date, nullable=True)
@@ -280,6 +365,31 @@ class PlanReport(RecordMixin, Base):
         String(64), default="unknown", nullable=False
     )
     decision_hash: Mapped[str] = mapped_column(String(64), default="pending", nullable=False)
+    decision_evidence: Mapped[dict[str, Any]] = mapped_column(
+        JSON, default=dict, nullable=False
+    )
+    client_profile_version: Mapped[str | None] = mapped_column(
+        String(96), nullable=True, index=True
+    )
+    wealth_need_set_hash: Mapped[str | None] = mapped_column(
+        String(96), nullable=True, index=True
+    )
+    liability_version: Mapped[str | None] = mapped_column(
+        String(96), nullable=True, index=True
+    )
+    twin_snapshot_version: Mapped[str | None] = mapped_column(
+        String(96), nullable=True, index=True
+    )
+    enterprise_snapshot_version: Mapped[str | None] = mapped_column(
+        String(96), nullable=True, index=True
+    )
+    cfs_solution_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
+    calibration_version: Mapped[str | None] = mapped_column(
+        String(96), nullable=True, index=True
+    )
+    monitoring_trigger_id: Mapped[str | None] = mapped_column(
+        String(96), nullable=True, index=True
+    )
     portfolio_rule_version: Mapped[str] = mapped_column(
         String(64), default="unknown", nullable=False
     )

@@ -1,0 +1,19 @@
+{
+  "benchmark_version": "fortune-copilot-v5-release-benchmark-v2.0.0",
+  "as_of_date": "2026-08-10",
+  "source_type": "internal_synthetic_release",
+  "dataset_path": "../data/synthetic/v5_personas/personas_v2.json",
+  "golden_path": "../data/synthetic/v5_personas/golden_outcomes_v2.json",
+  "boundary": "本基准只报告合成 Persona 的本地确定性回归，不代表银行生产质量、客户效果或投资结果。",
+  "thresholds": {
+    "profile_completeness_min": "1.000000",
+    "wealth_need_coverage_min": "1.000000",
+    "cfs_coverage_min": "1.000000",
+    "no_action_correctness_min": "1.000000",
+    "product_ranking_conflict_independence_min": "1.000000",
+    "advisor_trigger_precision_min": "0.950000",
+    "invalid_alert_rate_max": "0.050000",
+    "decision_replay_min": "1.000000",
+    "financial_correctness_min": "1.000000"
+  }
+}

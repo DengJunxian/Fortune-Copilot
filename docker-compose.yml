@@ -12,24 +12,34 @@ services:
       - alembic upgrade head && python -m app.cli seed --if-empty && exec uvicorn app.main:app --host 0.0.0.0 --port 8000
     environment:
       APP_ENV: demo
-      APP_VERSION: 0.13.0
+      APP_VERSION: 0.14.0
       DATABASE_URL: sqlite:////data/wealthtwin.db
-      SYNTHETIC_DATA_PATH: /seed-data/synthetic/families.json
+      SYNTHETIC_DATA_PATH: /seed-data/synthetic/v5_personas/personas_v2.json
+      V5_PERSONA_DATA_PATH: /seed-data/synthetic/v5_personas/personas_v2.json
+      V5_PERSONA_GOLDEN_PATH: /seed-data/synthetic/v5_personas/golden_outcomes_v2.json
       FINANCIAL_RULES_PATH: /seed-data/rules/financial_health_v1.json
       PLANNING_RULES_PATH: /seed-data/rules/planning_waterfall_v1.json
       METHODOLOGY_RULES_PATH: /seed-data/rules/wealth_methodology_v3.json
       PUBLIC_DATA_SNAPSHOT_PATH: /seed-data/public/authoritative_public_snapshot_v1.json
+      CALIBRATION_REGISTRY_PATH: /seed-data/calibration/china_purchasing_power_v1.json
       PORTFOLIO_RULES_PATH: /seed-data/rules/portfolio_policy_v1.json
       PRODUCT_CATALOG_PATH: /seed-data/products/mock_products_v1.json
       FUND_ADVISORY_CATALOG_PATH: /seed-data/products/verified_real_funds_v1.json
       TWIN_RULES_PATH: /seed-data/rules/twin_simulation_v1.json
       BEHAVIOR_RULES_PATH: /seed-data/rules/behavior_finance_v1.json
+      CLIENT_PROFILE_RULES_PATH: /seed-data/rules/client_profile_v1.json
+      LIABILITY_RULES_PATH: /seed-data/rules/liability_engine_v1.json
+      FAMILY_ENTERPRISE_RULES_PATH: /seed-data/rules/family_enterprise_v1.json
+      CFS_RULES_PATH: /seed-data/rules/cfs_composer_v1.json
+      SPECIALIZED_CFS_RULES_PATH: /seed-data/rules/specialized_cfs_v1.json
+      MONITORING_RULES_PATH: /seed-data/rules/monitoring_v1.json
       KNOWLEDGE_BASE_PATH: /seed-data/knowledge/controlled_knowledge_v1.json
       DEMO_BENCHMARK_PATH: /seed-data/benchmarks/demo_release_v1.json
+      V5_RELEASE_BENCHMARK_PATH: /seed-data/benchmarks/v5_release_v2.json
       DEMO_STORY_VERSION: wealthtwin-main-demo-v1.0.0
       DEMO_CACHE_TTL_SECONDS: "300"
       DEMO_MAIN_PATH_COUNT: "100"
-      LLM_PROVIDER: ${LLM_PROVIDER:-deepseek}
+      LLM_PROVIDER: ${LLM_PROVIDER:-mock}
       LLM_API_KEY: ${LLM_API_KEY:-}
       LLM_BASE_URL: ${LLM_BASE_URL:-https://api.deepseek.com}
       LLM_MODEL: ${LLM_MODEL:-deepseek-v4-flash}
@@ -42,6 +52,16 @@ services:
       MAX_UPLOAD_BYTES: "524288"
       RATE_LIMIT_PER_MINUTE: "120"
       EXPENSIVE_RATE_LIMIT_PER_MINUTE: "30"
+      ENABLE_V5_FINANCIAL_GRAPH: "true"
+      ENABLE_V5_CLIENT_PROFILE: "true"
+      ENABLE_V5_LIABILITY_ENGINE: "true"
+      ENABLE_V5_PERSISTENT_TWIN: "true"
+      ENABLE_V5_FAMILY_ENTERPRISE: "true"
+      ENABLE_V5_CFS: "true"
+      ENABLE_V5_PRODUCT_ONTOLOGY: "true"
+      ENABLE_V5_MONITORING: "true"
+      ENABLE_V5_AGENTS: "true"
+      ENABLE_V5_CALIBRATION: "true"
     volumes:
       - wealthtwin-data:/data
       - ./data:/seed-data:ro
@@ -56,6 +76,15 @@ services:
   frontend:
     build:
       context: ./frontend
+      args:
+        VITE_ENABLE_V5_FINANCIAL_GRAPH: "true"
+        VITE_ENABLE_V5_CLIENT_PROFILE: "true"
+        VITE_ENABLE_V5_LIABILITY_ENGINE: "true"
+        VITE_ENABLE_V5_PERSISTENT_TWIN: "true"
+        VITE_ENABLE_V5_FAMILY_ENTERPRISE: "true"
+        VITE_ENABLE_V5_CFS: "true"
+        VITE_ENABLE_V5_PRODUCT_ONTOLOGY: "true"
+        VITE_ENABLE_V5_MONITORING: "true"
     depends_on:
       backend:
         condition: service_healthy

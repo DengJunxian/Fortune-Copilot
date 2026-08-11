@@ -112,15 +112,16 @@ def run_acceptance(api_url: str, web_url: str, *, reset_demo: bool) -> dict[str,
             payload={},
             confirm="reset_synthetic_demo",
         )
-        ledger.check("synthetic_reset", reset.get("loaded") == 3, reset)
+        ledger.check("synthetic_reset", reset.get("loaded") == 8, reset)
     loaded = json_request(api_url, "/api/v1/demo/load", method="POST", payload={})
     ledger.check(
         "seed_data",
         loaded.get("action") == "load"
-        and loaded.get("loaded", 0) + loaded.get("skipped", 0) == 3
+        and loaded.get("loaded", 0) + loaded.get("skipped", 0) == 8
         and (
             loaded.get("loaded") == 0
-            or set(loaded.get("household_codes", [])) == {"DEMO_A", "DEMO_B", "DEMO_C"}
+            or set(loaded.get("household_codes", []))
+            == {f"DEMO_{letter}" for letter in "ABCDEFGH"}
         ),
         loaded,
     )
@@ -135,10 +136,58 @@ def run_acceptance(api_url: str, web_url: str, *, reset_demo: bool) -> dict[str,
     ledger.check(
         "release_manifest",
         manifest.get("ready") is True
-        and manifest.get("seeded_household_count") == 3
+        and manifest.get("seeded_household_count") == 8
         and manifest.get("external_network_required") is False
         and all(manifest.get("release_assets", {}).values()),
         manifest,
+    )
+
+    v5_release = json_request(
+        api_url,
+        "/api/v1/demo/v5/release-benchmark",
+        method="POST",
+        payload={},
+        confirm="run_v5_release_benchmark",
+        timeout=300,
+    )
+    ledger.check(
+        "v5_heterogeneous_persona_release",
+        v5_release.get("passed") is True
+        and len(v5_release.get("personas", [])) == 8
+        and len(v5_release.get("metrics", [])) == 9
+        and all(item.get("passed") for item in v5_release.get("metrics", [])),
+        {
+            "benchmark_version": v5_release.get("benchmark_version"),
+            "persona_count": len(v5_release.get("personas", [])),
+            "metrics": {
+                item.get("code"): item.get("value")
+                for item in v5_release.get("metrics", [])
+            },
+        },
+    )
+
+    founder_story = json_request(
+        api_url,
+        "/api/v1/demo/v5/founder-story",
+        method="POST",
+        payload={},
+        confirm="run_founder_story",
+        timeout=300,
+    )
+    ledger.check(
+        "v5_founder_funding_e2e",
+        founder_story.get("passed") is True
+        and len(founder_story.get("stages", [])) == 14
+        and all(item.get("passed") for item in founder_story.get("stages", []))
+        and founder_story.get("initial_snapshot_id")
+        != founder_story.get("funding_snapshot_id")
+        and founder_story.get("funding_snapshot_id")
+        != founder_story.get("confirmed_snapshot_id"),
+        {
+            "story_version": founder_story.get("story_version"),
+            "stage_count": len(founder_story.get("stages", [])),
+            "workflow_id": founder_story.get("workflow_id"),
+        },
     )
 
     comparison = json_request(api_url, "/api/v1/demo/families/comparison")
@@ -301,7 +350,7 @@ def main() -> None:
     parser.add_argument(
         "--reset-demo",
         action="store_true",
-        help="first reset only the three synthetic households (never non-synthetic data)",
+        help="first reset only the configured synthetic personas (never non-synthetic data)",
     )
     args = parser.parse_args()
     try:

@@ -21,7 +21,7 @@ API_URL=http://127.0.0.1:18000 make warmup
 API_URL=http://127.0.0.1:18000 WEB_URL=http://127.0.0.1:18080 make acceptance
 ```
 
-确认项：版本 0.13.0、`runtime_mode=demo`、`mock_mode=true`、数据库 healthy、三户已加载、最新运行 completed、外部调用 0、浏览器无控制台错误。演示机只保存 `.env` 示例值，不输入或展示真实 API Key。
+确认项：版本 0.14.0、`runtime_mode=demo`、`mock_mode=true`、数据库 healthy、A-H 八类 Persona 已加载、最新运行 completed、外部调用 0、浏览器无控制台错误。演示机只保存 `.env` 示例值，不输入或展示真实 API Key。
 
 ## 现场故障分级
 

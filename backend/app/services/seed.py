@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -9,11 +10,13 @@ from pydantic import BaseModel, ValidationError
 from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
 
+from app.core.auth import ActorContext
 from app.core.errors import AppError
 from app.core.privacy import stable_hash
-from app.domain.enums import AuditEventType
+from app.domain.enums import AuditEventType, FinancialEntityType
 from app.models.assessment import BehaviorAssessment, RiskAssessment
 from app.models.family import ConsentRecord, Household, HouseholdMember
+from app.models.family_enterprise import EnterpriseProfile
 from app.models.finance import (
     Asset,
     ExpenseItem,
@@ -25,9 +28,15 @@ from app.models.finance import (
 )
 from app.models.governance import AuditEvent
 from app.models.security import IdentityAccessGrant
+from app.schemas.family_enterprise import EnterpriseExposureCreate
 from app.schemas.seed import SyntheticDataset
 from app.services.behavior.rules import ensure_behavior_rule_version, load_behavior_rules
+from app.services.family_enterprise.repository import (
+    create_enterprise,
+    upsert_enterprise_exposures,
+)
 from app.services.financial.rules import ensure_rule_version, load_financial_rules
+from app.services.financial_graph.engine import build_financial_graph
 from app.services.methodology.rules import (
     ensure_methodology_rule_version,
     load_methodology_rules,
@@ -59,13 +68,22 @@ class SeedResult:
     knowledge_quarantined_chunk_count: int = 0
     knowledge_documents_changed: int = 0
     knowledge_chunks_changed: int = 0
+    enterprise_profiles_loaded: int = 0
+    enterprise_exposures_refreshed: int = 0
 
 
 def resolve_dataset_path(configured_path: str) -> Path:
-    configured = Path(configured_path)
+    configured = Path(configured_path).expanduser()
     candidates = [configured]
     if not configured.is_absolute():
-        candidates.append(Path(__file__).resolve().parents[3] / "data/synthetic/families.json")
+        project_root = Path(__file__).resolve().parents[3]
+        candidates.extend(
+            [
+                project_root / "backend" / configured,
+                project_root / configured,
+                project_root / "data/synthetic/families.json",
+            ]
+        )
     for candidate in candidates:
         if candidate.is_file():
             return candidate.resolve()
@@ -215,6 +233,153 @@ def _sync_synthetic_behavior_inputs(
                 record.version += 1
                 refreshed += 1
     return refreshed
+
+
+def _seed_actor() -> ActorContext:
+    now = datetime.now(UTC)
+    return ActorContext(
+        actor_id="synthetic-persona-seed",
+        role="admin",
+        household_ids=("*",),
+        issued_at=now,
+        expires_at=now + timedelta(hours=1),
+        auth_source="demo_headers",
+    )
+
+
+def _sync_synthetic_enterprise_extensions(
+    session: Session,
+    dataset: SyntheticDataset,
+) -> tuple[int, int]:
+    """Resolve stable seed references and write the canonical V5 enterprise records."""
+
+    created_count = 0
+    refreshed_count = 0
+    actor = _seed_actor()
+    for extension in dataset.enterprise_extensions:
+        household = session.scalar(
+            select(Household).where(
+                Household.code == extension.household_code,
+                Household.is_synthetic.is_(True),
+                Household.is_deleted.is_(False),
+            )
+        )
+        if household is None:
+            raise AppError(
+                "seed_reference_invalid",
+                "V5 企业扩展引用的合成家庭不存在",
+                status_code=500,
+                details={"household_code": extension.household_code},
+            )
+        enterprise = session.scalar(
+            select(EnterpriseProfile).where(
+                EnterpriseProfile.household_id == household.id,
+                EnterpriseProfile.name == extension.enterprise.name,
+                EnterpriseProfile.is_deleted.is_(False),
+            )
+        )
+        if enterprise is None:
+            enterprise, _entity = create_enterprise(
+                session,
+                household.id,
+                extension.enterprise,
+                actor,
+            )
+            created_count += 1
+        graph = build_financial_graph(session, household.id, actor)
+        household_entity = next(
+            item
+            for item in graph.entities
+            if item.entity_type == FinancialEntityType.HOUSEHOLD
+        )
+        household_entity_id = household_entity.id
+        member_entities = {
+            item.display_name: item.id
+            for item in graph.entities
+            if item.entity_type == FinancialEntityType.PERSON
+        }
+
+        def entity_reference(
+            reference: str,
+            household_entity_id: str = household_entity_id,
+            member_entities: dict[str, str] = member_entities,
+            household_code: str = extension.household_code,
+        ) -> str:
+            if reference == "@household":
+                return household_entity_id
+            resolved = member_entities.get(reference)
+            if resolved is None:
+                raise AppError(
+                    "seed_reference_invalid",
+                    "V5 企业权益所有者引用不存在",
+                    status_code=500,
+                    details={
+                        "household_code": household_code,
+                        "reference": reference,
+                    },
+                )
+            return resolved
+
+        members = {
+            item.display_name: item.id
+            for item in session.scalars(
+                select(HouseholdMember).where(
+                    HouseholdMember.household_id == household.id,
+                    HouseholdMember.is_deleted.is_(False),
+                )
+            ).all()
+        }
+
+        def member_reference(
+            reference: str | None,
+            members: dict[str, str] = members,
+            household_code: str = extension.household_code,
+        ) -> str | None:
+            if reference is None:
+                return None
+            resolved = members.get(reference)
+            if resolved is None:
+                raise AppError(
+                    "seed_reference_invalid",
+                    "V5 家企收入或担保成员引用不存在",
+                    status_code=500,
+                    details={
+                        "household_code": household_code,
+                        "reference": reference,
+                    },
+                )
+            return resolved
+
+        payload = EnterpriseExposureCreate(
+            enterprise_id=enterprise.id,
+            ownerships=[
+                item.model_copy(
+                    update={"owner_entity_id": entity_reference(item.owner_entity_id)}
+                )
+                for item in extension.ownerships
+            ],
+            valuations=extension.valuations,
+            cashflows=[
+                item.model_copy(update={"member_id": member_reference(item.member_id)})
+                for item in extension.cashflows
+            ],
+            guarantees=[
+                item.model_copy(update={"member_id": member_reference(item.member_id)})
+                for item in extension.guarantees
+            ],
+            liquidity_events=extension.liquidity_events,
+            source_reference=extension.source_reference,
+            is_user_confirmed=True,
+        )
+        result = upsert_enterprise_exposures(
+            session,
+            household.id,
+            payload,
+            actor,
+        )
+        if result.changed:
+            refreshed_count += 1
+    return created_count, refreshed_count
 
 
 def seed_synthetic_data(
@@ -397,6 +562,9 @@ def seed_synthetic_data(
         loaded_codes.append(household.code)
 
     session.flush()
+    enterprise_profiles_loaded, enterprise_exposures_refreshed = (
+        _sync_synthetic_enterprise_extensions(session, dataset)
+    )
     _sync_demo_identity_grants(session)
     session.commit()
     return SeedResult(
@@ -414,4 +582,6 @@ def seed_synthetic_data(
         knowledge_quarantined_chunk_count=knowledge_quarantined_chunk_count,
         knowledge_documents_changed=knowledge_documents_changed,
         knowledge_chunks_changed=knowledge_chunks_changed,
+        enterprise_profiles_loaded=enterprise_profiles_loaded,
+        enterprise_exposures_refreshed=enterprise_exposures_refreshed,
     )

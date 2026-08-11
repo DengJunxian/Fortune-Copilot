@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import date
 from decimal import Decimal
+from typing import Any, cast
 
 from app.domain.enums import (
     AssetCategory,
@@ -314,4 +315,165 @@ def initial_state_response(model: TwinModelInput) -> InitialTwinState:
             "初始总资产与财务底表一致；信用卡额度从未进入资产。社保名义余额不重复加入净资产，"
             "未来个人和单位缴费仅在劳动收入存续期进入养老金状态。债务还款从支出表剔除后按负债逐月摊还，避免重复扣减。"
         ),
+    )
+
+
+def serialize_twin_model_input(model: TwinModelInput) -> dict[str, object]:
+    """Persist the exact simulator input without coupling snapshots to ORM rows."""
+
+    return {
+        "household_id": model.household_id,
+        "household_code": model.household_code,
+        "currency": model.currency,
+        "synthetic_data": model.synthetic_data,
+        "analysis_date": model.analysis_date.isoformat(),
+        "members": [
+            {
+                "id": item.id,
+                "name": item.name,
+                "relationship": item.relationship,
+                "age_at_start": item.age_at_start,
+                "recorded_retirement_age": item.recorded_retirement_age,
+            }
+            for item in model.members
+        ],
+        "incomes": [
+            {
+                "id": item.id,
+                "member_id": item.member_id,
+                "name": item.name,
+                "income_type": item.income_type.value,
+                "monthly_amount": item.monthly_amount,
+                "annual_volatility": item.annual_volatility,
+                "retirement_age": item.retirement_age,
+                "primary_rank": item.primary_rank,
+            }
+            for item in model.incomes
+        ],
+        "debts": [
+            {
+                "id": item.id,
+                "name": item.name,
+                "category": item.category,
+                "balance": item.balance,
+                "annual_rate": item.annual_rate,
+                "monthly_payment": item.monthly_payment,
+                "floating_rate": item.floating_rate,
+            }
+            for item in model.debts
+        ],
+        "goals": [
+            {
+                "id": item.id,
+                "name": item.name,
+                "goal_type": item.goal_type,
+                "due_month": item.due_month,
+                "target_amount": item.target_amount,
+                "prepared_amount": item.prepared_amount,
+                "annual_cost_growth_rate": item.annual_cost_growth_rate,
+                "can_defer": item.can_defer,
+            }
+            for item in model.goals
+        ],
+        "asset_buckets": dict(model.asset_buckets),
+        "monthly_expenses": model.monthly_expenses,
+        "monthly_essential_expenses": model.monthly_essential_expenses,
+        "monthly_compressible_expenses": model.monthly_compressible_expenses,
+        "medical_coverage": model.medical_coverage,
+        "medical_deductible": model.medical_deductible,
+        "pension_monthly_contributions": model.pension_monthly_contributions,
+        "source_record_ids": list(model.source_record_ids),
+    }
+
+
+def deserialize_twin_model_input(payload: dict[str, object]) -> TwinModelInput:
+    """Restore a simulator input from a persistent snapshot."""
+
+    members_raw = payload.get("members", [])
+    incomes_raw = payload.get("incomes", [])
+    debts_raw = payload.get("debts", [])
+    goals_raw = payload.get("goals", [])
+    buckets_raw = payload.get("asset_buckets", {})
+    if not all(
+        isinstance(value, list) for value in (members_raw, incomes_raw, debts_raw, goals_raw)
+    ) or not isinstance(buckets_raw, dict):
+        raise ValueError("持久快照中的模拟初始状态无效")
+
+    members = cast(list[dict[str, Any]], members_raw)
+    incomes = cast(list[dict[str, Any]], incomes_raw)
+    debts = cast(list[dict[str, Any]], debts_raw)
+    goals = cast(list[dict[str, Any]], goals_raw)
+    buckets = cast(dict[str, Any], buckets_raw)
+    source_ids_raw = payload.get("source_record_ids", [])
+    if not isinstance(source_ids_raw, list):
+        raise ValueError("持久快照中的来源记录无效")
+
+    return TwinModelInput(
+        household_id=str(payload["household_id"]),
+        household_code=str(payload["household_code"]),
+        currency=str(payload["currency"]),
+        synthetic_data=bool(payload["synthetic_data"]),
+        analysis_date=date.fromisoformat(str(payload["analysis_date"])),
+        members=tuple(
+            MemberSpec(
+                id=str(item["id"]),
+                name=str(item["name"]),
+                relationship=str(item["relationship"]),
+                age_at_start=float(item["age_at_start"]),
+                recorded_retirement_age=(
+                    int(item["recorded_retirement_age"])
+                    if item.get("recorded_retirement_age") is not None
+                    else None
+                ),
+            )
+            for item in members
+        ),
+        incomes=tuple(
+            IncomeStream(
+                id=str(item["id"]),
+                member_id=str(item["member_id"]) if item.get("member_id") is not None else None,
+                name=str(item["name"]),
+                income_type=IncomeType(str(item["income_type"])),
+                monthly_amount=float(item["monthly_amount"]),
+                annual_volatility=float(item["annual_volatility"]),
+                retirement_age=(
+                    int(item["retirement_age"]) if item.get("retirement_age") is not None else None
+                ),
+                primary_rank=int(item["primary_rank"]),
+            )
+            for item in incomes
+        ),
+        debts=tuple(
+            DebtSpec(
+                id=str(item["id"]),
+                name=str(item["name"]),
+                category=str(item["category"]),
+                balance=float(item["balance"]),
+                annual_rate=float(item["annual_rate"]),
+                monthly_payment=float(item["monthly_payment"]),
+                floating_rate=bool(item["floating_rate"]),
+            )
+            for item in debts
+        ),
+        goals=tuple(
+            GoalSpec(
+                id=str(item["id"]),
+                name=str(item["name"]),
+                goal_type=str(item["goal_type"]),
+                due_month=int(item["due_month"]),
+                target_amount=float(item["target_amount"]),
+                prepared_amount=float(item["prepared_amount"]),
+                annual_cost_growth_rate=float(item["annual_cost_growth_rate"]),
+                can_defer=bool(item["can_defer"]),
+            )
+            for item in goals
+        ),
+        asset_buckets={str(key): float(value) for key, value in buckets.items()},
+        monthly_expenses=float(str(payload["monthly_expenses"])),
+        monthly_essential_expenses=float(str(payload["monthly_essential_expenses"])),
+        monthly_compressible_expenses=float(str(payload["monthly_compressible_expenses"])),
+        medical_coverage=float(str(payload["medical_coverage"])),
+        medical_deductible=float(str(payload["medical_deductible"])),
+        pension_monthly_contributions=float(str(payload["pension_monthly_contributions"])),
+        source_record_ids=tuple(str(value) for value in source_ids_raw),
     )

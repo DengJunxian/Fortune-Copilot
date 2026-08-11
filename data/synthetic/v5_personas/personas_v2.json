@@ -1,0 +1,3283 @@
+{
+  "schema_version": "canonical-v5-persona-v2",
+  "dataset_version": "synthetic-v5-personas-v2.0.0",
+  "as_of_date": "2026-08-10",
+  "personas": [
+    {
+      "code": "DEMO_A",
+      "title": "刚工作的个人 / 新市民",
+      "archetype": "刚工作的个人 / 新市民",
+      "validation_focus": [
+        "小额现金",
+        "租房",
+        "信用卡",
+        "应急",
+        "保障",
+        "首套房",
+        "养老金",
+        "ELTC",
+        "投资教育"
+      ]
+    },
+    {
+      "code": "DEMO_B",
+      "title": "上海双职工中产家庭",
+      "archetype": "上海双职工中产家庭",
+      "validation_focus": [
+        "房贷",
+        "教育",
+        "赡养",
+        "保险",
+        "个人养老金",
+        "养老",
+        "目标冲突",
+        "投资"
+      ]
+    },
+    {
+      "code": "DEMO_C",
+      "title": "高收入专业人士",
+      "archetype": "高收入专业人士",
+      "validation_focus": [
+        "高现金流",
+        "碎片化资产",
+        "多目标",
+        "低效现金",
+        "保险",
+        "养老金",
+        "CFS"
+      ]
+    },
+    {
+      "code": "DEMO_D",
+      "title": "科创企业创始人",
+      "archetype": "科创企业创始人",
+      "validation_focus": [
+        "未上市企业股权",
+        "个人担保",
+        "企业收入依赖",
+        "跨境收入",
+        "国际教育",
+        "财富传承"
+      ]
+    },
+    {
+      "code": "DEMO_E",
+      "title": "科创专家 / 科学家",
+      "archetype": "科创专家 / 科学家",
+      "validation_focus": [
+        "股权激励",
+        "限制性股票",
+        "海外合作收入",
+        "教育",
+        "创业可能",
+        "隐性集中风险"
+      ]
+    },
+    {
+      "code": "DEMO_F",
+      "title": "多代际高净值家族",
+      "archetype": "多代际高净值家族",
+      "validation_focus": [
+        "multiple generations",
+        "enterprise",
+        "succession",
+        "trust need",
+        "philanthropy",
+        "professional routing"
+      ]
+    },
+    {
+      "code": "DEMO_G",
+      "title": "跨境家庭",
+      "archetype": "跨境家庭",
+      "validation_focus": [
+        "CNY income",
+        "USD/HKD assets",
+        "foreign education liability",
+        "currency matching",
+        "professional routing"
+      ]
+    },
+    {
+      "code": "DEMO_H",
+      "title": "临近退休 / 退休家庭",
+      "archetype": "临近退休 / 退休家庭",
+      "validation_focus": [
+        "property concentration",
+        "social security",
+        "pension",
+        "medical",
+        "long-term care",
+        "longevity",
+        "withdrawal",
+        "legacy"
+      ]
+    }
+  ],
+  "households": [
+    {
+      "household": {
+        "code": "DEMO_A",
+        "name": "家庭 A｜新市民职场起步",
+        "lifecycle_stage": "early_career",
+        "region": "浙江省杭州市",
+        "demo_profile": "A",
+        "is_synthetic": true,
+        "planning_preferences": {}
+      },
+      "members": [
+        {
+          "display_name": "陈晨",
+          "relationship": "本人",
+          "birth_date": "2002-10-12",
+          "occupation": "软件工程师",
+          "employment_stability": "high",
+          "expected_retirement_age": 60,
+          "health_risk_level": "low"
+        }
+      ],
+      "consents": [
+        {
+          "member_id": "陈晨",
+          "granted_at": "2026-08-10T09:00:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "v5-persona-consent-v2",
+          "scopes": [
+            "profile",
+            "finance",
+            "risk",
+            "behavior"
+          ],
+          "purpose": "V5 合成 Persona 的客户画像、财务诊断与风险预算验证",
+          "metadata_json": {
+            "synthetic": true,
+            "scenario": "v5_profile_and_risk",
+            "explicit": true
+          }
+        },
+        {
+          "member_id": "陈晨",
+          "granted_at": "2026-08-10T09:01:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "v5-persona-consent-v2",
+          "scopes": [
+            "identity_sensitive",
+            "health_sensitive",
+            "insurance"
+          ],
+          "purpose": "V5 合成 Persona 的敏感字段与保障缺口验证",
+          "metadata_json": {
+            "synthetic": true,
+            "scenario": "v5_protection_and_specialist_routing",
+            "explicit": true,
+            "sensitive_data_acknowledged": true
+          }
+        },
+        {
+          "member_id": "陈晨",
+          "granted_at": "2026-08-10T09:02:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "v5-persona-consent-v2",
+          "scopes": [
+            "simulation",
+            "report"
+          ],
+          "purpose": "V5 合成 Persona 的情景实验、CFS 与报告验证",
+          "metadata_json": {
+            "synthetic": true,
+            "scenario": "v5_scenario_cfs_and_report",
+            "explicit": true
+          }
+        }
+      ],
+      "incomes": [
+        {
+          "member_id": "陈晨",
+          "name": "税后工资",
+          "income_type": "employment",
+          "amount": "180000.00",
+          "frequency": "annual",
+          "stability": "0.85",
+          "volatility": "0.10",
+          "interruption_probability": "0.10",
+          "cycle_correlation": "0.30",
+          "source_concentration": "1.00",
+          "is_sustainable": true,
+          "currency": "CNY"
+        }
+      ],
+      "expenses": [
+        {
+          "member_id": "陈晨",
+          "name": "租房与基本生活",
+          "amount": "84000.00",
+          "frequency": "annual",
+          "necessity": "essential",
+          "compressible_ratio": "0.05",
+          "category": "basic_living"
+        },
+        {
+          "member_id": "陈晨",
+          "name": "可选消费",
+          "amount": "24000.00",
+          "frequency": "annual",
+          "necessity": "flexible",
+          "compressible_ratio": "0.50",
+          "category": "discretionary"
+        }
+      ],
+      "assets": [
+        {
+          "owner_member_id": "陈晨",
+          "name": "工资活期",
+          "category": "demand_deposit",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "25000.00",
+          "market_value": "25000.00",
+          "liquidity_days": 0,
+          "liquidity_level": "immediate",
+          "risk_level": "low",
+          "purpose": "日用与应急",
+          "pledged": false,
+          "ownership": "陈晨",
+          "property_use": "not_property",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        },
+        {
+          "owner_member_id": "陈晨",
+          "name": "货币基金",
+          "category": "money_market",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "10000.00",
+          "market_value": "10000.00",
+          "liquidity_days": 1,
+          "liquidity_level": "within_7_days",
+          "risk_level": "low",
+          "purpose": "应急储备",
+          "pledged": false,
+          "ownership": "陈晨",
+          "property_use": "not_property",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        },
+        {
+          "owner_member_id": "陈晨",
+          "name": "宽基学习仓",
+          "category": "equity_fund",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "5000.00",
+          "market_value": "5000.00",
+          "liquidity_days": 3,
+          "liquidity_level": "within_7_days",
+          "risk_level": "high",
+          "purpose": "投资教育",
+          "pledged": false,
+          "ownership": "陈晨",
+          "property_use": "not_property",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        }
+      ],
+      "liabilities": [
+        {
+          "borrower_member_id": "陈晨",
+          "linked_asset_id": null,
+          "name": "信用卡未还款",
+          "category": "credit_card_unpaid",
+          "outstanding_balance": "12000.00",
+          "annual_interest_rate": "0.180000",
+          "monthly_payment": "3000.00",
+          "maturity_date": "2026-12-31",
+          "rate_type": "floating",
+          "prepayment_cost": "0.00",
+          "is_high_interest": true,
+          "currency": "CNY"
+        }
+      ],
+      "insurance_policies": [
+        {
+          "insured_member_id": "陈晨",
+          "name": "合成医疗险",
+          "policy_type": "medical",
+          "coverage_amount": "1000000.00",
+          "annual_premium": "1200.00",
+          "start_date": "2026-01-01",
+          "end_date": "2026-12-31",
+          "deductible": "10000.00",
+          "waiting_period_days": 30,
+          "guaranteed_benefit": "0.00",
+          "non_guaranteed_benefit": "0.00",
+          "cash_value": "0.00"
+        },
+        {
+          "insured_member_id": "陈晨",
+          "name": "合成意外险",
+          "policy_type": "accident",
+          "coverage_amount": "500000.00",
+          "annual_premium": "600.00",
+          "start_date": "2026-01-01",
+          "end_date": "2026-12-31",
+          "deductible": "0.00",
+          "waiting_period_days": 0,
+          "guaranteed_benefit": "0.00",
+          "non_guaranteed_benefit": "0.00",
+          "cash_value": "0.00"
+        }
+      ],
+      "social_security_accounts": [
+        {
+          "member_id": "陈晨",
+          "account_type": "城镇职工基本养老保险",
+          "balance": "20000.00",
+          "annual_personal_contribution": "24000.00",
+          "annual_employer_contribution": "48000.00",
+          "benefit_region": "浙江省杭州市"
+        }
+      ],
+      "goals": [
+        {
+          "name": "补足应急储备",
+          "goal_type": "emergency_fund",
+          "target_amount": "60000.00",
+          "target_date": "2027-08-10",
+          "rigidity": "rigid",
+          "priority": 1,
+          "can_defer": false,
+          "minimum_acceptable_amount": "48000.00",
+          "prepared_amount": "35000.00",
+          "annual_cost_growth_rate": "0.03",
+          "currency": "CNY"
+        },
+        {
+          "name": "首套房首付",
+          "goal_type": "home",
+          "target_amount": "600000.00",
+          "target_date": "2032-08-10",
+          "rigidity": "important",
+          "priority": 2,
+          "can_defer": true,
+          "minimum_acceptable_amount": "400000.00",
+          "prepared_amount": "0.00",
+          "annual_cost_growth_rate": "0.03",
+          "currency": "CNY"
+        },
+        {
+          "name": "长期养老起步",
+          "goal_type": "retirement",
+          "target_amount": "2500000.00",
+          "target_date": "2062-08-10",
+          "rigidity": "important",
+          "priority": 3,
+          "can_defer": false,
+          "minimum_acceptable_amount": "1500000.00",
+          "prepared_amount": "20000.00",
+          "annual_cost_growth_rate": "0.03",
+          "currency": "CNY"
+        }
+      ],
+      "risk_assessments": [
+        {
+          "capacity_score": "0.45",
+          "willingness_score": "0.65",
+          "knowledge_score": "0.70",
+          "behavior_score": "0.40",
+          "final_risk_limit": "medium_low",
+          "explanation": "按合成家庭现金流、责任期限与行为承受力取审慎风险上限。"
+        }
+      ],
+      "behavior_assessments": [
+        {
+          "questionnaire_score": "0.65",
+          "experiment_score": "0.40",
+          "final_behavior_limit": "medium_low",
+          "detected_biases": [
+            "loss_aversion"
+          ],
+          "experiment_answers": {},
+          "explanation": "合成行为记录只用于验证风险预算约束，不代表真实客户测评。"
+        }
+      ]
+    },
+    {
+      "household": {
+        "code": "DEMO_B",
+        "name": "家庭 B｜上海双职工育儿家庭",
+        "lifecycle_stage": "parenting",
+        "region": "上海市",
+        "demo_profile": "B",
+        "is_synthetic": true,
+        "planning_preferences": {
+          "personal_pension_review_requested": true
+        }
+      },
+      "members": [
+        {
+          "display_name": "李先生",
+          "relationship": "本人",
+          "birth_date": "1991-05-20",
+          "occupation": "制造业项目经理",
+          "employment_stability": "high",
+          "expected_retirement_age": 60,
+          "health_risk_level": "low"
+        },
+        {
+          "display_name": "王女士",
+          "relationship": "配偶",
+          "birth_date": "1993-09-08",
+          "occupation": "公立学校教师",
+          "employment_stability": "high",
+          "expected_retirement_age": 55,
+          "health_risk_level": "low"
+        },
+        {
+          "display_name": "李小朋友",
+          "relationship": "子女",
+          "birth_date": "2021-03-15",
+          "occupation": null,
+          "employment_stability": "low",
+          "expected_retirement_age": null,
+          "health_risk_level": "low"
+        }
+      ],
+      "consents": [
+        {
+          "member_id": "李先生",
+          "scopes": [
+            "profile",
+            "finance",
+            "risk"
+          ],
+          "purpose": "主 Demo 合成家庭基础诊断与规划",
+          "granted_at": "2026-08-04T09:15:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "demo-consent-v1",
+          "metadata_json": {
+            "synthetic": true,
+            "main_demo": true,
+            "scenario": "core_planning",
+            "explicit": true
+          }
+        },
+        {
+          "member_id": "李先生",
+          "scopes": [
+            "identity_sensitive",
+            "insurance",
+            "health_sensitive"
+          ],
+          "purpose": "单独授权身份、健康与保障敏感字段参与保障缺口核对",
+          "granted_at": "2026-08-04T09:16:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "demo-sensitive-consent-v1",
+          "metadata_json": {
+            "synthetic": true,
+            "main_demo": true,
+            "scenario": "protection_review",
+            "sensitive_data_acknowledged": true,
+            "explicit": true
+          }
+        },
+        {
+          "member_id": "李先生",
+          "scopes": [
+            "simulation",
+            "report"
+          ],
+          "purpose": "单独授权压力模拟与八章规划书生成",
+          "granted_at": "2026-08-04T09:17:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "demo-simulation-consent-v1",
+          "metadata_json": {
+            "synthetic": true,
+            "main_demo": true,
+            "scenario": "simulation_and_report",
+            "explicit": true
+          }
+        }
+      ],
+      "incomes": [
+        {
+          "member_id": "李先生",
+          "name": "本人税后收入",
+          "income_type": "employment",
+          "amount": "216000.00",
+          "frequency": "annual",
+          "stability": "0.86",
+          "volatility": "0.12",
+          "interruption_probability": "0.10",
+          "cycle_correlation": "0.50",
+          "source_concentration": "0.60",
+          "is_sustainable": true
+        },
+        {
+          "member_id": "王女士",
+          "name": "配偶税后收入",
+          "income_type": "employment",
+          "amount": "144000.00",
+          "frequency": "annual",
+          "stability": "0.95",
+          "volatility": "0.05",
+          "interruption_probability": "0.04",
+          "cycle_correlation": "0.10",
+          "source_concentration": "0.40",
+          "is_sustainable": true
+        }
+      ],
+      "expenses": [
+        {
+          "name": "刚性生活支出",
+          "amount": "144000.00",
+          "frequency": "annual",
+          "necessity": "essential",
+          "compressible_ratio": "0.05",
+          "category": "basic_living"
+        },
+        {
+          "name": "年度房贷还款",
+          "amount": "72000.00",
+          "frequency": "annual",
+          "necessity": "essential",
+          "compressible_ratio": "0.00",
+          "category": "debt_service"
+        },
+        {
+          "name": "家庭年度保费",
+          "amount": "12000.00",
+          "frequency": "annual",
+          "necessity": "essential",
+          "compressible_ratio": "0.10",
+          "category": "insurance_premium"
+        },
+        {
+          "name": "子女教育与父母赡养等其他支出",
+          "amount": "60000.00",
+          "frequency": "annual",
+          "necessity": "flexible",
+          "compressible_ratio": "0.25",
+          "category": "other"
+        }
+      ],
+      "assets": [
+        {
+          "name": "流动资产",
+          "category": "demand_deposit",
+          "subcategory": "活期及现金",
+          "acquisition_cost": "50000.00",
+          "market_value": "50000.00",
+          "liquidity_days": 0,
+          "liquidity_level": "immediate",
+          "risk_level": "low",
+          "purpose": "日用支付与应急",
+          "pledged": false,
+          "ownership": "夫妻共同",
+          "property_use": "not_property"
+        },
+        {
+          "name": "低波动资产",
+          "category": "time_deposit",
+          "subcategory": "模拟定期存款及低波动工具",
+          "acquisition_cost": "150000.00",
+          "market_value": "150000.00",
+          "liquidity_days": 30,
+          "liquidity_level": "within_30_days",
+          "risk_level": "low",
+          "purpose": "中短期目标",
+          "pledged": false,
+          "ownership": "夫妻共同",
+          "property_use": "not_property"
+        },
+        {
+          "name": "权益基金",
+          "category": "equity_fund",
+          "subcategory": "模拟分散化权益基金",
+          "acquisition_cost": "100000.00",
+          "market_value": "120000.00",
+          "liquidity_days": 3,
+          "liquidity_level": "within_7_days",
+          "risk_level": "high",
+          "purpose": "长期增长",
+          "pledged": false,
+          "ownership": "夫妻共同",
+          "property_use": "not_property"
+        },
+        {
+          "name": "个人养老金账户",
+          "category": "pension_account",
+          "subcategory": "个人养老金",
+          "acquisition_cost": "30000.00",
+          "market_value": "30000.00",
+          "liquidity_days": 3650,
+          "liquidity_level": "illiquid",
+          "risk_level": "medium",
+          "purpose": "退休养老",
+          "pledged": false,
+          "ownership": "李先生",
+          "property_use": "not_property"
+        },
+        {
+          "name": "自住房",
+          "category": "primary_residence",
+          "subcategory": "城市住宅",
+          "acquisition_cost": "1800000.00",
+          "market_value": "2400000.00",
+          "liquidity_days": 180,
+          "liquidity_level": "illiquid",
+          "risk_level": "medium",
+          "purpose": "家庭自住",
+          "pledged": true,
+          "ownership": "夫妻共同",
+          "property_use": "primary_residence"
+        },
+        {
+          "name": "其他资产",
+          "category": "vehicle",
+          "subcategory": "家庭车辆及耐用品",
+          "acquisition_cost": "160000.00",
+          "market_value": "100000.00",
+          "liquidity_days": 60,
+          "liquidity_level": "within_1_year",
+          "risk_level": "medium_low",
+          "purpose": "家庭使用",
+          "pledged": false,
+          "ownership": "夫妻共同",
+          "property_use": "not_property"
+        }
+      ],
+      "liabilities": [
+        {
+          "borrower_member_id": "李先生",
+          "linked_asset_id": "自住房",
+          "name": "住房按揭贷款",
+          "category": "mortgage",
+          "outstanding_balance": "1200000.00",
+          "annual_interest_rate": "0.0345",
+          "monthly_payment": "6000.00",
+          "maturity_date": "2047-05-20",
+          "rate_type": "floating",
+          "prepayment_cost": "0.00",
+          "is_high_interest": false
+        },
+        {
+          "borrower_member_id": "李先生",
+          "linked_asset_id": null,
+          "name": "信用卡未付",
+          "category": "credit_card_unpaid",
+          "outstanding_balance": "8000.00",
+          "annual_interest_rate": "0.18",
+          "monthly_payment": "8000.00",
+          "maturity_date": "2026-08-25",
+          "rate_type": "fixed",
+          "prepayment_cost": "0.00",
+          "is_high_interest": true
+        }
+      ],
+      "insurance_policies": [
+        {
+          "insured_member_id": "李先生",
+          "name": "模拟定期寿险",
+          "policy_type": "term_life",
+          "coverage_amount": "1000000.00",
+          "annual_premium": "6000.00",
+          "start_date": "2025-01-01",
+          "end_date": "2045-12-31",
+          "deductible": "0.00",
+          "waiting_period_days": 90,
+          "guaranteed_benefit": "0.00",
+          "non_guaranteed_benefit": "0.00",
+          "cash_value": "0.00"
+        },
+        {
+          "insured_member_id": "王女士",
+          "name": "模拟医疗及重疾组合",
+          "policy_type": "medical",
+          "coverage_amount": "800000.00",
+          "annual_premium": "6000.00",
+          "start_date": "2025-01-01",
+          "end_date": "2026-12-31",
+          "deductible": "10000.00",
+          "waiting_period_days": 30,
+          "guaranteed_benefit": "0.00",
+          "non_guaranteed_benefit": "0.00",
+          "cash_value": "0.00"
+        }
+      ],
+      "social_security_accounts": [
+        {
+          "member_id": "李先生",
+          "account_type": "城镇职工基本养老保险",
+          "balance": "180000.00",
+          "annual_personal_contribution": "17280.00",
+          "annual_employer_contribution": "34560.00",
+          "benefit_region": "江苏省南京市"
+        },
+        {
+          "member_id": "王女士",
+          "account_type": "机关事业单位养老保险",
+          "balance": "150000.00",
+          "annual_personal_contribution": "11520.00",
+          "annual_employer_contribution": "23040.00",
+          "benefit_region": "江苏省南京市"
+        }
+      ],
+      "goals": [
+        {
+          "name": "子女教育",
+          "goal_type": "education",
+          "target_amount": "600000.00",
+          "target_date": "2036-08-04",
+          "rigidity": "rigid",
+          "priority": 1,
+          "can_defer": false,
+          "minimum_acceptable_amount": "450000.00",
+          "prepared_amount": "80000.00",
+          "annual_cost_growth_rate": "0.05"
+        },
+        {
+          "name": "夫妻退休养老",
+          "goal_type": "retirement",
+          "target_amount": "2000000.00",
+          "target_date": "2051-05-20",
+          "rigidity": "important",
+          "priority": 2,
+          "can_defer": true,
+          "minimum_acceptable_amount": "1500000.00",
+          "prepared_amount": "30000.00",
+          "annual_cost_growth_rate": "0.03"
+        },
+        {
+          "name": "父母赡养储备",
+          "goal_type": "family_support",
+          "target_amount": "300000.00",
+          "target_date": "2031-08-04",
+          "rigidity": "important",
+          "priority": 3,
+          "can_defer": false,
+          "minimum_acceptable_amount": "200000.00",
+          "prepared_amount": "20000.00",
+          "annual_cost_growth_rate": "0.04"
+        }
+      ],
+      "risk_assessments": [
+        {
+          "capacity_score": "0.58",
+          "willingness_score": "0.66",
+          "knowledge_score": "0.60",
+          "behavior_score": "0.52",
+          "final_risk_limit": "medium",
+          "explanation": "双收入提高稳定性，但房贷、育儿与房产集中约束风险上限。"
+        }
+      ],
+      "behavior_assessments": [
+        {
+          "questionnaire_score": "0.62",
+          "experiment_score": "0.52",
+          "final_behavior_limit": "medium",
+          "detected_biases": [
+            "mental_accounting",
+            "loss_aversion"
+          ],
+          "experiment_answers": {
+            "questionnaire": {
+              "risk_willingness": "0.70",
+              "loss_tolerance_claim": "0.80",
+              "investment_experience": "0.60",
+              "knowledge": "0.60",
+              "trading_frequency": "0.50",
+              "attention": "0.45",
+              "goal_discipline": "0.55"
+            },
+            "responses": {
+              "market_up_20": {
+                "choice_code": "chase_add",
+                "response_time_ms": 2400,
+                "modification_count": 1
+              },
+              "market_down_10": {
+                "choice_code": "sell_all",
+                "response_time_ms": 1900,
+                "modification_count": 1
+              },
+              "market_down_30": {
+                "choice_code": "hold_plan",
+                "response_time_ms": 4100,
+                "modification_count": 2
+              },
+              "hot_product_choice": {
+                "choice_code": "chase_hot",
+                "response_time_ms": 1800,
+                "modification_count": 1
+              },
+              "winner_loser_disposal": {
+                "choice_code": "rebalance_by_target",
+                "response_time_ms": 3600,
+                "modification_count": 0
+              },
+              "consume_or_goal": {
+                "choice_code": "split_by_rule",
+                "response_time_ms": 3200,
+                "modification_count": 1
+              }
+            }
+          },
+          "explanation": "能承受一般波动，但教育与住房心理账户会放大短期损失感受。"
+        }
+      ]
+    },
+    {
+      "household": {
+        "code": "DEMO_C",
+        "name": "家庭 C｜高收入专业人士",
+        "lifecycle_stage": "mature_family",
+        "region": "北京市",
+        "demo_profile": "C",
+        "is_synthetic": true,
+        "planning_preferences": {}
+      },
+      "members": [
+        {
+          "display_name": "许医生",
+          "relationship": "本人",
+          "birth_date": "1985-04-18",
+          "occupation": "三甲医院主任医师",
+          "employment_stability": "high",
+          "expected_retirement_age": 60,
+          "health_risk_level": "low"
+        },
+        {
+          "display_name": "林女士",
+          "relationship": "配偶",
+          "birth_date": "1987-07-02",
+          "occupation": "律师",
+          "employment_stability": "high",
+          "expected_retirement_age": 60,
+          "health_risk_level": "low"
+        }
+      ],
+      "consents": [
+        {
+          "member_id": "许医生",
+          "granted_at": "2026-08-10T09:00:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "v5-persona-consent-v2",
+          "scopes": [
+            "profile",
+            "finance",
+            "risk",
+            "behavior"
+          ],
+          "purpose": "V5 合成 Persona 的客户画像、财务诊断与风险预算验证",
+          "metadata_json": {
+            "synthetic": true,
+            "scenario": "v5_profile_and_risk",
+            "explicit": true
+          }
+        },
+        {
+          "member_id": "许医生",
+          "granted_at": "2026-08-10T09:01:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "v5-persona-consent-v2",
+          "scopes": [
+            "identity_sensitive",
+            "health_sensitive",
+            "insurance"
+          ],
+          "purpose": "V5 合成 Persona 的敏感字段与保障缺口验证",
+          "metadata_json": {
+            "synthetic": true,
+            "scenario": "v5_protection_and_specialist_routing",
+            "explicit": true,
+            "sensitive_data_acknowledged": true
+          }
+        },
+        {
+          "member_id": "许医生",
+          "granted_at": "2026-08-10T09:02:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "v5-persona-consent-v2",
+          "scopes": [
+            "simulation",
+            "report"
+          ],
+          "purpose": "V5 合成 Persona 的情景实验、CFS 与报告验证",
+          "metadata_json": {
+            "synthetic": true,
+            "scenario": "v5_scenario_cfs_and_report",
+            "explicit": true
+          }
+        }
+      ],
+      "incomes": [
+        {
+          "member_id": "许医生",
+          "name": "专业服务收入",
+          "income_type": "employment",
+          "amount": "1200000.00",
+          "frequency": "annual",
+          "stability": "0.85",
+          "volatility": "0.10",
+          "interruption_probability": "0.10",
+          "cycle_correlation": "0.30",
+          "source_concentration": "0.70",
+          "is_sustainable": true,
+          "currency": "CNY"
+        },
+        {
+          "member_id": "林女士",
+          "name": "律师收入",
+          "income_type": "employment",
+          "amount": "600000.00",
+          "frequency": "annual",
+          "stability": "0.85",
+          "volatility": "0.10",
+          "interruption_probability": "0.10",
+          "cycle_correlation": "0.30",
+          "source_concentration": "0.30",
+          "is_sustainable": true,
+          "currency": "CNY"
+        }
+      ],
+      "expenses": [
+        {
+          "member_id": "许医生",
+          "name": "家庭基本生活",
+          "amount": "300000.00",
+          "frequency": "annual",
+          "necessity": "essential",
+          "compressible_ratio": "0.05",
+          "category": "basic_living"
+        },
+        {
+          "member_id": "林女士",
+          "name": "品质消费",
+          "amount": "180000.00",
+          "frequency": "annual",
+          "necessity": "flexible",
+          "compressible_ratio": "0.50",
+          "category": "discretionary"
+        }
+      ],
+      "assets": [
+        {
+          "owner_member_id": "许医生",
+          "name": "活期一",
+          "category": "demand_deposit",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "900000.00",
+          "market_value": "900000.00",
+          "liquidity_days": 0,
+          "liquidity_level": "immediate",
+          "risk_level": "low",
+          "purpose": "低效现金",
+          "pledged": false,
+          "ownership": "许医生",
+          "property_use": "not_property",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        },
+        {
+          "owner_member_id": "林女士",
+          "name": "活期二",
+          "category": "demand_deposit",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "600000.00",
+          "market_value": "600000.00",
+          "liquidity_days": 0,
+          "liquidity_level": "immediate",
+          "risk_level": "low",
+          "purpose": "低效现金",
+          "pledged": false,
+          "ownership": "林女士",
+          "property_use": "not_property",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        },
+        {
+          "owner_member_id": "许医生",
+          "name": "定期一",
+          "category": "time_deposit",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "800000.00",
+          "market_value": "800000.00",
+          "liquidity_days": 180,
+          "liquidity_level": "within_1_year",
+          "risk_level": "low",
+          "purpose": "家庭财务安排",
+          "pledged": false,
+          "ownership": "许医生",
+          "property_use": "not_property",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        },
+        {
+          "owner_member_id": "林女士",
+          "name": "债券基金",
+          "category": "bond_fund",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "500000.00",
+          "market_value": "500000.00",
+          "liquidity_days": 1,
+          "liquidity_level": "within_7_days",
+          "risk_level": "medium_low",
+          "purpose": "家庭财务安排",
+          "pledged": false,
+          "ownership": "林女士",
+          "property_use": "not_property",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        },
+        {
+          "owner_member_id": "许医生",
+          "name": "宽基基金组合",
+          "category": "public_fund",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "700000.00",
+          "market_value": "700000.00",
+          "liquidity_days": 3,
+          "liquidity_level": "within_7_days",
+          "risk_level": "medium_high",
+          "purpose": "家庭财务安排",
+          "pledged": false,
+          "ownership": "许医生",
+          "property_use": "not_property",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        },
+        {
+          "owner_member_id": "林女士",
+          "name": "个人养老金",
+          "category": "pension_account",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "180000.00",
+          "market_value": "180000.00",
+          "liquidity_days": 3650,
+          "liquidity_level": "illiquid",
+          "risk_level": "low",
+          "purpose": "养老",
+          "pledged": false,
+          "ownership": "林女士",
+          "property_use": "not_property",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        },
+        {
+          "owner_member_id": "许医生",
+          "name": "北京自住房",
+          "category": "primary_residence",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "7000000.00",
+          "market_value": "7000000.00",
+          "liquidity_days": 180,
+          "liquidity_level": "illiquid",
+          "risk_level": "medium",
+          "purpose": "家庭财务安排",
+          "pledged": false,
+          "ownership": "许医生",
+          "property_use": "primary_residence",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": "110000"
+        }
+      ],
+      "liabilities": [],
+      "insurance_policies": [
+        {
+          "insured_member_id": "许医生",
+          "name": "高额医疗险",
+          "policy_type": "medical",
+          "coverage_amount": "3000000.00",
+          "annual_premium": "6800.00",
+          "start_date": "2026-01-01",
+          "end_date": "2026-12-31",
+          "deductible": "10000.00",
+          "waiting_period_days": 30,
+          "guaranteed_benefit": "0.00",
+          "non_guaranteed_benefit": "0.00",
+          "cash_value": "0.00"
+        },
+        {
+          "insured_member_id": "林女士",
+          "name": "定期寿险",
+          "policy_type": "term_life",
+          "coverage_amount": "3000000.00",
+          "annual_premium": "8200.00",
+          "start_date": "2026-01-01",
+          "end_date": null,
+          "deductible": "0.00",
+          "waiting_period_days": 0,
+          "guaranteed_benefit": "0.00",
+          "non_guaranteed_benefit": "0.00",
+          "cash_value": "0.00"
+        }
+      ],
+      "social_security_accounts": [
+        {
+          "member_id": "许医生",
+          "account_type": "城镇职工基本养老保险",
+          "balance": "500000.00",
+          "annual_personal_contribution": "24000.00",
+          "annual_employer_contribution": "48000.00",
+          "benefit_region": "北京市"
+        },
+        {
+          "member_id": "林女士",
+          "account_type": "城镇职工基本养老保险",
+          "balance": "420000.00",
+          "annual_personal_contribution": "24000.00",
+          "annual_employer_contribution": "48000.00",
+          "benefit_region": "北京市"
+        }
+      ],
+      "goals": [
+        {
+          "name": "子女国际课程",
+          "goal_type": "education",
+          "target_amount": "1500000.00",
+          "target_date": "2036-08-10",
+          "rigidity": "important",
+          "priority": 1,
+          "can_defer": false,
+          "minimum_acceptable_amount": "1000000.00",
+          "prepared_amount": "400000.00",
+          "annual_cost_growth_rate": "0.03",
+          "currency": "CNY"
+        },
+        {
+          "name": "职业降速准备",
+          "goal_type": "retirement",
+          "target_amount": "9000000.00",
+          "target_date": "2048-08-10",
+          "rigidity": "important",
+          "priority": 2,
+          "can_defer": false,
+          "minimum_acceptable_amount": "6000000.00",
+          "prepared_amount": "2500000.00",
+          "annual_cost_growth_rate": "0.03",
+          "currency": "CNY"
+        },
+        {
+          "name": "家庭旅行",
+          "goal_type": "travel",
+          "target_amount": "500000.00",
+          "target_date": "2030-08-10",
+          "rigidity": "flexible",
+          "priority": 4,
+          "can_defer": true,
+          "minimum_acceptable_amount": "250000.00",
+          "prepared_amount": "100000.00",
+          "annual_cost_growth_rate": "0.03",
+          "currency": "CNY"
+        }
+      ],
+      "risk_assessments": [
+        {
+          "capacity_score": "0.90",
+          "willingness_score": "0.75",
+          "knowledge_score": "0.70",
+          "behavior_score": "0.70",
+          "final_risk_limit": "medium_high",
+          "explanation": "按合成家庭现金流、责任期限与行为承受力取审慎风险上限。"
+        }
+      ],
+      "behavior_assessments": [
+        {
+          "questionnaire_score": "0.75",
+          "experiment_score": "0.70",
+          "final_behavior_limit": "medium_high",
+          "detected_biases": [
+            "loss_aversion"
+          ],
+          "experiment_answers": {},
+          "explanation": "合成行为记录只用于验证风险预算约束，不代表真实客户测评。"
+        }
+      ]
+    },
+    {
+      "household": {
+        "code": "DEMO_D",
+        "name": "家庭 D｜科创企业创始人 Hero",
+        "lifecycle_stage": "mature_family",
+        "region": "上海市",
+        "demo_profile": "D",
+        "is_synthetic": true,
+        "planning_preferences": {
+          "trust_review_requested": true,
+          "family_liquidity_isolation_target": "3000000.00"
+        }
+      },
+      "members": [
+        {
+          "display_name": "沈先生",
+          "relationship": "本人",
+          "birth_date": "1982-06-16",
+          "occupation": "科创企业创始人",
+          "employment_stability": "medium",
+          "expected_retirement_age": 60,
+          "health_risk_level": "low"
+        },
+        {
+          "display_name": "顾女士",
+          "relationship": "配偶",
+          "birth_date": "1984-11-03",
+          "occupation": "品牌顾问",
+          "employment_stability": "high",
+          "expected_retirement_age": 60,
+          "health_risk_level": "low"
+        },
+        {
+          "display_name": "沈同学",
+          "relationship": "子女",
+          "birth_date": "2012-05-09",
+          "occupation": null,
+          "employment_stability": "low",
+          "expected_retirement_age": null,
+          "health_risk_level": "low"
+        }
+      ],
+      "consents": [
+        {
+          "member_id": "沈先生",
+          "granted_at": "2026-08-10T09:00:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "v5-persona-consent-v2",
+          "scopes": [
+            "profile",
+            "finance",
+            "risk",
+            "behavior"
+          ],
+          "purpose": "V5 合成 Persona 的客户画像、财务诊断与风险预算验证",
+          "metadata_json": {
+            "synthetic": true,
+            "scenario": "v5_profile_and_risk",
+            "explicit": true
+          }
+        },
+        {
+          "member_id": "沈先生",
+          "granted_at": "2026-08-10T09:01:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "v5-persona-consent-v2",
+          "scopes": [
+            "identity_sensitive",
+            "health_sensitive",
+            "insurance"
+          ],
+          "purpose": "V5 合成 Persona 的敏感字段与保障缺口验证",
+          "metadata_json": {
+            "synthetic": true,
+            "scenario": "v5_protection_and_specialist_routing",
+            "explicit": true,
+            "sensitive_data_acknowledged": true
+          }
+        },
+        {
+          "member_id": "沈先生",
+          "granted_at": "2026-08-10T09:02:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "v5-persona-consent-v2",
+          "scopes": [
+            "simulation",
+            "report"
+          ],
+          "purpose": "V5 合成 Persona 的情景实验、CFS 与报告验证",
+          "metadata_json": {
+            "synthetic": true,
+            "scenario": "v5_scenario_cfs_and_report",
+            "explicit": true
+          }
+        }
+      ],
+      "incomes": [
+        {
+          "member_id": "沈先生",
+          "name": "企业经营分配",
+          "income_type": "business",
+          "amount": "1600000.00",
+          "frequency": "annual",
+          "stability": "0.45",
+          "volatility": "0.55",
+          "interruption_probability": "0.35",
+          "cycle_correlation": "0.30",
+          "source_concentration": "0.70",
+          "is_sustainable": true,
+          "currency": "CNY"
+        },
+        {
+          "member_id": "沈先生",
+          "name": "海外顾问收入",
+          "income_type": "business",
+          "amount": "250000.00",
+          "frequency": "annual",
+          "stability": "0.55",
+          "volatility": "0.40",
+          "interruption_probability": "0.10",
+          "cycle_correlation": "0.30",
+          "source_concentration": "0.20",
+          "is_sustainable": true,
+          "currency": "USD"
+        },
+        {
+          "member_id": "顾女士",
+          "name": "顾问收入",
+          "income_type": "employment",
+          "amount": "400000.00",
+          "frequency": "annual",
+          "stability": "0.85",
+          "volatility": "0.10",
+          "interruption_probability": "0.10",
+          "cycle_correlation": "0.30",
+          "source_concentration": "0.10",
+          "is_sustainable": true,
+          "currency": "CNY"
+        }
+      ],
+      "expenses": [
+        {
+          "member_id": "沈先生",
+          "name": "家庭基本生活",
+          "amount": "420000.00",
+          "frequency": "annual",
+          "necessity": "essential",
+          "compressible_ratio": "0.05",
+          "category": "basic_living"
+        },
+        {
+          "member_id": "顾女士",
+          "name": "国际教育支出",
+          "amount": "180000.00",
+          "frequency": "annual",
+          "necessity": "essential",
+          "compressible_ratio": "0.05",
+          "category": "child_education"
+        }
+      ],
+      "assets": [
+        {
+          "owner_member_id": "沈先生",
+          "name": "家庭隔离现金",
+          "category": "demand_deposit",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "1000000.00",
+          "market_value": "1000000.00",
+          "liquidity_days": 0,
+          "liquidity_level": "immediate",
+          "risk_level": "low",
+          "purpose": "家庭与企业流动性隔离",
+          "pledged": false,
+          "ownership": "沈先生",
+          "property_use": "not_property",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        },
+        {
+          "owner_member_id": "沈先生",
+          "name": "美元存款",
+          "category": "time_deposit",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "300000.00",
+          "market_value": "300000.00",
+          "liquidity_days": 90,
+          "liquidity_level": "within_1_year",
+          "risk_level": "low",
+          "purpose": "家庭财务安排",
+          "pledged": false,
+          "ownership": "沈先生",
+          "property_use": "not_property",
+          "currency": "USD",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        },
+        {
+          "owner_member_id": "顾女士",
+          "name": "港币存款",
+          "category": "demand_deposit",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "500000.00",
+          "market_value": "500000.00",
+          "liquidity_days": 0,
+          "liquidity_level": "immediate",
+          "risk_level": "low",
+          "purpose": "家庭财务安排",
+          "pledged": false,
+          "ownership": "顾女士",
+          "property_use": "not_property",
+          "currency": "HKD",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        },
+        {
+          "owner_member_id": "沈先生",
+          "name": "公开市场基金",
+          "category": "public_fund",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "1200000.00",
+          "market_value": "1200000.00",
+          "liquidity_days": 3,
+          "liquidity_level": "within_7_days",
+          "risk_level": "medium_high",
+          "purpose": "家庭财务安排",
+          "pledged": false,
+          "ownership": "沈先生",
+          "property_use": "not_property",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        },
+        {
+          "owner_member_id": "沈先生",
+          "name": "上海自住房",
+          "category": "primary_residence",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "12000000.00",
+          "market_value": "12000000.00",
+          "liquidity_days": 180,
+          "liquidity_level": "illiquid",
+          "risk_level": "medium",
+          "purpose": "家庭财务安排",
+          "pledged": false,
+          "ownership": "沈先生",
+          "property_use": "primary_residence",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": "310000"
+        }
+      ],
+      "liabilities": [
+        {
+          "borrower_member_id": "沈先生",
+          "linked_asset_id": "上海自住房",
+          "name": "自住房按揭",
+          "category": "mortgage",
+          "outstanding_balance": "2000000.00",
+          "annual_interest_rate": "0.034000",
+          "monthly_payment": "18000.00",
+          "maturity_date": "2041-08-10",
+          "rate_type": "floating",
+          "prepayment_cost": "0.00",
+          "is_high_interest": false,
+          "currency": "CNY"
+        }
+      ],
+      "insurance_policies": [
+        {
+          "insured_member_id": "沈先生",
+          "name": "创始人定期寿险",
+          "policy_type": "term_life",
+          "coverage_amount": "5000000.00",
+          "annual_premium": "18000.00",
+          "start_date": "2026-01-01",
+          "end_date": null,
+          "deductible": "0.00",
+          "waiting_period_days": 0,
+          "guaranteed_benefit": "0.00",
+          "non_guaranteed_benefit": "0.00",
+          "cash_value": "0.00"
+        },
+        {
+          "insured_member_id": "顾女士",
+          "name": "家庭医疗险",
+          "policy_type": "medical",
+          "coverage_amount": "3000000.00",
+          "annual_premium": "6500.00",
+          "start_date": "2026-01-01",
+          "end_date": "2026-12-31",
+          "deductible": "10000.00",
+          "waiting_period_days": 30,
+          "guaranteed_benefit": "0.00",
+          "non_guaranteed_benefit": "0.00",
+          "cash_value": "0.00"
+        }
+      ],
+      "social_security_accounts": [
+        {
+          "member_id": "沈先生",
+          "account_type": "城镇职工基本养老保险",
+          "balance": "480000.00",
+          "annual_personal_contribution": "24000.00",
+          "annual_employer_contribution": "48000.00",
+          "benefit_region": "上海市"
+        },
+        {
+          "member_id": "顾女士",
+          "account_type": "城镇职工基本养老保险",
+          "balance": "360000.00",
+          "annual_personal_contribution": "24000.00",
+          "annual_employer_contribution": "48000.00",
+          "benefit_region": "上海市"
+        }
+      ],
+      "goals": [
+        {
+          "name": "国际教育",
+          "goal_type": "education",
+          "target_amount": "3500000.00",
+          "target_date": "2031-08-10",
+          "rigidity": "important",
+          "priority": 1,
+          "can_defer": false,
+          "minimum_acceptable_amount": "2500000.00",
+          "prepared_amount": "800000.00",
+          "annual_cost_growth_rate": "0.05",
+          "currency": "USD"
+        },
+        {
+          "name": "家庭财富传承",
+          "goal_type": "wealth_transfer",
+          "target_amount": "20000000.00",
+          "target_date": "2045-08-10",
+          "rigidity": "important",
+          "priority": 2,
+          "can_defer": false,
+          "minimum_acceptable_amount": "10000000.00",
+          "prepared_amount": "1000000.00",
+          "annual_cost_growth_rate": "0.03",
+          "currency": "CNY"
+        },
+        {
+          "name": "家庭独立养老",
+          "goal_type": "retirement",
+          "target_amount": "12000000.00",
+          "target_date": "2047-08-10",
+          "rigidity": "important",
+          "priority": 3,
+          "can_defer": false,
+          "minimum_acceptable_amount": "8000000.00",
+          "prepared_amount": "1800000.00",
+          "annual_cost_growth_rate": "0.03",
+          "currency": "CNY"
+        }
+      ],
+      "risk_assessments": [
+        {
+          "capacity_score": "0.85",
+          "willingness_score": "0.80",
+          "knowledge_score": "0.70",
+          "behavior_score": "0.65",
+          "final_risk_limit": "medium_high",
+          "explanation": "按合成家庭现金流、责任期限与行为承受力取审慎风险上限。"
+        }
+      ],
+      "behavior_assessments": [
+        {
+          "questionnaire_score": "0.80",
+          "experiment_score": "0.65",
+          "final_behavior_limit": "medium_high",
+          "detected_biases": [
+            "loss_aversion"
+          ],
+          "experiment_answers": {},
+          "explanation": "合成行为记录只用于验证风险预算约束，不代表真实客户测评。"
+        }
+      ]
+    },
+    {
+      "household": {
+        "code": "DEMO_E",
+        "name": "家庭 E｜科创专家与科学家",
+        "lifecycle_stage": "family_formation",
+        "region": "北京市",
+        "demo_profile": "E",
+        "is_synthetic": true,
+        "planning_preferences": {
+          "equity_incentive_holder": true,
+          "entrepreneurship_possible": true
+        }
+      },
+      "members": [
+        {
+          "display_name": "陆博士",
+          "relationship": "本人",
+          "birth_date": "1988-01-20",
+          "occupation": "人工智能科学家",
+          "employment_stability": "high",
+          "expected_retirement_age": 60,
+          "health_risk_level": "low"
+        },
+        {
+          "display_name": "周先生",
+          "relationship": "配偶",
+          "birth_date": "1987-03-12",
+          "occupation": "产品负责人",
+          "employment_stability": "high",
+          "expected_retirement_age": 60,
+          "health_risk_level": "low"
+        }
+      ],
+      "consents": [
+        {
+          "member_id": "陆博士",
+          "granted_at": "2026-08-10T09:00:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "v5-persona-consent-v2",
+          "scopes": [
+            "profile",
+            "finance",
+            "risk",
+            "behavior"
+          ],
+          "purpose": "V5 合成 Persona 的客户画像、财务诊断与风险预算验证",
+          "metadata_json": {
+            "synthetic": true,
+            "scenario": "v5_profile_and_risk",
+            "explicit": true
+          }
+        },
+        {
+          "member_id": "陆博士",
+          "granted_at": "2026-08-10T09:01:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "v5-persona-consent-v2",
+          "scopes": [
+            "identity_sensitive",
+            "health_sensitive",
+            "insurance"
+          ],
+          "purpose": "V5 合成 Persona 的敏感字段与保障缺口验证",
+          "metadata_json": {
+            "synthetic": true,
+            "scenario": "v5_protection_and_specialist_routing",
+            "explicit": true,
+            "sensitive_data_acknowledged": true
+          }
+        },
+        {
+          "member_id": "陆博士",
+          "granted_at": "2026-08-10T09:02:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "v5-persona-consent-v2",
+          "scopes": [
+            "simulation",
+            "report"
+          ],
+          "purpose": "V5 合成 Persona 的情景实验、CFS 与报告验证",
+          "metadata_json": {
+            "synthetic": true,
+            "scenario": "v5_scenario_cfs_and_report",
+            "explicit": true
+          }
+        }
+      ],
+      "incomes": [
+        {
+          "member_id": "陆博士",
+          "name": "科研岗位收入",
+          "income_type": "employment",
+          "amount": "900000.00",
+          "frequency": "annual",
+          "stability": "0.85",
+          "volatility": "0.10",
+          "interruption_probability": "0.10",
+          "cycle_correlation": "0.30",
+          "source_concentration": "0.65",
+          "is_sustainable": true,
+          "currency": "CNY"
+        },
+        {
+          "member_id": "陆博士",
+          "name": "海外合作收入",
+          "income_type": "other",
+          "amount": "150000.00",
+          "frequency": "annual",
+          "stability": "0.55",
+          "volatility": "0.35",
+          "interruption_probability": "0.10",
+          "cycle_correlation": "0.30",
+          "source_concentration": "0.15",
+          "is_sustainable": true,
+          "currency": "USD"
+        },
+        {
+          "member_id": "周先生",
+          "name": "产品岗位收入",
+          "income_type": "employment",
+          "amount": "500000.00",
+          "frequency": "annual",
+          "stability": "0.85",
+          "volatility": "0.10",
+          "interruption_probability": "0.10",
+          "cycle_correlation": "0.30",
+          "source_concentration": "0.20",
+          "is_sustainable": true,
+          "currency": "CNY"
+        }
+      ],
+      "expenses": [
+        {
+          "member_id": "陆博士",
+          "name": "家庭基本生活",
+          "amount": "260000.00",
+          "frequency": "annual",
+          "necessity": "essential",
+          "compressible_ratio": "0.05",
+          "category": "basic_living"
+        },
+        {
+          "member_id": "周先生",
+          "name": "学习与会议",
+          "amount": "100000.00",
+          "frequency": "annual",
+          "necessity": "flexible",
+          "compressible_ratio": "0.50",
+          "category": "other"
+        }
+      ],
+      "assets": [
+        {
+          "owner_member_id": "陆博士",
+          "name": "活期存款",
+          "category": "demand_deposit",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "500000.00",
+          "market_value": "500000.00",
+          "liquidity_days": 0,
+          "liquidity_level": "immediate",
+          "risk_level": "low",
+          "purpose": "家庭财务安排",
+          "pledged": false,
+          "ownership": "陆博士",
+          "property_use": "not_property",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        },
+        {
+          "owner_member_id": "周先生",
+          "name": "稳健基金",
+          "category": "bond_fund",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "400000.00",
+          "market_value": "400000.00",
+          "liquidity_days": 1,
+          "liquidity_level": "within_7_days",
+          "risk_level": "medium_low",
+          "purpose": "家庭财务安排",
+          "pledged": false,
+          "ownership": "周先生",
+          "property_use": "not_property",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        },
+        {
+          "owner_member_id": "陆博士",
+          "name": "限制性股票",
+          "category": "stock",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "6000000.00",
+          "market_value": "6000000.00",
+          "liquidity_days": 1095,
+          "liquidity_level": "illiquid",
+          "risk_level": "high",
+          "purpose": "股权激励",
+          "pledged": false,
+          "ownership": "陆博士",
+          "property_use": "not_property",
+          "currency": "CNY",
+          "source_kind": "equity_incentive",
+          "household_role": "employment_concentration",
+          "region_code": null
+        },
+        {
+          "owner_member_id": "陆博士",
+          "name": "美元科研结余",
+          "category": "demand_deposit",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "120000.00",
+          "market_value": "120000.00",
+          "liquidity_days": 0,
+          "liquidity_level": "immediate",
+          "risk_level": "low",
+          "purpose": "家庭财务安排",
+          "pledged": false,
+          "ownership": "陆博士",
+          "property_use": "not_property",
+          "currency": "USD",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        }
+      ],
+      "liabilities": [],
+      "insurance_policies": [
+        {
+          "insured_member_id": "陆博士",
+          "name": "科研人才医疗险",
+          "policy_type": "medical",
+          "coverage_amount": "2000000.00",
+          "annual_premium": "4200.00",
+          "start_date": "2026-01-01",
+          "end_date": "2026-12-31",
+          "deductible": "10000.00",
+          "waiting_period_days": 30,
+          "guaranteed_benefit": "0.00",
+          "non_guaranteed_benefit": "0.00",
+          "cash_value": "0.00"
+        },
+        {
+          "insured_member_id": "周先生",
+          "name": "定期寿险",
+          "policy_type": "term_life",
+          "coverage_amount": "2000000.00",
+          "annual_premium": "5600.00",
+          "start_date": "2026-01-01",
+          "end_date": null,
+          "deductible": "0.00",
+          "waiting_period_days": 0,
+          "guaranteed_benefit": "0.00",
+          "non_guaranteed_benefit": "0.00",
+          "cash_value": "0.00"
+        }
+      ],
+      "social_security_accounts": [
+        {
+          "member_id": "陆博士",
+          "account_type": "城镇职工基本养老保险",
+          "balance": "300000.00",
+          "annual_personal_contribution": "24000.00",
+          "annual_employer_contribution": "48000.00",
+          "benefit_region": "北京市"
+        },
+        {
+          "member_id": "周先生",
+          "account_type": "城镇职工基本养老保险",
+          "balance": "280000.00",
+          "annual_personal_contribution": "24000.00",
+          "annual_employer_contribution": "48000.00",
+          "benefit_region": "北京市"
+        }
+      ],
+      "goals": [
+        {
+          "name": "未来子女教育",
+          "goal_type": "education",
+          "target_amount": "1800000.00",
+          "target_date": "2040-08-10",
+          "rigidity": "important",
+          "priority": 2,
+          "can_defer": false,
+          "minimum_acceptable_amount": "1200000.00",
+          "prepared_amount": "300000.00",
+          "annual_cost_growth_rate": "0.03",
+          "currency": "CNY"
+        },
+        {
+          "name": "创业选择权",
+          "goal_type": "other",
+          "target_amount": "2000000.00",
+          "target_date": "2032-08-10",
+          "rigidity": "important",
+          "priority": 1,
+          "can_defer": true,
+          "minimum_acceptable_amount": "1000000.00",
+          "prepared_amount": "500000.00",
+          "annual_cost_growth_rate": "0.03",
+          "currency": "CNY"
+        },
+        {
+          "name": "长期养老",
+          "goal_type": "retirement",
+          "target_amount": "8000000.00",
+          "target_date": "2053-08-10",
+          "rigidity": "important",
+          "priority": 3,
+          "can_defer": false,
+          "minimum_acceptable_amount": "5000000.00",
+          "prepared_amount": "980000.00",
+          "annual_cost_growth_rate": "0.03",
+          "currency": "CNY"
+        }
+      ],
+      "risk_assessments": [
+        {
+          "capacity_score": "0.80",
+          "willingness_score": "0.75",
+          "knowledge_score": "0.70",
+          "behavior_score": "0.70",
+          "final_risk_limit": "medium_high",
+          "explanation": "按合成家庭现金流、责任期限与行为承受力取审慎风险上限。"
+        }
+      ],
+      "behavior_assessments": [
+        {
+          "questionnaire_score": "0.75",
+          "experiment_score": "0.70",
+          "final_behavior_limit": "medium_high",
+          "detected_biases": [
+            "loss_aversion"
+          ],
+          "experiment_answers": {},
+          "explanation": "合成行为记录只用于验证风险预算约束，不代表真实客户测评。"
+        }
+      ]
+    },
+    {
+      "household": {
+        "code": "DEMO_F",
+        "name": "家庭 F｜多代际高净值家族",
+        "lifecycle_stage": "retirement_and_legacy",
+        "region": "广东省深圳市",
+        "demo_profile": "F",
+        "is_synthetic": true,
+        "planning_preferences": {
+          "trust_review_requested": true,
+          "philanthropy_target_amount": "6000000.00",
+          "philanthropy_annual_budget": "600000.00",
+          "philanthropy_target_cause": "科技教育与乡村医疗",
+          "philanthropy_family_participation": "三代家庭共同参与年度复核",
+          "philanthropy_governance_preference": "预算、用途、受益人与年度报告分层治理"
+        }
+      },
+      "members": [
+        {
+          "display_name": "郑先生",
+          "relationship": "本人",
+          "birth_date": "1968-09-01",
+          "occupation": "家族企业董事长",
+          "employment_stability": "medium",
+          "expected_retirement_age": 65,
+          "health_risk_level": "low"
+        },
+        {
+          "display_name": "何女士",
+          "relationship": "配偶",
+          "birth_date": "1970-02-12",
+          "occupation": "家族公益事务负责人",
+          "employment_stability": "medium",
+          "expected_retirement_age": 60,
+          "health_risk_level": "low"
+        },
+        {
+          "display_name": "郑父",
+          "relationship": "父亲",
+          "birth_date": "1942-04-03",
+          "occupation": "退休",
+          "employment_stability": "low",
+          "expected_retirement_age": 60,
+          "health_risk_level": "medium_high"
+        },
+        {
+          "display_name": "郑女儿",
+          "relationship": "子女",
+          "birth_date": "1996-07-19",
+          "occupation": "企业管理人员",
+          "employment_stability": "high",
+          "expected_retirement_age": 60,
+          "health_risk_level": "low"
+        },
+        {
+          "display_name": "郑外孙",
+          "relationship": "孙辈",
+          "birth_date": "2022-10-21",
+          "occupation": null,
+          "employment_stability": "low",
+          "expected_retirement_age": null,
+          "health_risk_level": "low"
+        }
+      ],
+      "consents": [
+        {
+          "member_id": "郑先生",
+          "granted_at": "2026-08-10T09:00:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "v5-persona-consent-v2",
+          "scopes": [
+            "profile",
+            "finance",
+            "risk",
+            "behavior"
+          ],
+          "purpose": "V5 合成 Persona 的客户画像、财务诊断与风险预算验证",
+          "metadata_json": {
+            "synthetic": true,
+            "scenario": "v5_profile_and_risk",
+            "explicit": true
+          }
+        },
+        {
+          "member_id": "郑先生",
+          "granted_at": "2026-08-10T09:01:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "v5-persona-consent-v2",
+          "scopes": [
+            "identity_sensitive",
+            "health_sensitive",
+            "insurance"
+          ],
+          "purpose": "V5 合成 Persona 的敏感字段与保障缺口验证",
+          "metadata_json": {
+            "synthetic": true,
+            "scenario": "v5_protection_and_specialist_routing",
+            "explicit": true,
+            "sensitive_data_acknowledged": true
+          }
+        },
+        {
+          "member_id": "郑先生",
+          "granted_at": "2026-08-10T09:02:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "v5-persona-consent-v2",
+          "scopes": [
+            "simulation",
+            "report"
+          ],
+          "purpose": "V5 合成 Persona 的情景实验、CFS 与报告验证",
+          "metadata_json": {
+            "synthetic": true,
+            "scenario": "v5_scenario_cfs_and_report",
+            "explicit": true
+          }
+        }
+      ],
+      "incomes": [
+        {
+          "member_id": "郑先生",
+          "name": "企业分红",
+          "income_type": "business",
+          "amount": "3500000.00",
+          "frequency": "annual",
+          "stability": "0.55",
+          "volatility": "0.40",
+          "interruption_probability": "0.10",
+          "cycle_correlation": "0.30",
+          "source_concentration": "0.75",
+          "is_sustainable": true,
+          "currency": "CNY"
+        },
+        {
+          "member_id": "何女士",
+          "name": "投资收入",
+          "income_type": "investment",
+          "amount": "900000.00",
+          "frequency": "annual",
+          "stability": "0.85",
+          "volatility": "0.10",
+          "interruption_probability": "0.10",
+          "cycle_correlation": "0.30",
+          "source_concentration": "0.15",
+          "is_sustainable": true,
+          "currency": "CNY"
+        },
+        {
+          "member_id": "郑父",
+          "name": "养老金",
+          "income_type": "pension",
+          "amount": "120000.00",
+          "frequency": "annual",
+          "stability": "0.95",
+          "volatility": "0.02",
+          "interruption_probability": "0.01",
+          "cycle_correlation": "0.30",
+          "source_concentration": "0.10",
+          "is_sustainable": true,
+          "currency": "CNY"
+        }
+      ],
+      "expenses": [
+        {
+          "member_id": "郑先生",
+          "name": "多代际家庭支出",
+          "amount": "900000.00",
+          "frequency": "annual",
+          "necessity": "essential",
+          "compressible_ratio": "0.05",
+          "category": "basic_living"
+        },
+        {
+          "member_id": "何女士",
+          "name": "医疗照护",
+          "amount": "300000.00",
+          "frequency": "annual",
+          "necessity": "essential",
+          "compressible_ratio": "0.05",
+          "category": "medical"
+        },
+        {
+          "member_id": "何女士",
+          "name": "年度公益预算",
+          "amount": "600000.00",
+          "frequency": "annual",
+          "necessity": "flexible",
+          "compressible_ratio": "0.50",
+          "category": "other"
+        }
+      ],
+      "assets": [
+        {
+          "owner_member_id": "郑先生",
+          "name": "家族现金池",
+          "category": "demand_deposit",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "5000000.00",
+          "market_value": "5000000.00",
+          "liquidity_days": 0,
+          "liquidity_level": "immediate",
+          "risk_level": "low",
+          "purpose": "家庭财务安排",
+          "pledged": false,
+          "ownership": "郑先生",
+          "property_use": "not_property",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        },
+        {
+          "owner_member_id": "何女士",
+          "name": "债券组合",
+          "category": "bond",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "8000000.00",
+          "market_value": "8000000.00",
+          "liquidity_days": 30,
+          "liquidity_level": "within_30_days",
+          "risk_level": "medium_low",
+          "purpose": "家庭财务安排",
+          "pledged": false,
+          "ownership": "何女士",
+          "property_use": "not_property",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        },
+        {
+          "owner_member_id": "郑先生",
+          "name": "公开市场权益",
+          "category": "public_fund",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "12000000.00",
+          "market_value": "12000000.00",
+          "liquidity_days": 3,
+          "liquidity_level": "within_7_days",
+          "risk_level": "high",
+          "purpose": "家庭财务安排",
+          "pledged": false,
+          "ownership": "郑先生",
+          "property_use": "not_property",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        },
+        {
+          "owner_member_id": "郑先生",
+          "name": "深圳主宅",
+          "category": "primary_residence",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "30000000.00",
+          "market_value": "30000000.00",
+          "liquidity_days": 180,
+          "liquidity_level": "illiquid",
+          "risk_level": "medium",
+          "purpose": "家庭财务安排",
+          "pledged": false,
+          "ownership": "郑先生",
+          "property_use": "primary_residence",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": "440300"
+        },
+        {
+          "owner_member_id": "何女士",
+          "name": "家族信托观察资产",
+          "category": "trust",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "10000000.00",
+          "market_value": "10000000.00",
+          "liquidity_days": 3650,
+          "liquidity_level": "illiquid",
+          "risk_level": "medium",
+          "purpose": "传承安排",
+          "pledged": false,
+          "ownership": "何女士",
+          "property_use": "not_property",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        }
+      ],
+      "liabilities": [],
+      "insurance_policies": [
+        {
+          "insured_member_id": "郑先生",
+          "name": "终身寿险",
+          "policy_type": "whole_life",
+          "coverage_amount": "15000000.00",
+          "annual_premium": "280000.00",
+          "start_date": "2026-01-01",
+          "end_date": null,
+          "deductible": "0.00",
+          "waiting_period_days": 0,
+          "guaranteed_benefit": "0.00",
+          "non_guaranteed_benefit": "0.00",
+          "cash_value": "0.00"
+        },
+        {
+          "insured_member_id": "郑父",
+          "name": "长期医疗险",
+          "policy_type": "medical",
+          "coverage_amount": "2000000.00",
+          "annual_premium": "26000.00",
+          "start_date": "2026-01-01",
+          "end_date": "2026-12-31",
+          "deductible": "10000.00",
+          "waiting_period_days": 30,
+          "guaranteed_benefit": "0.00",
+          "non_guaranteed_benefit": "0.00",
+          "cash_value": "0.00"
+        }
+      ],
+      "social_security_accounts": [
+        {
+          "member_id": "郑先生",
+          "account_type": "城镇职工基本养老保险",
+          "balance": "800000.00",
+          "annual_personal_contribution": "24000.00",
+          "annual_employer_contribution": "48000.00",
+          "benefit_region": "广东省深圳市"
+        },
+        {
+          "member_id": "何女士",
+          "account_type": "城镇职工基本养老保险",
+          "balance": "760000.00",
+          "annual_personal_contribution": "24000.00",
+          "annual_employer_contribution": "48000.00",
+          "benefit_region": "广东省深圳市"
+        },
+        {
+          "member_id": "郑父",
+          "account_type": "城镇职工基本养老保险",
+          "balance": "500000.00",
+          "annual_personal_contribution": "24000.00",
+          "annual_employer_contribution": "48000.00",
+          "benefit_region": "广东省深圳市"
+        }
+      ],
+      "goals": [
+        {
+          "name": "企业与家族传承",
+          "goal_type": "wealth_transfer",
+          "target_amount": "60000000.00",
+          "target_date": "2040-08-10",
+          "rigidity": "important",
+          "priority": 1,
+          "can_defer": false,
+          "minimum_acceptable_amount": "30000000.00",
+          "prepared_amount": "10000000.00",
+          "annual_cost_growth_rate": "0.03",
+          "currency": "CNY"
+        },
+        {
+          "name": "多代际照护",
+          "goal_type": "medical",
+          "target_amount": "8000000.00",
+          "target_date": "2045-08-10",
+          "rigidity": "important",
+          "priority": 2,
+          "can_defer": false,
+          "minimum_acceptable_amount": "5000000.00",
+          "prepared_amount": "2000000.00",
+          "annual_cost_growth_rate": "0.03",
+          "currency": "CNY"
+        },
+        {
+          "name": "家族养老",
+          "goal_type": "retirement",
+          "target_amount": "18000000.00",
+          "target_date": "2033-08-10",
+          "rigidity": "important",
+          "priority": 3,
+          "can_defer": false,
+          "minimum_acceptable_amount": "12000000.00",
+          "prepared_amount": "5000000.00",
+          "annual_cost_growth_rate": "0.03",
+          "currency": "CNY"
+        }
+      ],
+      "risk_assessments": [
+        {
+          "capacity_score": "0.90",
+          "willingness_score": "0.65",
+          "knowledge_score": "0.70",
+          "behavior_score": "0.60",
+          "final_risk_limit": "medium",
+          "explanation": "按合成家庭现金流、责任期限与行为承受力取审慎风险上限。"
+        }
+      ],
+      "behavior_assessments": [
+        {
+          "questionnaire_score": "0.65",
+          "experiment_score": "0.60",
+          "final_behavior_limit": "medium",
+          "detected_biases": [
+            "loss_aversion"
+          ],
+          "experiment_answers": {},
+          "explanation": "合成行为记录只用于验证风险预算约束，不代表真实客户测评。"
+        }
+      ]
+    },
+    {
+      "household": {
+        "code": "DEMO_G",
+        "name": "家庭 G｜跨境资产与教育责任",
+        "lifecycle_stage": "parenting",
+        "region": "上海市",
+        "demo_profile": "G",
+        "is_synthetic": true,
+        "planning_preferences": {}
+      },
+      "members": [
+        {
+          "display_name": "唐先生",
+          "relationship": "本人",
+          "birth_date": "1984-05-14",
+          "occupation": "跨国企业财务负责人",
+          "employment_stability": "high",
+          "expected_retirement_age": 60,
+          "health_risk_level": "low"
+        },
+        {
+          "display_name": "袁女士",
+          "relationship": "配偶",
+          "birth_date": "1986-08-08",
+          "occupation": "大学教师",
+          "employment_stability": "high",
+          "expected_retirement_age": 60,
+          "health_risk_level": "low"
+        },
+        {
+          "display_name": "唐同学",
+          "relationship": "子女",
+          "birth_date": "2011-01-30",
+          "occupation": null,
+          "employment_stability": "low",
+          "expected_retirement_age": null,
+          "health_risk_level": "low"
+        }
+      ],
+      "consents": [
+        {
+          "member_id": "唐先生",
+          "granted_at": "2026-08-10T09:00:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "v5-persona-consent-v2",
+          "scopes": [
+            "profile",
+            "finance",
+            "risk",
+            "behavior"
+          ],
+          "purpose": "V5 合成 Persona 的客户画像、财务诊断与风险预算验证",
+          "metadata_json": {
+            "synthetic": true,
+            "scenario": "v5_profile_and_risk",
+            "explicit": true
+          }
+        },
+        {
+          "member_id": "唐先生",
+          "granted_at": "2026-08-10T09:01:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "v5-persona-consent-v2",
+          "scopes": [
+            "identity_sensitive",
+            "health_sensitive",
+            "insurance"
+          ],
+          "purpose": "V5 合成 Persona 的敏感字段与保障缺口验证",
+          "metadata_json": {
+            "synthetic": true,
+            "scenario": "v5_protection_and_specialist_routing",
+            "explicit": true,
+            "sensitive_data_acknowledged": true
+          }
+        },
+        {
+          "member_id": "唐先生",
+          "granted_at": "2026-08-10T09:02:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "v5-persona-consent-v2",
+          "scopes": [
+            "simulation",
+            "report"
+          ],
+          "purpose": "V5 合成 Persona 的情景实验、CFS 与报告验证",
+          "metadata_json": {
+            "synthetic": true,
+            "scenario": "v5_scenario_cfs_and_report",
+            "explicit": true
+          }
+        }
+      ],
+      "incomes": [
+        {
+          "member_id": "唐先生",
+          "name": "人民币工资",
+          "income_type": "employment",
+          "amount": "900000.00",
+          "frequency": "annual",
+          "stability": "0.85",
+          "volatility": "0.10",
+          "interruption_probability": "0.10",
+          "cycle_correlation": "0.30",
+          "source_concentration": "0.70",
+          "is_sustainable": true,
+          "currency": "CNY"
+        },
+        {
+          "member_id": "袁女士",
+          "name": "人民币工资",
+          "income_type": "employment",
+          "amount": "360000.00",
+          "frequency": "annual",
+          "stability": "0.85",
+          "volatility": "0.10",
+          "interruption_probability": "0.10",
+          "cycle_correlation": "0.30",
+          "source_concentration": "0.30",
+          "is_sustainable": true,
+          "currency": "CNY"
+        }
+      ],
+      "expenses": [
+        {
+          "member_id": "唐先生",
+          "name": "家庭基本生活",
+          "amount": "300000.00",
+          "frequency": "annual",
+          "necessity": "essential",
+          "compressible_ratio": "0.05",
+          "category": "basic_living"
+        },
+        {
+          "member_id": "袁女士",
+          "name": "教育准备支出",
+          "amount": "120000.00",
+          "frequency": "annual",
+          "necessity": "essential",
+          "compressible_ratio": "0.05",
+          "category": "child_education"
+        }
+      ],
+      "assets": [
+        {
+          "owner_member_id": "唐先生",
+          "name": "人民币活期",
+          "category": "demand_deposit",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "600000.00",
+          "market_value": "600000.00",
+          "liquidity_days": 0,
+          "liquidity_level": "immediate",
+          "risk_level": "low",
+          "purpose": "家庭财务安排",
+          "pledged": false,
+          "ownership": "唐先生",
+          "property_use": "not_property",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        },
+        {
+          "owner_member_id": "唐先生",
+          "name": "美元存款",
+          "category": "time_deposit",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "800000.00",
+          "market_value": "800000.00",
+          "liquidity_days": 180,
+          "liquidity_level": "within_1_year",
+          "risk_level": "low",
+          "purpose": "家庭财务安排",
+          "pledged": false,
+          "ownership": "唐先生",
+          "property_use": "not_property",
+          "currency": "USD",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        },
+        {
+          "owner_member_id": "袁女士",
+          "name": "港币存款",
+          "category": "demand_deposit",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "1200000.00",
+          "market_value": "1200000.00",
+          "liquidity_days": 0,
+          "liquidity_level": "immediate",
+          "risk_level": "low",
+          "purpose": "家庭财务安排",
+          "pledged": false,
+          "ownership": "袁女士",
+          "property_use": "not_property",
+          "currency": "HKD",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        },
+        {
+          "owner_member_id": "唐先生",
+          "name": "全球指数基金",
+          "category": "public_fund",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "1000000.00",
+          "market_value": "1000000.00",
+          "liquidity_days": 3,
+          "liquidity_level": "within_7_days",
+          "risk_level": "high",
+          "purpose": "家庭财务安排",
+          "pledged": false,
+          "ownership": "唐先生",
+          "property_use": "not_property",
+          "currency": "USD",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        },
+        {
+          "owner_member_id": "唐先生",
+          "name": "上海自住房",
+          "category": "primary_residence",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "8000000.00",
+          "market_value": "8000000.00",
+          "liquidity_days": 180,
+          "liquidity_level": "illiquid",
+          "risk_level": "medium",
+          "purpose": "家庭财务安排",
+          "pledged": false,
+          "ownership": "唐先生",
+          "property_use": "primary_residence",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": "310000"
+        }
+      ],
+      "liabilities": [
+        {
+          "borrower_member_id": "唐先生",
+          "linked_asset_id": "上海自住房",
+          "name": "住房按揭",
+          "category": "mortgage",
+          "outstanding_balance": "1800000.00",
+          "annual_interest_rate": "0.034000",
+          "monthly_payment": "14000.00",
+          "maturity_date": "2042-08-10",
+          "rate_type": "floating",
+          "prepayment_cost": "0.00",
+          "is_high_interest": false,
+          "currency": "CNY"
+        }
+      ],
+      "insurance_policies": [
+        {
+          "insured_member_id": "唐先生",
+          "name": "定期寿险",
+          "policy_type": "term_life",
+          "coverage_amount": "4000000.00",
+          "annual_premium": "12000.00",
+          "start_date": "2026-01-01",
+          "end_date": null,
+          "deductible": "0.00",
+          "waiting_period_days": 0,
+          "guaranteed_benefit": "0.00",
+          "non_guaranteed_benefit": "0.00",
+          "cash_value": "0.00"
+        },
+        {
+          "insured_member_id": "袁女士",
+          "name": "医疗险",
+          "policy_type": "medical",
+          "coverage_amount": "2000000.00",
+          "annual_premium": "4800.00",
+          "start_date": "2026-01-01",
+          "end_date": "2026-12-31",
+          "deductible": "10000.00",
+          "waiting_period_days": 30,
+          "guaranteed_benefit": "0.00",
+          "non_guaranteed_benefit": "0.00",
+          "cash_value": "0.00"
+        }
+      ],
+      "social_security_accounts": [
+        {
+          "member_id": "唐先生",
+          "account_type": "城镇职工基本养老保险",
+          "balance": "420000.00",
+          "annual_personal_contribution": "24000.00",
+          "annual_employer_contribution": "48000.00",
+          "benefit_region": "上海市"
+        },
+        {
+          "member_id": "袁女士",
+          "account_type": "城镇职工基本养老保险",
+          "balance": "360000.00",
+          "annual_personal_contribution": "24000.00",
+          "annual_employer_contribution": "48000.00",
+          "benefit_region": "上海市"
+        }
+      ],
+      "goals": [
+        {
+          "name": "海外本科教育",
+          "goal_type": "education",
+          "target_amount": "500000.00",
+          "target_date": "2029-08-10",
+          "rigidity": "rigid",
+          "priority": 1,
+          "can_defer": false,
+          "minimum_acceptable_amount": "400000.00",
+          "prepared_amount": "150000.00",
+          "annual_cost_growth_rate": "0.05",
+          "currency": "USD"
+        },
+        {
+          "name": "家庭养老",
+          "goal_type": "retirement",
+          "target_amount": "10000000.00",
+          "target_date": "2049-08-10",
+          "rigidity": "important",
+          "priority": 2,
+          "can_defer": false,
+          "minimum_acceptable_amount": "6500000.00",
+          "prepared_amount": "2000000.00",
+          "annual_cost_growth_rate": "0.03",
+          "currency": "CNY"
+        }
+      ],
+      "risk_assessments": [
+        {
+          "capacity_score": "0.80",
+          "willingness_score": "0.70",
+          "knowledge_score": "0.70",
+          "behavior_score": "0.65",
+          "final_risk_limit": "medium_high",
+          "explanation": "按合成家庭现金流、责任期限与行为承受力取审慎风险上限。"
+        }
+      ],
+      "behavior_assessments": [
+        {
+          "questionnaire_score": "0.70",
+          "experiment_score": "0.65",
+          "final_behavior_limit": "medium_high",
+          "detected_biases": [
+            "loss_aversion"
+          ],
+          "experiment_answers": {},
+          "explanation": "合成行为记录只用于验证风险预算约束，不代表真实客户测评。"
+        }
+      ]
+    },
+    {
+      "household": {
+        "code": "DEMO_H",
+        "name": "家庭 H｜退休与长寿责任",
+        "lifecycle_stage": "retirement_and_legacy",
+        "region": "广东省广州市",
+        "demo_profile": "H",
+        "is_synthetic": true,
+        "planning_preferences": {
+          "retirement_withdrawal_review_requested": true,
+          "long_term_care_review_requested": true
+        }
+      },
+      "members": [
+        {
+          "display_name": "周先生",
+          "relationship": "本人",
+          "birth_date": "1963-02-18",
+          "occupation": "退休工程师",
+          "employment_stability": "low",
+          "expected_retirement_age": 60,
+          "health_risk_level": "medium"
+        },
+        {
+          "display_name": "赵女士",
+          "relationship": "配偶",
+          "birth_date": "1965-06-26",
+          "occupation": "退休会计师",
+          "employment_stability": "low",
+          "expected_retirement_age": 60,
+          "health_risk_level": "medium_high"
+        }
+      ],
+      "consents": [
+        {
+          "member_id": "周先生",
+          "granted_at": "2026-08-10T09:00:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "v5-persona-consent-v2",
+          "scopes": [
+            "profile",
+            "finance",
+            "risk",
+            "behavior"
+          ],
+          "purpose": "V5 合成 Persona 的客户画像、财务诊断与风险预算验证",
+          "metadata_json": {
+            "synthetic": true,
+            "scenario": "v5_profile_and_risk",
+            "explicit": true
+          }
+        },
+        {
+          "member_id": "周先生",
+          "granted_at": "2026-08-10T09:01:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "v5-persona-consent-v2",
+          "scopes": [
+            "identity_sensitive",
+            "health_sensitive",
+            "insurance"
+          ],
+          "purpose": "V5 合成 Persona 的敏感字段与保障缺口验证",
+          "metadata_json": {
+            "synthetic": true,
+            "scenario": "v5_protection_and_specialist_routing",
+            "explicit": true,
+            "sensitive_data_acknowledged": true
+          }
+        },
+        {
+          "member_id": "周先生",
+          "granted_at": "2026-08-10T09:02:00+08:00",
+          "withdrawn_at": null,
+          "consent_version": "v5-persona-consent-v2",
+          "scopes": [
+            "simulation",
+            "report"
+          ],
+          "purpose": "V5 合成 Persona 的情景实验、CFS 与报告验证",
+          "metadata_json": {
+            "synthetic": true,
+            "scenario": "v5_scenario_cfs_and_report",
+            "explicit": true
+          }
+        }
+      ],
+      "incomes": [
+        {
+          "member_id": "周先生",
+          "name": "基本养老金",
+          "income_type": "pension",
+          "amount": "180000.00",
+          "frequency": "annual",
+          "stability": "0.95",
+          "volatility": "0.02",
+          "interruption_probability": "0.01",
+          "cycle_correlation": "0.30",
+          "source_concentration": "0.55",
+          "is_sustainable": true,
+          "currency": "CNY"
+        },
+        {
+          "member_id": "赵女士",
+          "name": "基本养老金",
+          "income_type": "pension",
+          "amount": "150000.00",
+          "frequency": "annual",
+          "stability": "0.95",
+          "volatility": "0.02",
+          "interruption_probability": "0.01",
+          "cycle_correlation": "0.30",
+          "source_concentration": "0.45",
+          "is_sustainable": true,
+          "currency": "CNY"
+        },
+        {
+          "member_id": "周先生",
+          "name": "租金收入",
+          "income_type": "rental",
+          "amount": "120000.00",
+          "frequency": "annual",
+          "stability": "0.70",
+          "volatility": "0.15",
+          "interruption_probability": "0.10",
+          "cycle_correlation": "0.30",
+          "source_concentration": "0.20",
+          "is_sustainable": true,
+          "currency": "CNY"
+        }
+      ],
+      "expenses": [
+        {
+          "member_id": "周先生",
+          "name": "退休基本生活",
+          "amount": "240000.00",
+          "frequency": "annual",
+          "necessity": "essential",
+          "compressible_ratio": "0.05",
+          "category": "basic_living"
+        },
+        {
+          "member_id": "赵女士",
+          "name": "医疗与照护",
+          "amount": "100000.00",
+          "frequency": "annual",
+          "necessity": "essential",
+          "compressible_ratio": "0.05",
+          "category": "medical"
+        },
+        {
+          "member_id": "周先生",
+          "name": "旅行支出",
+          "amount": "60000.00",
+          "frequency": "annual",
+          "necessity": "flexible",
+          "compressible_ratio": "0.50",
+          "category": "discretionary"
+        }
+      ],
+      "assets": [
+        {
+          "owner_member_id": "周先生",
+          "name": "退休活期",
+          "category": "demand_deposit",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "500000.00",
+          "market_value": "500000.00",
+          "liquidity_days": 0,
+          "liquidity_level": "immediate",
+          "risk_level": "low",
+          "purpose": "家庭财务安排",
+          "pledged": false,
+          "ownership": "周先生",
+          "property_use": "not_property",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        },
+        {
+          "owner_member_id": "赵女士",
+          "name": "养老定期",
+          "category": "time_deposit",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "800000.00",
+          "market_value": "800000.00",
+          "liquidity_days": 180,
+          "liquidity_level": "within_1_year",
+          "risk_level": "low",
+          "purpose": "家庭财务安排",
+          "pledged": false,
+          "ownership": "赵女士",
+          "property_use": "not_property",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        },
+        {
+          "owner_member_id": "周先生",
+          "name": "稳健债券基金",
+          "category": "bond_fund",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "600000.00",
+          "market_value": "600000.00",
+          "liquidity_days": 1,
+          "liquidity_level": "within_7_days",
+          "risk_level": "medium_low",
+          "purpose": "家庭财务安排",
+          "pledged": false,
+          "ownership": "周先生",
+          "property_use": "not_property",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        },
+        {
+          "owner_member_id": "周先生",
+          "name": "广州自住房",
+          "category": "primary_residence",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "6000000.00",
+          "market_value": "6000000.00",
+          "liquidity_days": 180,
+          "liquidity_level": "illiquid",
+          "risk_level": "medium",
+          "purpose": "家庭财务安排",
+          "pledged": false,
+          "ownership": "周先生",
+          "property_use": "primary_residence",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": "440100"
+        },
+        {
+          "owner_member_id": "赵女士",
+          "name": "出租物业",
+          "category": "investment_property",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "2500000.00",
+          "market_value": "2500000.00",
+          "liquidity_days": 180,
+          "liquidity_level": "illiquid",
+          "risk_level": "medium_high",
+          "purpose": "家庭财务安排",
+          "pledged": false,
+          "ownership": "赵女士",
+          "property_use": "investment_property",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": "440100"
+        },
+        {
+          "owner_member_id": "周先生",
+          "name": "个人养老金",
+          "category": "pension_account",
+          "subcategory": "V5 合成资产",
+          "acquisition_cost": "600000.00",
+          "market_value": "600000.00",
+          "liquidity_days": 365,
+          "liquidity_level": "within_1_year",
+          "risk_level": "low",
+          "purpose": "退休提取",
+          "pledged": false,
+          "ownership": "周先生",
+          "property_use": "not_property",
+          "currency": "CNY",
+          "source_kind": "user_self_report",
+          "household_role": "household_shared",
+          "region_code": null
+        }
+      ],
+      "liabilities": [],
+      "insurance_policies": [
+        {
+          "insured_member_id": "周先生",
+          "name": "退休医疗险",
+          "policy_type": "medical",
+          "coverage_amount": "1000000.00",
+          "annual_premium": "16000.00",
+          "start_date": "2026-01-01",
+          "end_date": "2026-12-31",
+          "deductible": "10000.00",
+          "waiting_period_days": 30,
+          "guaranteed_benefit": "0.00",
+          "non_guaranteed_benefit": "0.00",
+          "cash_value": "0.00"
+        },
+        {
+          "insured_member_id": "赵女士",
+          "name": "长期护理观察保单",
+          "policy_type": "other",
+          "coverage_amount": "500000.00",
+          "annual_premium": "18000.00",
+          "start_date": "2026-01-01",
+          "end_date": null,
+          "deductible": "0.00",
+          "waiting_period_days": 0,
+          "guaranteed_benefit": "0.00",
+          "non_guaranteed_benefit": "0.00",
+          "cash_value": "0.00"
+        }
+      ],
+      "social_security_accounts": [
+        {
+          "member_id": "周先生",
+          "account_type": "城镇职工基本养老保险",
+          "balance": "900000.00",
+          "annual_personal_contribution": "24000.00",
+          "annual_employer_contribution": "48000.00",
+          "benefit_region": "广东省广州市"
+        },
+        {
+          "member_id": "赵女士",
+          "account_type": "城镇职工基本养老保险",
+          "balance": "820000.00",
+          "annual_personal_contribution": "24000.00",
+          "annual_employer_contribution": "48000.00",
+          "benefit_region": "广东省广州市"
+        }
+      ],
+      "goals": [
+        {
+          "name": "退休现金流",
+          "goal_type": "retirement",
+          "target_amount": "5000000.00",
+          "target_date": "2035-08-10",
+          "rigidity": "rigid",
+          "priority": 1,
+          "can_defer": false,
+          "minimum_acceptable_amount": "3500000.00",
+          "prepared_amount": "2500000.00",
+          "annual_cost_growth_rate": "0.03",
+          "currency": "CNY"
+        },
+        {
+          "name": "医疗与长期照护",
+          "goal_type": "medical",
+          "target_amount": "3000000.00",
+          "target_date": "2040-08-10",
+          "rigidity": "rigid",
+          "priority": 2,
+          "can_defer": false,
+          "minimum_acceptable_amount": "2000000.00",
+          "prepared_amount": "800000.00",
+          "annual_cost_growth_rate": "0.03",
+          "currency": "CNY"
+        },
+        {
+          "name": "代际传承",
+          "goal_type": "wealth_transfer",
+          "target_amount": "4000000.00",
+          "target_date": "2045-08-10",
+          "rigidity": "important",
+          "priority": 3,
+          "can_defer": false,
+          "minimum_acceptable_amount": "2500000.00",
+          "prepared_amount": "1000000.00",
+          "annual_cost_growth_rate": "0.03",
+          "currency": "CNY"
+        }
+      ],
+      "risk_assessments": [
+        {
+          "capacity_score": "0.55",
+          "willingness_score": "0.45",
+          "knowledge_score": "0.70",
+          "behavior_score": "0.40",
+          "final_risk_limit": "medium_low",
+          "explanation": "按合成家庭现金流、责任期限与行为承受力取审慎风险上限。"
+        }
+      ],
+      "behavior_assessments": [
+        {
+          "questionnaire_score": "0.45",
+          "experiment_score": "0.40",
+          "final_behavior_limit": "medium_low",
+          "detected_biases": [
+            "loss_aversion"
+          ],
+          "experiment_answers": {},
+          "explanation": "合成行为记录只用于验证风险预算约束，不代表真实客户测评。"
+        }
+      ]
+    }
+  ],
+  "enterprise_extensions": [
+    {
+      "household_code": "DEMO_D",
+      "enterprise": {
+        "name": "澄明科技",
+        "industry": "人工智能基础设施",
+        "stage": "growth",
+        "jurisdiction": "CN",
+        "listed_status": "unlisted",
+        "enterprise_type": "operating_company",
+        "currency": "CNY",
+        "valuation_date": "2026-08-10",
+        "data_source": "synthetic-v5-personas-v2.0.0",
+        "is_user_confirmed": true
+      },
+      "ownerships": [
+        {
+          "owner_entity_id": "沈先生",
+          "ownership_ratio": "0.800000",
+          "voting_ratio": "0.800000",
+          "instrument_type": "common_equity",
+          "vesting_date": "2020-01-01",
+          "lockup_end_date": null
+        }
+      ],
+      "valuations": [
+        {
+          "valuation_date": "2026-08-10",
+          "equity_value": "30000000.00",
+          "valuation_method": "user_estimate",
+          "confidence": "medium",
+          "source_kind": "synthetic_client_statement",
+          "evidence": {
+            "synthetic": true,
+            "amount_is_not_bank_verified": true
+          },
+          "currency": "CNY"
+        }
+      ],
+      "cashflows": [
+        {
+          "member_id": "沈先生",
+          "cashflow_type": "salary",
+          "amount": "1200000.00",
+          "currency": "CNY",
+          "frequency": "annual",
+          "stability": "medium"
+        },
+        {
+          "member_id": "沈先生",
+          "cashflow_type": "business_distribution",
+          "amount": "250000.00",
+          "currency": "USD",
+          "frequency": "annual",
+          "stability": "low"
+        }
+      ],
+      "guarantees": [
+        {
+          "member_id": "沈先生",
+          "guarantee_type": "personal",
+          "guaranteed_amount": "10000000.00",
+          "outstanding_exposure": "8000000.00",
+          "expiry_date": "2029-12-31",
+          "currency": "CNY"
+        }
+      ],
+      "liquidity_events": [
+        {
+          "event_type": "funding",
+          "expected_date": "2027-03-31",
+          "estimated_value": "20000000.00",
+          "probability": "0.70",
+          "lockup": true,
+          "currency": "CNY",
+          "status": "planned"
+        }
+      ],
+      "source_reference": "synthetic-v5-personas-v2.0.0:DEMO_D:澄明科技"
+    },
+    {
+      "household_code": "DEMO_E",
+      "enterprise": {
+        "name": "北辰智能",
+        "industry": "人工智能",
+        "stage": "pre_ipo",
+        "jurisdiction": "CN",
+        "listed_status": "unlisted",
+        "enterprise_type": "operating_company",
+        "currency": "CNY",
+        "valuation_date": "2026-08-10",
+        "data_source": "synthetic-v5-personas-v2.0.0",
+        "is_user_confirmed": true
+      },
+      "ownerships": [
+        {
+          "owner_entity_id": "陆博士",
+          "ownership_ratio": "0.015000",
+          "voting_ratio": "0.015000",
+          "instrument_type": "restricted_stock",
+          "vesting_date": "2020-01-01",
+          "lockup_end_date": "2028-12-31"
+        }
+      ],
+      "valuations": [
+        {
+          "valuation_date": "2026-08-10",
+          "equity_value": "6000000.00",
+          "valuation_method": "user_estimate",
+          "confidence": "medium",
+          "source_kind": "synthetic_client_statement",
+          "evidence": {
+            "synthetic": true,
+            "amount_is_not_bank_verified": true
+          },
+          "currency": "CNY"
+        }
+      ],
+      "cashflows": [],
+      "guarantees": [],
+      "liquidity_events": [
+        {
+          "event_type": "lockup_expiry",
+          "expected_date": "2028-12-31",
+          "estimated_value": "6000000.00",
+          "probability": "0.50",
+          "lockup": true,
+          "currency": "CNY",
+          "status": "planned"
+        }
+      ],
+      "source_reference": "synthetic-v5-personas-v2.0.0:DEMO_E:北辰智能"
+    },
+    {
+      "household_code": "DEMO_F",
+      "enterprise": {
+        "name": "鹏远实业集团",
+        "industry": "高端制造",
+        "stage": "mature",
+        "jurisdiction": "CN",
+        "listed_status": "unlisted",
+        "enterprise_type": "family_business",
+        "currency": "CNY",
+        "valuation_date": "2026-08-10",
+        "data_source": "synthetic-v5-personas-v2.0.0",
+        "is_user_confirmed": true
+      },
+      "ownerships": [
+        {
+          "owner_entity_id": "郑先生",
+          "ownership_ratio": "0.700000",
+          "voting_ratio": "0.700000",
+          "instrument_type": "common_equity",
+          "vesting_date": "2020-01-01",
+          "lockup_end_date": null
+        }
+      ],
+      "valuations": [
+        {
+          "valuation_date": "2026-08-10",
+          "equity_value": "80000000.00",
+          "valuation_method": "user_estimate",
+          "confidence": "medium",
+          "source_kind": "synthetic_client_statement",
+          "evidence": {
+            "synthetic": true,
+            "amount_is_not_bank_verified": true
+          },
+          "currency": "CNY"
+        }
+      ],
+      "cashflows": [
+        {
+          "member_id": "郑先生",
+          "cashflow_type": "dividend",
+          "amount": "3500000.00",
+          "currency": "CNY",
+          "frequency": "annual",
+          "stability": "medium"
+        }
+      ],
+      "guarantees": [],
+      "liquidity_events": [],
+      "source_reference": "synthetic-v5-personas-v2.0.0:DEMO_F:鹏远实业集团"
+    }
+  ]
+}

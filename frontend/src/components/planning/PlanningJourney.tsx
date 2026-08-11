@@ -21,6 +21,8 @@ import {
   type RatioExplanationItem,
 } from "../../api/wealthPlanning";
 import type { PlanningResponse } from "../../api/planning";
+import { financialGraphFeatureEnabled } from "../../api/financialGraph";
+import { PositionEditor } from "../wealth/PositionEditor";
 import { FinancialStatementForm } from "./FinancialStatementForm";
 import { GoalsAndExpensesForm } from "./GoalsAndExpensesForm";
 import { PlanBookView } from "./PlanBookView";
@@ -33,11 +35,14 @@ import {
   type MajorExpenseDraft,
 } from "./planningDraft";
 
-type JourneyStep = "profile" | "statements" | "analysis" | "goals" | "report";
+type JourneyStep = "profile" | "statements" | "positions" | "analysis" | "goals" | "report";
 
 const steps: Array<{ id: JourneyStep; label: string }> = [
   { id: "profile", label: "基本情况" },
   { id: "statements", label: "财务报表" },
+  ...(financialGraphFeatureEnabled
+    ? [{ id: "positions" as const, label: "精细资产" }]
+    : []),
   { id: "analysis", label: "财务分析" },
   { id: "goals", label: "目标计划" },
   { id: "report", label: "规划书" },
@@ -231,7 +236,7 @@ export function PlanningJourney() {
         setGoals(goalsFromAnalysis(payload));
         setMajorExpenses(createDefaultMajorExpenses());
         setStep("analysis");
-        setFurthestStep(2);
+        setFurthestStep(steps.findIndex((item) => item.id === "analysis"));
         void loadExplanations(payload.meta.household_id, controller.signal);
       })
       .catch((error: unknown) => {
@@ -283,13 +288,23 @@ export function PlanningJourney() {
       setExplanations([]);
       setPlanning(null);
       setNarrative(null);
-      goTo("analysis");
-      void loadExplanations(payload.household_id);
+      if (financialGraphFeatureEnabled) {
+        goTo("positions");
+      } else {
+        goTo("analysis");
+        void loadExplanations(payload.household_id);
+      }
     } catch (submitError) {
       setFormError(submitError instanceof Error ? submitError.message : "财务报表提交失败，请稍后再试。 ");
     } finally {
       setSubmitting(false);
     }
+  }
+
+  function continueFromPositions() {
+    if (!householdId) return;
+    goTo("analysis");
+    void loadExplanations(householdId);
   }
 
   async function submitGoals() {
@@ -397,7 +412,8 @@ export function PlanningJourney() {
         <div className="journey-content">
           {step === "profile" ? <PlanningProfileForm draft={draft} error={formError} onChange={setDraft} onContinue={continueProfile} /> : null}
           {step === "statements" ? <FinancialStatementForm draft={draft} error={formError} submitting={submitting} onChange={setDraft} onBack={() => goTo("profile")} onSubmit={() => void submitStatements()} /> : null}
-          {step === "analysis" && analysis ? <RatioAnalysisView analysis={analysis} explanations={explanations} explanationLoading={explanationLoading} explanationError={explanationError} onBack={() => goTo("statements")} onContinue={() => goTo("goals")} /> : null}
+          {step === "positions" && householdId ? <PositionEditor householdId={householdId} onBack={() => goTo("statements")} onContinue={continueFromPositions} /> : null}
+          {step === "analysis" && analysis ? <RatioAnalysisView analysis={analysis} explanations={explanations} explanationLoading={explanationLoading} explanationError={explanationError} onBack={() => goTo(financialGraphFeatureEnabled ? "positions" : "statements")} onContinue={() => goTo("goals")} /> : null}
           {step === "goals" ? <GoalsAndExpensesForm goals={goals} majorExpenses={majorExpenses} error={formError} submitting={submitting} onGoalsChange={setGoals} onMajorExpensesChange={setMajorExpenses} onBack={() => goTo("analysis")} onSubmit={() => void submitGoals()} /> : null}
           {step === "report" && analysis && planning && narrative ? <PlanBookView analysis={analysis} explanations={explanations} goals={goals} majorExpenses={majorExpenses} kyc={draft.kyc} planning={planning} narrative={narrative} reportMessage={reportMessage} onBack={() => goTo("goals")} onStartNew={startNew} /> : null}
           {!analysis && (step === "analysis" || step === "report") ? <p className="inline-form-error" role="alert">尚未生成财务分析，请返回填写财务报表。</p> : null}

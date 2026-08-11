@@ -1119,6 +1119,7 @@ def behavior_overview(
         select(BehaviorExperimentSession)
         .where(
             BehaviorExperimentSession.household_id == household_id,
+            BehaviorExperimentSession.data_source != "v5_monitoring_engine",
             BehaviorExperimentSession.is_deleted.is_(False),
         )
         .order_by(

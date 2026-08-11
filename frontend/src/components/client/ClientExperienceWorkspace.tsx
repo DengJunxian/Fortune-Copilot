@@ -242,7 +242,7 @@ export function ClientExperienceWorkspace({
           </TaskSection>
         ) : null}
         {activeView === "pension" ? (
-          <TaskSection kicker="Personal Pension Copilot" title="制度账户与底层风险分别核对" description="政策额度、税惠估算、账户锁定和产品风险均使用版本化事实；个人养老金不自动等于低风险。">
+          <TaskSection kicker="个人养老金规划" title="制度账户与底层风险分别核对" description="政策额度、税惠估算、账户锁定和产品风险均使用版本化事实；个人养老金不自动等于低风险。">
             <SensitiveRegion masked={maskAmounts} label="个人养老金金额与税惠估算">
               <PersonalPensionWorkspace plan={plan} />
             </SensitiveRegion>

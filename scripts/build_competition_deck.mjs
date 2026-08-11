@@ -155,7 +155,7 @@ function addHeader(slide, index, title, kicker) {
 
 function addFooter(slide, label = "竞赛原型 · 合成数据 · Mock 接口 · 非工商银行官方产品") {
   textBox(slide, label, M, 683, 850, 22, { fontSize: 14, color: MUTED });
-  textBox(slide, "Fortune Copilot 0.13.0", 1000, 683, 216, 22, {
+  textBox(slide, "Fortune Copilot 0.14.0", 1000, 683, 216, 22, {
     fontSize: 14,
     bold: true,
     color: NAVY,
@@ -227,7 +227,7 @@ async function buildDeck() {
   await fs.mkdir(RENDER_DIR, { recursive: true });
 
   const assets = {
-    demo: await readImage(path.join(ROOT, "output", "presentation_assets", "demo-overview.png")),
+    demo: await readImage(path.join(ROOT, "output", "playwright", "e14-v5-release-demo-1440x768.png")),
     client: await readImage(path.join(ROOT, "output", "playwright", "stage9-client-balance-1366x768.png")),
     twin: await readImage(path.join(ROOT, "output", "stage6-client-1366x768.png")),
     behavior: await readImage(path.join(ROOT, "output", "presentation_assets", "behavior-profile.png")),
@@ -388,7 +388,7 @@ async function buildDeck() {
     addNotes(
       slide,
       "按照从事实到行动的顺序讲产品流程。屏幕截图来自当前仓库运行中的 /demo 页面，不是设计稿。强调外部网络、模型和银行接口都不是主链前置条件。",
-      ["repo:output/presentation_assets/demo-overview.png", "repo:docs/demo_runbook.md", "repo:backend/app/services/demo_release.py"],
+      ["repo:output/playwright/e14-v5-release-demo-1440x768.png", "repo:docs/demo_runbook.md", "repo:backend/app/services/demo_release.py"],
     );
   }
 
@@ -643,17 +643,17 @@ async function buildDeck() {
     slide.background.fill = WHITE;
     addHeader(slide, 11, "把“可信”变成可以重复执行的门禁", "10 · 评测与合规");
     const bigStats = [
-      ["89", "后端 Pytest"],
-      ["34", "前端 Vitest"],
-      ["15", "Playwright"],
-      ["22", "黑盒验收"],
+      ["194", "后端 Pytest"],
+      ["65", "前端 Vitest"],
+      ["0", "浏览器错误/警告"],
+      ["24/24", "黑盒验收"],
     ];
     bigStats.forEach(([value, label], i) => {
       const x = 70 + i * 190;
       callout(slide, value, label, x, 154, 158, { color: i === 3 ? RED : NAVY, valueSize: 42, align: "center" });
     });
     rect(slide, 842, 154, 348, 116, NAVY, { geometry: "roundRect", borderRadius: "rounded-lg", lineFill: NAVY });
-    textBox(slide, "110 / 140", 866, 172, 300, 46, { fontSize: 36, bold: true, color: WHITE, align: "center" });
+    textBox(slide, "165 / 196", 866, 172, 300, 46, { fontSize: 36, bold: true, color: WHITE, align: "center" });
     textBox(slide, "OpenAPI 路径 / HTTP 操作", 866, 224, 300, 28, { fontSize: 16, color: "#D7E2E9", align: "center" });
     rule(slide, 70, 300, 1120, LINE, 1);
     textBox(slide, "10 项发布门禁", 70, 332, 270, 30, { fontSize: 23, bold: true, color: NAVY });
@@ -774,7 +774,7 @@ async function buildDeck() {
       { fontSize: 39, bold: true, color: WHITE, lineSpacing: 1.18 },
     );
     const proof = [
-      ["懂家庭", "三户三方案"],
+      ["懂家庭", "A–H 统一管线"],
       ["管住 AI", "数字由工具计算"],
       ["闭环运行", "客户—顾问—合规"],
       ["离线可演示", "外部依赖为零"],
@@ -785,7 +785,7 @@ async function buildDeck() {
       textBox(slide, title, x, 512, 230, 30, { fontSize: 20, bold: true, color: WHITE });
       textBox(slide, detail, x, 552, 230, 28, { fontSize: 16, color: "#CDD9E1" });
     });
-    pill(slide, "Fortune Copilot 0.13.0 · Demo Ready", 84, 626, 316, RED, WHITE);
+    pill(slide, "Fortune Copilot 0.14.0 · Demo Ready", 84, 626, 316, RED, WHITE);
     textBox(slide, "竞赛原型 · 合成数据 · Mock 接口", 862, 632, 328, 26, { fontSize: 16, color: "#C9D7E0", align: "right" });
     addNotes(
       slide,

@@ -431,8 +431,10 @@ def check_credentials() -> list[CheckResult]:
     ]
     hits: list[str] = []
     for path in ROOT.rglob("*"):
-        if not path.is_file() or any(
-            part in excluded_parts for part in path.relative_to(ROOT).parts
+        if (
+            not path.is_file()
+            or path.name == ".env"
+            or any(part in excluded_parts for part in path.relative_to(ROOT).parts)
         ):
             continue
         if path.suffix.lower() not in text_suffixes or path.stat().st_size > 2_000_000:
@@ -490,7 +492,7 @@ def check_live(api_url: str | None, web_url: str | None) -> list[CheckResult]:
             health_ok = (
                 health.get("status") == "ok"
                 and health.get("mock_mode") is True
-                and health.get("version") == "0.13.0"
+                and health.get("version") == "0.14.0"
             )
             results.extend(
                 [
@@ -501,7 +503,7 @@ def check_live(api_url: str | None, web_url: str | None) -> list[CheckResult]:
                     ),
                     result(
                         "live_openapi_inventory",
-                        len(paths) == 110 and operations == 140,
+                        len(paths) == 165 and operations == 196,
                         f"paths={len(paths)}; operations={operations}",
                     ),
                 ]

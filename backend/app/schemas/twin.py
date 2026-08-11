@@ -64,6 +64,7 @@ class FamilyEventInput(BaseModel):
 
 class TwinRunRequest(BaseModel):
     analysis_date: date | None = None
+    household_snapshot_id: str | None = None
     seed: int = Field(default=20260804, ge=0, le=2_147_483_647)
     path_count: int = Field(default=500, ge=100, le=5000)
     horizon_years: int = Field(default=30, ge=5, le=60)
@@ -303,6 +304,7 @@ class TwinResult(BaseModel):
 class TwinRunStatusResponse(BaseModel):
     run_id: str
     household_id: str
+    household_snapshot_id: str | None = None
     status: SimulationStatus
     progress_percent: int = Field(ge=0, le=100)
     phase: str

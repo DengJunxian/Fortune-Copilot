@@ -307,8 +307,8 @@ function AdvisorActions({ workflow, candidate, draft, manualHighRisk, busy, onDr
       {next.has("suitability_check") ? <div className="workflow-next-action"><p>计算完成后必须逐一执行家庭安全、客户和产品三道闸门。</p><Button type="button" loading={busy} onClick={() => void onAction({ action: "suitability_check" }, "三道适当性闸门已写入")}>执行三道闸门</Button></div> : null}
       {next.has("advisor_review") || next.has("revise_advice") || next.has("edit_communication") ? (
         <div className="advisor-draft-editor">
-          <label><span>AI 沟通话术草稿 · Mock 模板，可编辑</span><textarea rows={7} value={draft} onChange={(event) => onDraft(event.target.value)} /><small>不得添加保本、保证收益、稳赚、零风险或无来源政策断言；关键数字必须与工具账本一致。</small></label>
-          <label className="workflow-check"><input type="checkbox" checked={manualHighRisk} onChange={(event) => onManualHighRisk(event.target.checked)} /><span><strong>我已人工核对较高风险产品类型</strong><small>AI 不替代客户经理；没有较高风险类型时也可保留本次人工核对记录。</small></span></label>
+          <label><span>客户沟通草稿，可编辑</span><textarea rows={7} value={draft} onChange={(event) => onDraft(event.target.value)} /><small>不得添加保本、保证收益、稳赚、零风险或无来源政策断言；关键数字必须与工具账本一致。</small></label>
+          <label className="workflow-check"><input type="checkbox" checked={manualHighRisk} onChange={(event) => onManualHighRisk(event.target.checked)} /><span><strong>我已人工核对较高风险产品类型</strong><small>智能辅助不替代客户经理判断；没有较高风险类型时也可保留本次人工核对记录。</small></span></label>
           <div className="workflow-action-row">
             {next.has("advisor_review") ? <Button type="button" loading={busy} onClick={() => void onAction({ action: "advisor_review", selected_candidate: candidate, communication_draft: draft, manual_high_risk_confirmed: manualHighRisk, advisor_note: "已核对三方案、流动性与风险" }, "客户经理人工复核已记录")}>完成客户经理复核</Button> : null}
             {next.has("revise_advice") ? <Button type="button" variant="secondary" loading={busy} onClick={() => void onAction({ action: "revise_advice", selected_candidate: candidate, communication_draft: draft, manual_high_risk_confirmed: manualHighRisk, advisor_note: "根据面谈修改候选与解释" }, "建议修改已保存")}>保存建议修改</Button> : null}

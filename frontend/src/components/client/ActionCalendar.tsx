@@ -132,7 +132,7 @@ export function ActionCalendar({
       </header>
 
       {loading ? <p className="action-ledger-state" role="status">正在核对行动状态与报告快照…</p> : null}
-      {!loading && !ledger?.report_id ? <p className="action-ledger-state" data-tone="warning">{delivery.actions === "under_review" ? "正式报告仍在顾问与合规审核；审核完成前不展示或修改内部行动账本。" : "请先在“家庭规划书”中一键生成正式报告，再记录行动状态。"}</p> : null}
+      {!loading && !ledger?.report_id ? <p className="action-ledger-state" data-tone="warning">{delivery.actions === "under_review" ? "正式报告仍在顾问与合规审核；审核完成前不展示或修改内部行动账本。" : "请先在“家庭规划书”中生成正式报告，再记录行动状态。"}</p> : null}
       {notice ? <p className="action-ledger-state" data-tone="success" role="status">{notice}</p> : null}
       {error ? <p className="action-ledger-state" data-tone="danger" role="alert">{error}</p> : null}
 

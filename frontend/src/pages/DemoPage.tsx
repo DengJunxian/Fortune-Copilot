@@ -107,7 +107,7 @@ export function DemoPage() {
       if (nextComparison.status === "fulfilled") setComparison(nextComparison.value);
       if (nextExperiments.status === "fulfilled") setExperiments(nextExperiments.value);
       if (nextManifest.status === "rejected" && nextComparison.status === "rejected") {
-        setError("本地后端尚未就绪。启动 Compose 后可在此完成全链路演示；页面不会连接外网。" );
+        setError("本地后端尚未就绪。启动 Compose 后可在此运行完整业务演示；页面不会连接外网。" );
       }
     });
     return () => controller.abort();
@@ -155,7 +155,7 @@ export function DemoPage() {
           </div>
           <div>
             <dt>合成家庭</dt>
-            <dd>{manifest ? `${manifest.seeded_household_count} / 3` : "—"}</dd>
+            <dd>{manifest ? `${manifest.seeded_household_count} Personas` : "—"}</dd>
           </div>
           <div>
             <dt>外部网络</dt>
@@ -188,7 +188,7 @@ export function DemoPage() {
               await refreshOverview();
             })}
           >
-            加载 A／B／C
+            加载 A-H Persona
           </Button>
           <Button
             variant="danger"
@@ -224,7 +224,7 @@ export function DemoPage() {
               await refreshOverview();
             })}
           >
-            一键运行完整 Demo
+            运行完整演示
           </Button>
           <Button
             variant="secondary"
@@ -283,7 +283,7 @@ export function DemoPage() {
             ))}
           </ol>
         ) : (
-          <p className="empty-state">尚未运行。点击“一键运行完整 Demo”后，此处显示每一步的实际耗时、状态与持久化证据。</p>
+          <p className="empty-state">尚未运行。启动完整演示后，此处显示每一步的实际耗时、状态与持久化证据。</p>
         )}
       </section>
 
@@ -358,7 +358,7 @@ export function DemoPage() {
               <small>人工合规与客户确认不会被自动冒充</small>
             </div>
             <div>
-              <span>九智能体终检</span>
+              <span>九项智能服务终检</span>
               <strong>{asString(audit.agent_step_count, "0")} 步</strong>
               <small>金额仍只来自确定性账本</small>
             </div>
@@ -377,7 +377,7 @@ export function DemoPage() {
             <p className="section-index">COMPARISON / 04</p>
             <h2 id="demo-comparison-heading">A／B／C：同一规则，不同配置</h2>
           </div>
-          <p>{comparison ? `${comparison.unique_configuration_count} 个唯一配置签名` : "等待三家庭计算"}</p>
+          <p>{comparison ? `${comparison.unique_configuration_count} 个唯一配置签名` : "等待 A／B／C 对照计算"}</p>
         </header>
         {comparison ? (
           <>
@@ -414,7 +414,7 @@ export function DemoPage() {
             <p className="demo-boundary-note">{comparison.boundary_note}</p>
           </>
         ) : (
-          <p className="empty-state">连接本地后端后显示三套合成家庭的实际计算结果。</p>
+          <p className="empty-state">连接本地后端后显示 A-H 八类 Persona；其中 A／B／C 保留动态配置对照。</p>
         )}
       </section>
 
