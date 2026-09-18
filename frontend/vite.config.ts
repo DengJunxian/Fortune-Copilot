@@ -11,7 +11,9 @@ export default defineConfig({
   },
   preview: {
     port: 4173,
-    proxy: {},
+    proxy: {
+      "/api": "http://127.0.0.1:8000",
+    },
   },
   test: {
     include: ["src/**/*.test.{ts,tsx}"],

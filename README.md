@@ -53,7 +53,15 @@ Fortune Copilot 以中国家庭财富健康 CHFH 为总体框架，保持以下�
 
 ## Architecture
 
-家庭事实进入 Financial Graph 后，由确定性 Profile、Need、Liability／ELTC、Twin、CFS、产品闸门、专业路由与 Monitoring 串成同一证据链。语言模型只处理受限理解与解释，关键金额、比率与配置由确定性工具计算。
+V6 对外将现有能力整理为五个产品引擎，而不是重建五套服务：
+
+- Family Understanding Engine：自然语言建档、家庭画像、目标与需要；
+- Household Capital Engine：CHFH、动态四账户、责任现金流与 ELTC；
+- Wealth Planning Engine：GRB、风险预算、资产配置与场景分析；
+- Product Intelligence Engine：Product Ontology、Eligibility、Ranking 与 Fund Advisory；
+- Wealth Companion Engine：Financial Twin、Monitoring、Behavior 与 Next Best Action。
+
+五个引擎统一受 Trust & Compliance Layer 约束，包括 Suitability、Evidence、Replay、Audit、RAG、LLM Guardrail 与 Human Review。完整说明见 [`docs/v6/V6_ARCHITECTURE.md`](docs/v6/V6_ARCHITECTURE.md)。
 
 ## 三端演示账号
 
@@ -64,7 +72,7 @@ Fortune Copilot 以中国家庭财富健康 CHFH 为总体框架，保持以下�
 
 ## 三分钟演示流程
 
-从 `/demo` 查看八 Persona 清单与 A／B／C 对照，运行 B 的十阶段主剧情，再进入 `/client`、`/advisor` 和 `/risk` 读取同一不可变方案链。E14 另以发布 API 验证九项基准和创始人融资事件的 14 个阶段。
+主剧情只使用一个家庭：`/planning` 自然语言建档 → `/wealth` 家庭安全与 ELTC → `/wealth/cfs` GRB、配置与 Product Funnel → `/wealth/twin` 家庭事件重算 → `/advisor/actions` Why Now → `/risk` Why This Advice。八 Persona 与 A／B／C 对照保留为回归证据，不在三分钟主线来回切换。逐秒脚本见 [`docs/v6/V6_DEMO_SCRIPT.md`](docs/v6/V6_DEMO_SCRIPT.md)。
 
 ## 合成数据与 Mock 边界
 

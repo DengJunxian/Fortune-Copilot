@@ -49,3 +49,11 @@
 - Kept the advisor boundary as planning follow-up rather than automated marketing or Next Best Sale.
 - Added a four-question compliance overview: Why This Advice, Suitability, Evidence and Replay.
 - Moved production-readiness, security-quality, guardrail and specialist technical material behind an explicit evidence drawer.
+
+## Phase 7 — Competition Delivery
+
+- Added the five-engine V6 architecture, one-household three-minute Demo script and evidence-based acceptance matrix.
+- Reframed the technical whitepaper, defense Q&A and ICBC business-value narrative around household constraints, ELTC, GRB and continuous wealth management.
+- Lowered the experimental `/competition` page from primary navigation and reframed its opening around household safety and long-term-capital eligibility.
+- Updated the existing presentation generator without replacing its design system; the 15-slide deck now leads with CHFH, ELTC and GRB, adds a deterministic Product Candidate Funnel, and presents the five engines under a Trust & Compliance Layer.
+- Kept the public verified product catalog at eight items because no additional official evidence was introduced; Public Verified remains distinct from a live ICBC shelf.

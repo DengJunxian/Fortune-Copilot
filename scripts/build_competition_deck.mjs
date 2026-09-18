@@ -19,7 +19,7 @@ const { Presentation, PresentationFile } = await import(pathToFileURL(MODULE_PAT
 
 const OUT_DIR = path.join(ROOT, "output", "presentations");
 const RENDER_DIR = path.join(WORKSPACE, "rendered");
-const FINAL_PPTX = path.join(OUT_DIR, "wealthtwin_competition_deck.pptx");
+const FINAL_PPTX = path.join(OUT_DIR, "fortune_copilot_v6_competition_edition.pptx");
 
 const W = 1280;
 const H = 720;
@@ -155,7 +155,7 @@ function addHeader(slide, index, title, kicker) {
 
 function addFooter(slide, label = "竞赛原型 · 合成数据 · Mock 接口 · 非工商银行官方产品") {
   textBox(slide, label, M, 683, 850, 22, { fontSize: 14, color: MUTED });
-  textBox(slide, "Fortune Copilot 0.14.0", 1000, 683, 216, 22, {
+  textBox(slide, "Fortune Copilot 0.15.0 · V6", 960, 683, 256, 22, {
     fontSize: 14,
     bold: true,
     color: NAVY,
@@ -242,16 +242,16 @@ async function buildDeck() {
     const slide = presentation.slides.add();
     slide.background.fill = NAVY;
     rect(slide, 0, 0, 18, H, RED);
-    textBox(slide, "智运财富", 86, 112, 560, 82, { fontSize: 58, bold: true, color: WHITE });
-    textBox(slide, "WEALTHTWIN", 90, 198, 400, 40, { fontSize: 24, bold: true, color: "#D8E3EB" });
-    textBox(slide, "中国家庭财富数字孪生\n与智能投顾操作系统", 86, 282, 650, 128, {
+    textBox(slide, "Fortune Copilot", 86, 112, 650, 82, { fontSize: 54, bold: true, color: WHITE });
+    textBox(slide, "V6 COMPETITION EDITION", 90, 198, 480, 40, { fontSize: 22, bold: true, color: "#D8E3EB" });
+    textBox(slide, "面向中国家庭的家庭约束驱动型\n可信智能投顾系统", 86, 282, 700, 128, {
       fontSize: 36,
       bold: true,
       color: WHITE,
       lineSpacing: 1.05,
     });
     rule(slide, 88, 440, 510, "#47677F", 2);
-    textBox(slide, "目标先于产品 · 约束先于收益 · 证据先于解释", 86, 464, 650, 38, {
+    textBox(slide, "家庭责任先于投资 · 只有 ELTC 才进入长期配置", 86, 464, 700, 38, {
       fontSize: 19,
       bold: true,
       color: "#E2C888",
@@ -263,14 +263,14 @@ async function buildDeck() {
     c2.sendToBack();
     c3.text = "家";
     c3.text.style = { fontSize: 28, bold: true, color: WHITE, alignment: "center", verticalAlignment: "middle", typeface: TYPEFACE };
-    textBox(slide, "一核", 768, 214, 90, 30, { fontSize: 17, bold: true, color: "#D5E0E7", align: "right" });
-    textBox(slide, "四账", 1081, 277, 90, 30, { fontSize: 17, bold: true, color: "#D5E0E7" });
-    textBox(slide, "三尺 · 六阶段 · 双画像", 850, 440, 300, 34, { fontSize: 18, color: "#D5E0E7", align: "center" });
+    textBox(slide, "CHFH", 760, 214, 98, 30, { fontSize: 17, bold: true, color: "#D5E0E7", align: "right" });
+    textBox(slide, "ELTC", 1081, 277, 90, 30, { fontSize: 17, bold: true, color: "#D5E0E7" });
+    textBox(slide, "Goal + Risk + Behavior", 830, 440, 340, 34, { fontSize: 18, color: "#D5E0E7", align: "center" });
     pill(slide, "离线 Mock 完整运行", 86, 590, 210, RED, WHITE);
-    textBox(slide, "竞赛交付版 · 2026.08", 980, 626, 220, 28, { fontSize: 16, color: "#C7D4DD", align: "right" });
+    textBox(slide, "工行杯 · 财富管理服务方向 · 2026.09", 850, 626, 350, 28, { fontSize: 16, color: "#C7D4DD", align: "right" });
     addNotes(
       slide,
-      "开场只讲定位：这不是预测市场的机器人，而是先把家庭目标、约束和行动放进可计算、可追溯的系统。明确竞赛原型与离线 Mock 边界。",
+      "开场只讲一个增量价值：传统智能投顾先问钱怎么投，Fortune Copilot 先判断这笔钱能不能投。明确家庭责任、ELTC、GRB 与持续重算；同时说明竞赛原型与离线 Mock 边界。",
       ["repo:README.md", "repo:docs/technical_whitepaper.md"],
     );
   }
@@ -315,9 +315,9 @@ async function buildDeck() {
   {
     const slide = presentation.slides.add();
     slide.background.fill = WHITE;
-    addHeader(slide, 3, "华衡：从家庭目标到可执行行动的自主框架", "02 · 中国自主框架");
+    addHeader(slide, 3, "CHFH：家庭责任、资金资格与风险预算是一条链", "02 · 中国家庭财富健康");
     const core = circle(slide, 88, 196, 246, NAVY, { lineFill: NAVY });
-    core.text = "一核\n家庭人生目标\n韧性与长期生活质量";
+    core.text = "Household\n家庭成员 · 责任\n目标 · 生命周期";
     core.text.style = { fontSize: 21, bold: true, color: WHITE, alignment: "center", verticalAlignment: "middle", autoFit: "shrinkText", insets: { top: 18, right: 18, bottom: 18, left: 18 }, typeface: TYPEFACE };
     const accounts = [
       ["要花", "日常 + 应急", RED_LIGHT, RED],
@@ -334,10 +334,10 @@ async function buildDeck() {
     });
     verticalRule(slide, 760, 160, 430, LINE, 2);
     const framework = [
-      ["三尺", "总资产 / 可投资金融资产 / 年度新增结余"],
-      ["五硬一软", "流动性、偿债、保障、期限、适当性 + 行为"],
-      ["双画像", "客观能力与问卷/实验；行为只能下调"],
-      ["六阶段", "初入职场 → 婚姻 → 育儿 → 成熟 → 退休 → 传承"],
+      ["CHFH", "现金流、债务、保障、住房与家庭责任"],
+      ["ELTC", "安全与责任扣减后的长期可投资资本"],
+      ["GRB", "Goal + Risk + Behavior；行为只能下调"],
+      ["持续管理", "家庭事件发生后重新计算并保留证据"],
     ];
     framework.forEach(([name, detail], i) => {
       const y = 165 + i * 105;
@@ -345,8 +345,8 @@ async function buildDeck() {
       textBox(slide, detail, 806, y + 38, 388, 48, { fontSize: 17, color: MUTED });
       if (i < framework.length - 1) rule(slide, 806, y + 92, 382, LINE, 1);
     });
-    pill(slide, "不是固定比例", 88, 514, 176, RED, WHITE);
-    textBox(slide, "账户是资金用途；比例必须说清分母和前置条件。", 88, 562, 620, 38, { fontSize: 20, bold: true, color: NAVY });
+    pill(slide, "四账户不是固定比例", 88, 514, 228, RED, WHITE);
+    textBox(slide, "先判断家庭安全吗，再判断哪些钱具备长期投资资格。", 88, 562, 620, 38, { fontSize: 20, bold: true, color: NAVY });
     addFooter(slide);
     addNotes(
       slide,
@@ -359,8 +359,8 @@ async function buildDeck() {
   {
     const slide = presentation.slides.add();
     slide.background.fill = PAPER;
-    addHeader(slide, 4, "从一句家庭语言，到一份可审计的八章规划书", "03 · 产品流程");
-    const steps = ["建档确认", "五表体检", "目标规划", "动态四账", "三道闸门", "孪生 + 行为", "三端 + 八章"];
+    addHeader(slide, 4, "先问三件事，再把答案变成持续财富管理", "03 · 产品主线");
+    const steps = ["建档确认", "CHFH 安全", "目标责任", "ELTC", "GRB", "配置产品", "持续重算"];
     const boxes = [];
     steps.forEach((label, i) => {
       const x = 68 + i * 162;
@@ -387,7 +387,7 @@ async function buildDeck() {
     addFooter(slide);
     addNotes(
       slide,
-      "按照从事实到行动的顺序讲产品流程。屏幕截图来自当前仓库运行中的 /demo 页面，不是设计稿。强调外部网络、模型和银行接口都不是主链前置条件。",
+      "按照三问讲产品：我家安全吗、我到底有多少钱可以长期投资、这些钱应该怎么配置；最后用家庭事件说明持续重算。屏幕截图来自当前仓库运行页面，不是设计稿。",
       ["repo:output/playwright/e14-v5-release-demo-1440x768.png", "repo:docs/demo_runbook.md", "repo:backend/app/services/demo_release.py"],
     );
   }
@@ -396,7 +396,7 @@ async function buildDeck() {
   {
     const slide = presentation.slides.add();
     slide.background.fill = WHITE;
-    addHeader(slide, 5, "金额由七步瀑布算出，比例只是带分母的结果", "04 · 动态四账户");
+    addHeader(slide, 5, "有多少钱 ≠ 有多少钱可以投资：七步扣减得到 ELTC", "04 · 长期可投资资本");
     textBox(slide, "B 家庭 · 双收入育儿", 70, 150, 330, 28, { fontSize: 18, bold: true, color: RED });
     const waterfall = [
       ["1", "高息债务"], ["2", "日常资金"], ["3", "应急储备"], ["4", "必要保障"],
@@ -431,7 +431,7 @@ async function buildDeck() {
       ["要花的钱", "13.3 万", "目标；缺口 8.3 万", RED],
       ["保命的钱", "1.2 万/年", "必要保费；缺口另列", GOLD],
       ["稳钱的钱", "25.1 万", "近期目标 + 安全留存", NAVY_2],
-      ["生钱的钱", "0 元", "前置约束未通过", GREEN],
+      ["长期可投资资本 ELTC", "0 元", "前置约束未通过", GREEN],
     ];
     accountRows.forEach(([name, value, note, color], i) => {
       const y = 232 + i * 78;
@@ -442,11 +442,11 @@ async function buildDeck() {
       if (i < accountRows.length - 1) rule(slide, 724, y + 66, 428, LINE, 1);
     });
     rect(slide, 710, 548, 460, 42, RED_LIGHT, { geometry: "roundRect", borderRadius: "rounded-md", lineFill: "#E8C2C2", lineWidth: 1 });
-    textBox(slide, "70% 只看通过闸门后的长期可规划资源，不看家庭总资产。", 724, 557, 432, 24, { fontSize: 16, bold: true, color: RED, align: "center" });
+    textBox(slide, "为什么不是全部金融资产？因为每一笔扣减都承担家庭责任。", 724, 557, 432, 24, { fontSize: 16, bold: true, color: RED, align: "center" });
     addFooter(slide);
     addNotes(
       slide,
-      "用B家庭说明动态逻辑。先说七步顺序，再说三种分母，最后指出B家庭生钱账户新增为0。这是最直观的非固定比例证据。保命账户1.2万元是年保费，不是保障缺口或资产。",
+      "用B家庭说明ELTC。先说七步顺序，再说三种分母，最后指出这个家庭的ELTC为0：财务资产存在，但仍需承担应急、保障和近期目标。这是‘有钱不等于都能投资’的最直观证据。",
       ["repo:docs/planning_engine.md", "repo:data/expected/demo_b_planning_v1.json", "repo:backend/tests/test_planning.py"],
     );
   }
@@ -455,7 +455,7 @@ async function buildDeck() {
   {
     const slide = presentation.slides.add();
     slide.background.fill = PAPER;
-    addHeader(slide, 6, "不预测市场，只检验家庭能否穿越冲击", "05 · 家庭财富数字孪生");
+    addHeader(slide, 6, "家庭变化后，安全、ELTC 与配置一起重算", "05 · 持续财富管理");
     addScreenshot(slide, assets.twin, "客户端数字孪生与压力测试实际页面", 68, 158, 724, 414, { fit: "cover" });
     pill(slide, "失业 6 个月 + 权益下跌 30%", 830, 158, 360, RED_LIGHT, RED);
     const metrics = [
@@ -489,14 +489,14 @@ async function buildDeck() {
   {
     const slide = presentation.slides.add();
     slide.background.fill = WHITE;
-    addHeader(slide, 7, "用户说“能承受”，不等于真实选择也能承受", "06 · 行为金融");
+    addHeader(slide, 7, "GRB：能力、意愿与真实行为共同约束风险预算", "06 · Family Risk Profile");
     addScreenshot(slide, assets.behavior, "客户端行为金融双画像实际页面", 68, 158, 650, 410, { fit: "cover" });
     textBox(slide, "双画像冲突", 758, 158, 260, 30, { fontSize: 23, bold: true, color: NAVY });
     const profileRows = [
-      ["问卷自述", "medium_high", NAVY_2],
-      ["客观能力", "medium", GOLD],
-      ["-10% 选择", "清仓", RED],
-      ["最终上限", "low", RED],
+      ["Risk Capacity", "R3", GOLD],
+      ["Risk Willingness", "R4", NAVY_2],
+      ["Behavioral Risk", "R2", RED],
+      ["Family Risk Budget", "R2", RED],
     ];
     profileRows.forEach(([label, value, color], i) => {
       const y = 208 + i * 58;
@@ -507,7 +507,7 @@ async function buildDeck() {
     rect(slide, 758, 452, 414, 116, RED_LIGHT, { geometry: "roundRect", borderRadius: "rounded-lg", lineFill: "#E6BABB", lineWidth: 1 });
     textBox(slide, "48 小时冷静期", 782, 470, 364, 36, { fontSize: 26, bold: true, color: RED, align: "center" });
     textBox(slide, "损失厌恶 + 追涨杀跌有逐项选择证据\n不自动交易，不保证减少损失", 782, 514, 364, 42, { fontSize: 16, color: INK, align: "center" });
-    textBox(slide, "行为只能维持或下调客观风险上限", 758, 590, 414, 30, { fontSize: 18, bold: true, color: NAVY, align: "center" });
+    textBox(slide, "行为只能维持或下调风险预算，不能自动上调", 758, 590, 414, 30, { fontSize: 18, bold: true, color: NAVY, align: "center" });
     addFooter(slide);
     addNotes(
       slide,
@@ -516,28 +516,28 @@ async function buildDeck() {
     );
   }
 
-  // 8 — AI and algorithms
+  // 8 — Five engines and trust layer
   {
     const slide = presentation.slides.add();
     slide.background.fill = PAPER;
-    addHeader(slide, 8, "AI负责语言，确定性工具负责金融结论", "07 · AI 与算法");
+    addHeader(slide, 8, "五个产品引擎，由同一 Trust & Compliance Layer 约束", "07 · 技术架构");
     const llm = rect(slide, 96, 170, 1088, 84, BLUE_LIGHT, { geometry: "roundRect", borderRadius: "rounded-xl", lineFill: "#B9CBD8", lineWidth: 1 });
-    textBox(slide, "LLM 语言层", 124, 190, 210, 34, { fontSize: 23, bold: true, color: NAVY });
-    textBox(slide, "理解自然语言 · 生成追问 · 受控解释 · Mock/失败可降级", 348, 190, 790, 34, { fontSize: 19, color: INK, align: "center" });
+    textBox(slide, "理解家庭", 124, 190, 170, 34, { fontSize: 23, bold: true, color: NAVY });
+    textBox(slide, "Family Understanding Engine  ·  Household Capital Engine", 310, 190, 828, 34, { fontSize: 19, color: INK, align: "center" });
     const engine = rect(slide, 96, 300, 1088, 142, WHITE, { geometry: "roundRect", borderRadius: "rounded-xl", lineFill: NAVY, lineWidth: 2 });
-    textBox(slide, "确定性金融工具层", 124, 320, 270, 34, { fontSize: 23, bold: true, color: NAVY });
-    const tools = ["五表 / 20 指标", "目标 / 七步瀑布", "组合 / 三闸门", "孪生 / Monte Carlo"];
-    tools.forEach((label, i) => pill(slide, label, 130 + i * 258, 372, 224, i === 3 ? GREEN_LIGHT : PAPER, i === 3 ? GREEN : NAVY));
+    textBox(slide, "规划、产品与陪伴", 124, 320, 270, 34, { fontSize: 23, bold: true, color: NAVY });
+    const tools = ["Wealth Planning", "Product Intelligence", "Wealth Companion"];
+    tools.forEach((label, i) => pill(slide, label, 142 + i * 342, 372, 292, i === 2 ? GREEN_LIGHT : PAPER, i === 2 ? GREEN : NAVY));
     const governance = rect(slide, 96, 490, 1088, 112, NAVY, { geometry: "roundRect", borderRadius: "rounded-xl", lineFill: NAVY });
-    textBox(slide, "治理与审计层", 124, 514, 220, 32, { fontSize: 22, bold: true, color: WHITE });
-    textBox(slide, "9 智能体固定状态机 · 工具白名单 · 版本哈希 · 引用有效期 · 注入隔离 · 10 项发布门禁", 348, 509, 800, 46, { fontSize: 18, color: WHITE, align: "center", vertical: "middle" });
-    textBox(slide, "关键金额 / 比率 / 配置 / 概率：LLM 无写权限", 348, 558, 800, 26, { fontSize: 17, bold: true, color: "#E5C67D", align: "center" });
+    textBox(slide, "Trust & Compliance", 124, 514, 250, 32, { fontSize: 22, bold: true, color: WHITE });
+    textBox(slide, "Suitability · Evidence · Replay · Audit · RAG · LLM Guardrail · Human Review", 380, 509, 760, 46, { fontSize: 18, color: WHITE, align: "center", vertical: "middle" });
+    textBox(slide, "AI 理解语言，金融引擎计算资金；关键数字无模型写权限", 380, 558, 760, 26, { fontSize: 17, bold: true, color: "#E5C67D", align: "center" });
     slide.shapes.connect(llm, engine, { kind: "straight", fromSide: "bottom", toSide: "top", line: { style: "solid", fill: MUTED, width: 2 }, tail: { type: "arrow", width: "sm", length: "sm" } });
     slide.shapes.connect(engine, governance, { kind: "straight", fromSide: "bottom", toSide: "top", line: { style: "solid", fill: MUTED, width: 2 }, tail: { type: "arrow", width: "sm", length: "sm" } });
     addFooter(slide);
     addNotes(
       slide,
-      "这页回答大模型可靠性。语言层没有关键数字写权限；确定性工具先计算，智能体只能调用白名单工具并把结构化结果交给治理层。无密钥时Mock与模板仍可运行。",
+      "五大引擎是对外产品架构，不要求把现有代码重写成五套服务。Trust & Compliance 横向约束事实确认、数字、产品资格和发布。LLM没有关键数字写权限。",
       ["repo:docs/model_card.md", "repo:docs/trusted_ai.md", "repo:backend/app/services/trust/orchestrator.py", "repo:backend/app/services/security/quality_gate.py"],
     );
   }
@@ -546,11 +546,11 @@ async function buildDeck() {
   {
     const slide = presentation.slides.add();
     slide.background.fill = WHITE;
-    addHeader(slide, 9, "同一家庭、同一版本，三端按职责渐进披露", "08 · 三端闭环");
+    addHeader(slide, 9, "同一家庭、同一版本：客户看行动，顾问看 Why Now，合规看 Why This Advice", "08 · 三端闭环");
     const panels = [
-      ["客户", "看懂结论、目标与行动", assets.client, "客户端资产负债与任务工作区"],
-      ["客户经理", "比较方案、沟通与复盘", assets.advisor, "客户经理工作台"],
-      ["风险合规", "复核规则、引用与门禁", assets.risk, "风险合规控制台"],
+      ["客户", "看懂安全、ELTC、目标与行动", assets.client, "客户端资产负债与任务工作区"],
+      ["Advisor · Why Now", "变化、影响、沟通与不应销售", assets.advisor, "客户经理工作台"],
+      ["Compliance · Why This Advice", "适当性、证据与回放", assets.risk, "风险合规控制台"],
     ];
     const imageBoxes = [];
     panels.forEach(([label, detail, bytes, alt], i) => {
@@ -587,11 +587,66 @@ async function buildDeck() {
     );
   }
 
-  // 10 — Case
+  // 10 — Product candidate funnel
   {
     const slide = presentation.slides.add();
     slide.background.fill = PAPER;
-    addHeader(slide, 10, "典型案例 B：先补韧性，再谈长期增长", "09 · 典型案例");
+    addHeader(slide, 10, "不是“最佳基金”：而是当前家庭约束下的可解释候选", "09 · Product Candidate Funnel");
+    const stages = [
+      ["产品样本池", "8"],
+      ["用途匹配", "5"],
+      ["期限匹配", "5"],
+      ["风险适当性", "3"],
+      ["流动性要求", "3"],
+      ["费用 / 资格 / 冲突", "2"],
+      ["最终候选", "1"],
+    ];
+    const stageShapes = [];
+    stages.forEach(([label, count], i) => {
+      const x = 68 + i * 164;
+      const width = 140;
+      const box = rect(slide, x, 170, width, 104, i === stages.length - 1 ? NAVY : WHITE, {
+        geometry: "roundRect",
+        borderRadius: "rounded-lg",
+        lineFill: i === stages.length - 1 ? NAVY : LINE,
+        lineWidth: 1,
+      });
+      textBox(slide, count, x + 12, 184, width - 24, 42, { fontSize: 32, bold: true, color: i === stages.length - 1 ? WHITE : RED, align: "center" });
+      textBox(slide, label, x + 10, 230, width - 20, 30, { fontSize: 14, bold: true, color: i === stages.length - 1 ? WHITE : NAVY, align: "center" });
+      stageShapes.push(box);
+      if (i > 0) slide.shapes.connect(stageShapes[i - 1], box, { kind: "straight", fromSide: "right", toSide: "left", line: { style: "solid", fill: MUTED, width: 1.5 }, tail: { type: "triangle", width: "sm", length: "sm" } });
+    });
+    rect(slide, 68, 328, 530, 252, WHITE, { geometry: "roundRect", borderRadius: "rounded-xl", lineFill: "#B8D2C3", lineWidth: 1 });
+    textBox(slide, "Why Selected", 94, 350, 220, 32, { fontSize: 23, bold: true, color: GREEN });
+    richText(slide, bulletParagraphs([
+      ["用途：", "对应长期增长目标"],
+      ["风险：", "不超过家庭风险预算"],
+      ["期限：", "与目标持有期匹配"],
+      ["分散：", "宽基方向降低集中暴露"],
+    ]), 92, 398, 474, 148, { fontSize: 18 });
+    rect(slide, 630, 328, 560, 252, WHITE, { geometry: "roundRect", borderRadius: "rounded-xl", lineFill: "#E6BABB", lineWidth: 1 });
+    textBox(slide, "Why Not Others", 656, 350, 240, 32, { fontSize: 23, bold: true, color: RED });
+    richText(slide, bulletParagraphs([
+      ["风险：", "产品风险高于家庭预算"],
+      ["期限：", "最短持有期长于目标期限"],
+      ["证据：", "费用或渠道快照仍需核验"],
+      ["资格：", "不满足客户或账户条件"],
+    ]), 654, 398, 500, 148, { fontSize: 18 });
+    rect(slide, 68, 604, 1122, 42, RED_LIGHT, { geometry: "roundRect", borderRadius: "rounded-md", lineFill: "#E8C2C2", lineWidth: 1 });
+    textBox(slide, "8 个样本均来自公开核验快照；Public Verified ≠ 当前工行实时货架，候选不等于可执行交易。", 88, 613, 1082, 24, { fontSize: 16, bold: true, color: RED, align: "center" });
+    addFooter(slide);
+    addNotes(
+      slide,
+      "漏斗数量来自当前家庭上下文的确定性产品引擎夹具，不是营销写死。当前只保留8个公开核验样本，宁缺毋滥；候选仍需要渠道、费用、适当性和人工复核。",
+      ["repo:frontend/src/test/productOntologyFixture.ts", "repo:backend/app/services/product_ontology/ranking.py", "repo:data/products/verified_real_funds_v1.json"],
+    );
+  }
+
+  // 11 — Case
+  {
+    const slide = presentation.slides.add();
+    slide.background.fill = PAPER;
+    addHeader(slide, 11, "一个家庭走完整条链：先补韧性，再谈长期增长", "10 · 核心家庭");
     rect(slide, 68, 154, 310, 474, NAVY, { geometry: "roundRect", borderRadius: "rounded-xl", lineFill: NAVY });
     textBox(slide, "35 岁双收入育儿家庭", 92, 184, 262, 52, { fontSize: 25, bold: true, color: WHITE });
     richText(slide, bulletParagraphs([
@@ -641,23 +696,23 @@ async function buildDeck() {
   {
     const slide = presentation.slides.add();
     slide.background.fill = WHITE;
-    addHeader(slide, 11, "把“可信”变成可以重复执行的门禁", "10 · 评测与合规");
+    addHeader(slide, 12, "轻量验证：对照错误起点，守住工程回归", "11 · Validation");
     const bigStats = [
-      ["194", "后端 Pytest"],
-      ["65", "前端 Vitest"],
-      ["0", "浏览器错误/警告"],
-      ["24/24", "黑盒验收"],
+      ["A", "Fixed Ratio baseline"],
+      ["B", "Risk-only baseline"],
+      ["C", "Golden outcome"],
+      ["R", "Decision replay"],
     ];
     bigStats.forEach(([value, label], i) => {
       const x = 70 + i * 190;
       callout(slide, value, label, x, 154, 158, { color: i === 3 ? RED : NAVY, valueSize: 42, align: "center" });
     });
     rect(slide, 842, 154, 348, 116, NAVY, { geometry: "roundRect", borderRadius: "rounded-lg", lineFill: NAVY });
-    textBox(slide, "165 / 196", 866, 172, 300, 46, { fontSize: 36, bold: true, color: WHITE, align: "center" });
-    textBox(slide, "OpenAPI 路径 / HTTP 操作", 866, 224, 300, 28, { fontSize: 16, color: "#D7E2E9", align: "center" });
+    textBox(slide, "不追求模型榜单", 866, 172, 300, 46, { fontSize: 28, bold: true, color: WHITE, align: "center" });
+    textBox(slide, "只验证本轮关键主张与回归", 866, 224, 300, 28, { fontSize: 16, color: "#D7E2E9", align: "center" });
     rule(slide, 70, 300, 1120, LINE, 1);
-    textBox(slide, "10 项发布门禁", 70, 332, 270, 30, { fontSize: 23, bold: true, color: NAVY });
-    const gates = ["八章结构", "数字账本", "引用覆盖", "适当性", "禁语", "版本完整", "模型边界", "Mock 标识", "隐私", "人工复核"];
+    textBox(slide, "工程回归继续覆盖", 70, 332, 270, 30, { fontSize: 23, bold: true, color: NAVY });
+    const gates = ["ELTC重算", "行为不升风险", "产品资格", "Intake确认", "候选解释", "事件复核", "版本完整", "Mock标识", "隐私", "审计回放"];
     gates.forEach((label, i) => {
       const x = 70 + (i % 5) * 220;
       const y = 382 + Math.floor(i / 5) * 58;
@@ -671,7 +726,7 @@ async function buildDeck() {
     addFooter(slide);
     addNotes(
       slide,
-      "数字必须与最终测试报告一致。强调这些是工程验证，不是生产SLA或客户收益。10项门禁中任何阻断都会禁止发布，UI不会隐藏失败项。",
+      "Validation A证明家庭不是固定比例；Validation B比较Risk-only与家庭责任驱动结果；Validation C保留Golden Outcome、Persona benchmark、Decision Replay与自动化回归。最终测试数量只在实跑后写入交付报告。",
       ["repo:docs/final_test_report.md", "repo:docs/evaluation.md", "repo:backend/tests", "repo:frontend/e2e/smoke.spec.ts"],
     );
   }
@@ -680,16 +735,16 @@ async function buildDeck() {
   {
     const slide = presentation.slides.add();
     slide.background.fill = PAPER;
-    addHeader(slide, 12, "对工行的价值：从一次销售，转向长期家庭关系", "11 · 工行价值");
+    addHeader(slide, 13, "对工商银行：在现有产品之上增加家庭财富决策智能层", "12 · 工行价值");
     const center = circle(slide, 496, 220, 288, NAVY, { lineFill: NAVY });
-    center.text = "家庭综合金融服务\n\n目标 · 约束 · 产品 · 行动";
+    center.text = "家庭财富决策智能层\n\n家庭需求 → 产品与服务";
     center.text.style = { fontSize: 24, bold: true, color: WHITE, alignment: "center", verticalAlignment: "middle", autoFit: "shrinkText", insets: { top: 24, right: 24, bottom: 24, left: 24 }, typeface: TYPEFACE };
     const values = [
-      ["资产留存", "长期陪伴", 110, 172, RED_LIGHT, RED],
-      ["养老金融", "家庭生命周期", 110, 404, GOLD_LIGHT, GOLD],
-      ["顾问效率", "方案一致性", 858, 172, BLUE_LIGHT, NAVY_2],
-      ["适当性", "可解释性", 858, 404, GREEN_LIGHT, GREEN],
-      ["消费者保护", "销售与服务留痕", 500, 516, WHITE, NAVY],
+      ["Customer", "降低理解门槛", 110, 172, RED_LIGHT, RED],
+      ["Bank", "长期家庭财富经营", 110, 404, GOLD_LIGHT, GOLD],
+      ["Advisor", "减少整理与重复解释", 858, 172, BLUE_LIGHT, NAVY_2],
+      ["Compliance", "可解释 · 可复核 · 可追踪", 858, 404, GREEN_LIGHT, GREEN],
+      ["边界", "不替代现有财富产品", 500, 516, WHITE, NAVY],
     ];
     values.forEach(([a, b, x, y, fill, color], i) => {
       const width = i === 4 ? 280 : 274;
@@ -714,7 +769,7 @@ async function buildDeck() {
   {
     const slide = presentation.slides.add();
     slide.background.fill = WHITE;
-    addHeader(slide, 13, "治理先于规模：五道门推进真实落地", "12 · 商业与推广");
+    addHeader(slide, 14, "治理先于规模：五道门推进真实落地", "13 · 商业与推广");
     const stages = [
       ["01", "离线共创", "字段 / 规则 / 禁令"],
       ["02", "影子评估", "只读对照 / 不触达客户"],
@@ -758,7 +813,7 @@ async function buildDeck() {
     );
   }
 
-  // 14 — Conclusion
+  // 15 — Conclusion
   {
     const slide = presentation.slides.add();
     slide.background.fill = NAVY;
@@ -766,7 +821,7 @@ async function buildDeck() {
     textBox(slide, "结论", 84, 64, 190, 34, { fontSize: 18, bold: true, color: "#E5C67D" });
     textBox(
       slide,
-      "“智运财富不是替用户预测市场，\n而是帮助中国家庭在不确定的市场中，\n仍然能够完成确定的人生目标。”",
+      "“Fortune Copilot 不只是告诉家庭钱怎么投，\n更先判断哪些钱真正能够承担投资风险。”",
       84,
       142,
       830,
@@ -774,10 +829,10 @@ async function buildDeck() {
       { fontSize: 39, bold: true, color: WHITE, lineSpacing: 1.18 },
     );
     const proof = [
-      ["懂家庭", "A–H 统一管线"],
-      ["管住 AI", "数字由工具计算"],
-      ["闭环运行", "客户—顾问—合规"],
-      ["离线可演示", "外部依赖为零"],
+      ["家庭责任", "先于投资收益"],
+      ["财务安全", "先于风险暴露"],
+      ["ELTC + GRB", "再进入配置与产品"],
+      ["持续管理", "家庭变化后重新计算"],
     ];
     proof.forEach(([title, detail], i) => {
       const x = 86 + i * 278;
@@ -785,12 +840,12 @@ async function buildDeck() {
       textBox(slide, title, x, 512, 230, 30, { fontSize: 20, bold: true, color: WHITE });
       textBox(slide, detail, x, 552, 230, 28, { fontSize: 16, color: "#CDD9E1" });
     });
-    pill(slide, "Fortune Copilot 0.14.0 · Demo Ready", 84, 626, 316, RED, WHITE);
+    pill(slide, "Fortune Copilot V6 · Competition Ready", 84, 626, 360, RED, WHITE);
     textBox(slide, "竞赛原型 · 合成数据 · Mock 接口", 862, 632, 328, 26, { fontSize: 16, color: "#C9D7E0", align: "right" });
     addNotes(
       slide,
-      "按原文收束，不增加收益承诺。若还有时间，只重复四个已验证判断：理解家庭、约束AI、三端同源、离线完整运行。",
-      ["repo:docs/codex/wealthtwin_codex_prompts.md", "repo:docs/final_acceptance_report.md"],
+      "按V6核心信息收束，不增加收益承诺。只重复四个判断：家庭责任、财务安全、ELTC+GRB、家庭变化后重新计算。",
+      ["repo:docs/v6/V6_PRODUCT_NARRATIVE.md", "repo:docs/v6/V6_ACCEPTANCE.md"],
     );
   }
 
@@ -811,8 +866,32 @@ async function buildDeck() {
   });
   await fs.writeFile(path.join(RENDER_DIR, "deck-inspect.ndjson"), inspection.ndjson);
 
+  const skillDir = process.env.PRESENTATION_SKILL_DIR;
+  const pythonExecutable = process.env.RUNTIME_PYTHON;
+  if (!skillDir || !pythonExecutable) {
+    throw new Error("Set PRESENTATION_SKILL_DIR and RUNTIME_PYTHON for validated export");
+  }
+  const { finalizePresentation } = await import(pathToFileURL(path.join(skillDir, "container_tools", "artifact_tool_utils.mjs")).href);
+  const stagingDir = path.join(ROOT, ".codex-finalizer");
+  await fs.mkdir(stagingDir, { recursive: true });
+  const candidatePath = path.join(stagingDir, "fortune-copilot-v6-candidate.pptx");
   const pptx = await PresentationFile.exportPptx(presentation);
-  await pptx.save(FINAL_PPTX);
+  await pptx.save(candidatePath);
+  await finalizePresentation({
+    explicitTotalSlideCount: 15,
+    requiredNativeTableOwnerSlides: [],
+    requiredNativeChartOwnerSlides: [],
+    workspaceDir: ROOT,
+    candidatePath,
+    finalPath: FINAL_PPTX,
+    pythonExecutable,
+    integrityValidatorPath: path.join(skillDir, "container_tools", "inspect_presentation_package_integrity.py"),
+    layoutValidatorPath: path.join(skillDir, "container_tools", "inspect_presentation_layout_geometry.py"),
+    layoutArgs: ["--expected-slide-size-emu", "12192000,6858000", "--validate-bullet-geometry", "--validate-heading-fit"],
+    fontPolicy: { basis: "design", families: [TYPEFACE] },
+    verifyArtifactToolImport: true,
+    receiptPath: path.join(stagingDir, "fortune-copilot-v6.validation.json"),
+  });
   console.log(`wrote ${FINAL_PPTX}`);
   console.log(`rendered ${presentation.slides.items.length} slides to ${RENDER_DIR}`);
 }

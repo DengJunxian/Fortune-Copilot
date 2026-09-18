@@ -579,12 +579,12 @@ test("risk portal rejects an adversarial request and leaves an audit reference",
   test.skip(!process.env.PLAYWRIGHT_BASE_URL, "requires the connected Compose demo");
 
   await page.goto("/risk");
+  await openRiskTechnicalEvidence(page);
   await expect(page.getByRole("heading", { name: "测试环境安全与模型风险质量门禁" })).toBeVisible();
   await expect(page.getByText("仅测试环境", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "运行八类对抗评测" }).click();
   await expect(page.getByRole("list", { name: "八类对抗用例" }).getByRole("listitem")).toHaveCount(8);
   await expect(page.getByText("八类对抗用例通过 8/8。", { exact: true })).toBeVisible();
-  await openRiskTechnicalEvidence(page);
   await expect(page.getByRole("heading", { name: "适当性证据与拒绝链" })).toBeVisible();
   await page.getByRole("button", { name: "运行并写入审计" }).click();
   await expect(page.getByText(/不匹配请求已拒绝并写入审计事件/)).toBeVisible();
@@ -691,9 +691,9 @@ test("connected demo traces controlled knowledge, confirmed intake, graph infere
   await expect(page.getByText(/不能从家庭总资产套用统一70%/)).toBeVisible();
 
   await page.getByRole("button", { name: "解析为待确认草稿" }).click();
-  await expect(page.getByRole("textbox", { name: "夫妻月工资合计确认值" })).toHaveValue("30000.00");
+  await expect(page.getByRole("textbox", { name: "夫妻月工资合计确认值" })).toHaveValue("40000.00");
   await page.locator(".missing-fields > summary").click();
-  await expect(page.getByText(/月供不能推导贷款余额/)).toBeVisible();
+  await expect(page.getByText(/留学的目标国家或地区/)).toBeVisible();
   const draft = page.getByRole("group", { name: "勾选并核对每一项" });
   const checkboxes = draft.getByRole("checkbox");
   for (let index = 0; index < await checkboxes.count(); index += 1) {

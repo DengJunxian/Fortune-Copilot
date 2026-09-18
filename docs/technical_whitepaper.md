@@ -1,13 +1,13 @@
 # 智运财富 Fortune Copilot 技术白皮书
 
-版本：1.0（比赛交付版）
-对应软件版本：0.14.0
-数据日：2026-08-04
+版本：V6 Competition Edition
+对应软件版本：0.15.0
+核验日：2026-09-18
 材料状态：竞赛原型／合成数据／Mock 接口／非工商银行官方产品
 
 ## 摘要
 
-智运财富 Fortune Copilot 是面向中国家庭的财富数字孪生与智能投顾操作系统原型。系统不从“把资产分成四个固定比例”出发，而从家庭成员责任、现金流、负债、保障、住房、养老金和人生目标出发，先验证安全约束，再计算账户、产品类型、压力路径和行动顺序。大语言模型只承担自然语言理解、追问和解释；家庭总资产、目标现值、四账户金额、组合配置、压力概率和报告数字全部由版本化确定性工具生成。
+Fortune Copilot 是面向中国家庭的家庭约束驱动型可信智能投顾系统：先判断家庭真正有多少钱可以长期投资，再决定钱怎么配置，并根据家庭变化、风险行为与人生目标持续调整。系统不从“把资产分成四个固定比例”或“风险问卷后直接选产品”出发，而从家庭成员责任、现金流、负债、保障、住房、养老金和人生目标出发，依次计算财务安全、长期可投资资本 ELTC、Goal + Risk + Behavior 风险预算、资产方向和产品候选。大语言模型只承担自然语言理解、追问和解释；家庭总资产、目标现值、ELTC、四账户金额、风险预算、组合配置、压力概率和报告数字全部由版本化确定性工具生成。
 
 本白皮书只陈述仓库中已经实现并经过测试的能力。A-H 八类 Persona、产品目录、政策切片、实验结果和银行接口均为合成或 Mock；外部模型、真实银行接口和网络全部关闭时，主 Demo 仍可完整运行。本系统不提供交易执行，不构成法律、税务、保险或证券投资建议，不承诺本金或收益。
 
@@ -167,7 +167,19 @@ LLM Provider 支持 Mock、OpenAI/DeepSeek 兼容和本地兼容模式，但外�
 
 正式规划书一级目录严格固定为八章，229 项数字账本对金额、比率、目标、组合、孪生、行为与引用进行追踪。十项发布门禁检查八章结构、数字账本、引用、适当性、禁语、版本、模型边界、Mock 标识、隐私和人工复核；阻断项不会被 UI 隐藏。
 
-## 11. 三端架构与工商银行落地边界
+## 11. 五大引擎、三端体验与工商银行落地边界
+
+V6 对外把已有实现整理为五个产品引擎，而不是在代码中重建五套服务：
+
+| 引擎 | 负责的问题 | 复用的 V5 能力 |
+| --- | --- | --- |
+| Family Understanding Engine | 家庭是谁、目标与缺失事实是什么 | Intake、Client Profile、Goal/Need、确认草稿 |
+| Household Capital Engine | 家庭是否安全、多少钱可长期投资 | CHFH、五张底表、动态四账户、责任现金流、ELTC |
+| Wealth Planning Engine | ELTC 如何按目标与风险配置 | GRB、风险预算、Portfolio、Twin/场景 |
+| Product Intelligence Engine | 哪些产品在当前约束下有资格成为候选 | Ontology、Eligibility、Ranking、Fund Advisory |
+| Wealth Companion Engine | 家庭变化后如何监控、行动与重算 | Monitoring、Behavior、Financial Twin、Next Best Action |
+
+所有引擎受 Trust & Compliance Layer 约束，包括 Suitability、Evidence、Replay、Audit、RAG、LLM Guardrail 和 Human Review。该层不是最后补一段免责声明，而是限制事实写入、数字权限、产品资格和方案发布。
 
 客户端、客户经理端和风险合规端读取同一家庭事实、计算快照、方案版本和报告证据，但按最小必要原则渐进披露：
 
@@ -187,7 +199,9 @@ LLM Provider 支持 Mock、OpenAI/DeepSeek 兼容和本地兼容模式，但外�
 
 ### 12.1 已执行的工程评测
 
-- 194 个后端 Pytest、65 个前端 Vitest、21 个真实 Compose Playwright 场景；V5 的 11 个客户／顾问路由在 1440、1024、768 与 390 四档宽度完成回归，控制台错误/警告与页面级横向溢出均为 0；
+- 198 个后端 Pytest、66 个前端 Vitest、21 个连接真实前后端进程的 Playwright 场景均通过；Playwright 使用迁移并播种后的 SQLite、`LLM_PROVIDER=mock` 与生产预览服务器完成，不把外部模型响应纳入通过条件；
+- Ruff、Mypy、ESLint、TypeScript 与 Vite build 均通过；Vite 仍报告 `chartTheme` 596.68 kB 的非阻断分包体积警告；
+- 本机 Docker/Colima daemon 在最终验收时不可用，因此不能把本轮结果表述为 Compose 通过；连接式浏览器回归改由同一应用栈在宿主机直接启动后执行，21 个场景无跳过；
 - Ruff、Mypy、ESLint、TypeScript 和 Vite build；
 - 24/24 项本机黑盒验收，包括 165 个 OpenAPI 路径/196 个操作、A-H 八类 Persona、9 项发布基准、14 阶段创始人故事、A/B/C 三个唯一配置签名、严格八章报告、10 项发布门禁、8 类安全对抗和 7 项实验协议；
 - A-H 发布基准中 8 项合格率为 100%，无效告警率为 0；一次完整本机黑盒验收耗时 4,664 ms；
