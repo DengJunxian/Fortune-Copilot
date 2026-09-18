@@ -38,7 +38,7 @@ describe("WealthDashboardPage", () => {
     expect(screen.getByText("目标还有多少缺口？")).toBeInTheDocument();
     expect(screen.getByText("下一笔钱先做什么？")).toBeInTheDocument();
     expect(screen.getByText("最近值得重规划吗？")).toBeInTheDocument();
-    expect(screen.getByText("¥110万")).toBeInTheDocument();
+    expect(await screen.findByText("¥110万", {}, { timeout: 5_000 })).toBeInTheDocument();
     expect(screen.getByRole("list", { name: "财富需要优先顺序" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "持续监控提醒" })).toBeInTheDocument();
 

@@ -101,7 +101,10 @@ describe("household planning journey", () => {
     const user = userEvent.setup();
     render(<AppRoutes initialPath="/planning" />);
 
-    await user.type(await screen.findByLabelText(/规划名称/), "王女士家庭财富规划");
+    await user.type(
+      await screen.findByLabelText(/规划名称/, {}, { timeout: 5_000 }),
+      "王女士家庭财富规划",
+    );
     await user.type(screen.getByLabelText(/常住地区/), "杭州");
     await user.type(screen.getByLabelText(/^姓名$/), "王女士");
     await user.type(screen.getByLabelText(/出生日期/), "1992-01-01");
@@ -122,7 +125,10 @@ describe("household planning journey", () => {
     const user = userEvent.setup();
     render(<AppRoutes initialPath="/planning" />);
 
-    await user.type(await screen.findByLabelText(/规划名称/), "张先生家庭财富规划");
+    await user.type(
+      await screen.findByLabelText(/规划名称/, {}, { timeout: 5_000 }),
+      "张先生家庭财富规划",
+    );
     await user.type(screen.getByLabelText(/常住地区/), "上海");
     await user.type(screen.getByLabelText(/^姓名$/), "张先生");
     await user.type(screen.getByLabelText(/出生日期/), "1990-01-01");

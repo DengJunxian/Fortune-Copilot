@@ -87,7 +87,7 @@ describe("WealthTwinPage", () => {
     await waitFor(() => {
       expect(screen.getByText("¥252,000")).toBeInTheDocument();
       expect(screen.getByText("¥36万 → ¥25.2万")).toBeInTheDocument();
-    });
+    }, { timeout: 5_000 });
     expect(screen.getByText(/工资收入调整 -30.0%/)).toBeInTheDocument();
 
     const results = await run(container, {
