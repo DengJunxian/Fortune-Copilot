@@ -56,11 +56,11 @@ function ProductCandidate({ candidate }: { candidate: RankedProductCandidate }) 
       </dl>
       <div className="cfs-product-reasoning">
         <div>
-          <strong><CheckCircleIcon size={17} weight="fill" aria-hidden="true" /> 为什么进入候选</strong>
+          <strong><CheckCircleIcon size={17} weight="fill" aria-hidden="true" /> Why Selected · 为什么进入候选</strong>
           <ul>{candidate.why_selected.map((reason) => <li key={reason}>{reason}</li>)}</ul>
         </div>
         <div>
-          <strong><ArrowsLeftRightIcon size={17} aria-hidden="true" /> 为什么不是其他候选</strong>
+          <strong><ArrowsLeftRightIcon size={17} aria-hidden="true" /> Why Not Others · 为什么不是其他候选</strong>
           <ul>{candidate.why_not_other_candidates.map((reason) => <li key={reason}>{reason}</li>)}</ul>
         </div>
       </div>
@@ -75,13 +75,30 @@ function ProductCandidate({ candidate }: { candidate: RankedProductCandidate }) 
   );
 }
 
+function ProductFunnel({ group }: { group: CFSProductCandidateGroup }) {
+  if (!group.funnel) return null;
+  return (
+    <section className="product-candidate-funnel" aria-label={`${componentNames[group.component_type]}产品候选漏斗`}>
+      <header><strong>Product Candidate Funnel</strong><span>数量来自确定性产品引擎</span></header>
+      <ol>
+        {group.funnel.stages.map((stage) => (
+          <li key={stage.code} data-final={stage.code === "final_candidates"}>
+            <span>{stage.label}</span><strong>{stage.count}</strong>
+          </li>
+        ))}
+      </ol>
+      <p>{group.funnel.explanation}</p>
+    </section>
+  );
+}
+
 export function CFSProductCandidates({ composition }: { composition: CFSProductCompositionResponse }) {
   return (
     <section className="cfs-products-section" aria-labelledby="cfs-products-heading">
       <header className="section-heading">
         <div>
           <p className="page-kicker">Buy-side product ontology</p>
-          <h2 id="cfs-products-heading">从行动映射候选，不把产品当成方案。</h2>
+          <h2 id="cfs-products-heading">当前家庭约束下的候选产品</h2>
         </div>
         <p>目录证据截至 {composition.catalog_as_of}。先过硬闸门，再按客户利益排序；销售激励不会提高名次。</p>
       </header>
@@ -92,16 +109,32 @@ export function CFSProductCandidates({ composition }: { composition: CFSProductC
         {composition.groups.map((group) => (
           <section className="cfs-product-group" key={group.component_id} data-result={group.result}>
             <header><h3>{componentNames[group.component_type]}</h3><p>{group.purpose}</p></header>
-            {group.result === "no_product" ? (
-              <div className="cfs-no-product">
-                <ProhibitIcon size={24} weight="duotone" aria-hidden="true" />
-                <div><strong>NO PRODUCT</strong><p>{group.no_product_reason}</p></div>
-              </div>
-            ) : (
-              <div className="cfs-product-candidates">
-                {group.candidates.map((candidate) => <ProductCandidate key={candidate.product.id} candidate={candidate} />)}
-              </div>
-            )}
+            <div className="cfs-product-group-content">
+              <ProductFunnel group={group} />
+              {group.result === "no_product" ? (
+                <div className="cfs-no-product">
+                  <ProhibitIcon size={24} weight="duotone" aria-hidden="true" />
+                  <div><strong>NO PRODUCT</strong><p>{group.no_product_reason}</p></div>
+                </div>
+              ) : (
+                <>
+                  <div className="cfs-product-candidates">
+                    {group.candidates.map((candidate) => <ProductCandidate key={candidate.product.id} candidate={candidate} />)}
+                  </div>
+                  {group.excluded.length ? (
+                    <details className="cfs-excluded-products">
+                      <summary>查看 {group.excluded.length} 个未进入候选的产品及原因</summary>
+                      <ul>{group.excluded.map((product) => (
+                        <li key={product.product_id}>
+                          <div><strong>{product.product_name}</strong><small>{product.product_code}</small></div>
+                          <p>{product.reasons.join("；")}</p>
+                        </li>
+                      ))}</ul>
+                    </details>
+                  ) : null}
+                </>
+              )}
+            </div>
           </section>
         ))}
       </div>

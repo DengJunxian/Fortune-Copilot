@@ -98,6 +98,11 @@ def test_buy_side_ranking_never_rewards_distribution_incentives_and_supports_no_
         before = rank_products(products, by_product, request, catalog)
         assert before.result == "ranked"
         assert before.executable_recommendation_allowed is False
+        assert [stage.count for stage in before.funnel.stages] == sorted(
+            (stage.count for stage in before.funnel.stages), reverse=True
+        )
+        assert before.funnel.stages[0].count == len(products)
+        assert before.funnel.stages[-1].count == len(before.candidates)
         before_scores = {item.product.id: item.score for item in before.candidates}
 
         candidate = before.candidates[0].product
@@ -117,6 +122,8 @@ def test_buy_side_ranking_never_rewards_distribution_incentives_and_supports_no_
         assert none.result == "no_product"
         assert none.candidates == []
         assert len(none.excluded) == len(products)
+        assert none.funnel.stages[0].count == len(products)
+        assert none.funnel.stages[-1].count == 0
         assert "有效方案" in (none.no_product_reason or "")
 
 
@@ -221,6 +228,8 @@ def test_cfs_component_maps_to_zero_or_many_candidates_without_equating_plan_and
         assert investment.result == "ranked"
         assert 1 <= len(investment.candidates) <= 3
         assert all(item.product.id for item in investment.candidates)
+        assert investment.funnel is not None
+        assert investment.funnel.stages[-1].count == len(investment.candidates)
 
 
 async def _api_request(

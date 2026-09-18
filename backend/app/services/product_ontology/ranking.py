@@ -7,6 +7,8 @@ from app.models.governance import Product, ProductSnapshot
 from app.schemas.fund_advisory import VerifiedFundCatalogFile
 from app.schemas.product_ontology import (
     ExcludedProductCandidate,
+    ProductCandidateFunnel,
+    ProductFunnelStage,
     ProductOntologyItem,
     ProductRankRequest,
     ProductRankResponse,
@@ -80,6 +82,68 @@ def _score_total(breakdown: ProductScoreBreakdown) -> Decimal:
     return sum(
         (Decimal(str(value)) for value in breakdown.model_dump().values()),
         Decimal("0"),
+    )
+
+
+def _candidate_funnel(
+    pool: list[Product],
+    snapshots: dict[str, ProductSnapshot],
+    request: ProductRankRequest,
+    *,
+    qualified_count: int,
+    final_count: int,
+) -> ProductCandidateFunnel:
+    context = request.context
+    purpose_matched = [
+        product for product in pool if context.need in product.client_role_in_cfs
+    ]
+    horizon_matched = [
+        product
+        for product in purpose_matched
+        if (snapshot := snapshots.get(product.id)) is not None
+        and int(snapshot.liquidity_snapshot.get("minimum_holding_days", 0))
+        <= context.horizon_days
+    ]
+    risk_matched = [
+        product
+        for product in horizon_matched
+        if (snapshot := snapshots.get(product.id)) is not None
+        and RISK_ORDER[snapshot.risk_level]
+        <= RISK_ORDER[context.risk_budget.maximum_risk_level]
+        and not (
+            context.need == "long_term_growth"
+            and not context.risk_budget.additional_risk_allowed
+        )
+    ]
+    liquidity_matched = [
+        product
+        for product in risk_matched
+        if (snapshot := snapshots.get(product.id)) is not None
+        and int(snapshot.liquidity_snapshot.get("minimum_holding_days", 0))
+        <= context.maximum_lockup_days
+    ]
+    return ProductCandidateFunnel(
+        stages=[
+            ProductFunnelStage(code="sample_pool", label="产品样本池", count=len(pool)),
+            ProductFunnelStage(code="need_fit", label="用途匹配", count=len(purpose_matched)),
+            ProductFunnelStage(code="horizon_fit", label="期限匹配", count=len(horizon_matched)),
+            ProductFunnelStage(
+                code="risk_suitability", label="风险适当性", count=len(risk_matched)
+            ),
+            ProductFunnelStage(
+                code="liquidity_fit", label="流动性要求", count=len(liquidity_matched)
+            ),
+            ProductFunnelStage(
+                code="quality_filters",
+                label="费用 / 资格 / 冲突过滤",
+                count=qualified_count,
+            ),
+            ProductFunnelStage(code="final_candidates", label="最终候选", count=final_count),
+        ],
+        explanation=(
+            "各阶段数量由同一产品资格与排序上下文逐层计算；"
+            "最终候选不是工行实时货架，也不是自动交易清单。"
+        ),
     )
 
 
@@ -167,6 +231,13 @@ def rank_products(
         )
 
     stale = catalog_is_stale(catalog, request.context.analysis_date)
+    funnel = _candidate_funnel(
+        pool,
+        snapshots,
+        request,
+        qualified_count=len(scored),
+        final_count=len(candidates),
+    )
     if not candidates:
         return ProductRankResponse(
             result="no_product",
@@ -174,6 +245,7 @@ def rank_products(
             candidate_count=0,
             candidates=[],
             excluded=excluded,
+            funnel=funnel,
             catalog_as_of=catalog.verified_on,
             catalog_stale=stale,
             executable_recommendation_allowed=False,
@@ -189,6 +261,7 @@ def rank_products(
         candidate_count=len(candidates),
         candidates=candidates,
         excluded=excluded,
+        funnel=funnel,
         catalog_as_of=catalog.verified_on,
         catalog_stale=stale,
         executable_recommendation_allowed=any(

@@ -174,12 +174,35 @@ class ExcludedProductCandidate(BaseModel):
     reasons: list[str]
 
 
+class ProductFunnelStage(BaseModel):
+    code: Literal[
+        "sample_pool",
+        "need_fit",
+        "horizon_fit",
+        "risk_suitability",
+        "liquidity_fit",
+        "quality_filters",
+        "final_candidates",
+    ]
+    label: str
+    count: int = Field(ge=0)
+
+
+class ProductCandidateFunnel(BaseModel):
+    stages: list[ProductFunnelStage] = Field(min_length=7, max_length=7)
+    calculation_source: Literal["deterministic_product_engine"] = (
+        "deterministic_product_engine"
+    )
+    explanation: str
+
+
 class ProductRankResponse(BaseModel):
     result: Literal["ranked", "no_product"]
     need: str
     candidate_count: int
     candidates: list[RankedProductCandidate]
     excluded: list[ExcludedProductCandidate]
+    funnel: ProductCandidateFunnel
     catalog_as_of: date
     catalog_stale: bool
     executable_recommendation_allowed: bool
@@ -195,6 +218,7 @@ class CFSProductCandidateGroup(BaseModel):
     result: Literal["ranked", "no_product"]
     candidates: list[RankedProductCandidate]
     excluded: list[ExcludedProductCandidate]
+    funnel: ProductCandidateFunnel | None = None
     no_product_reason: str | None = None
 
 

@@ -14,6 +14,8 @@ export const productOntologyFixture = {
       purpose: "先核对保障缺口与可持续保费。",
       result: "no_product",
       candidates: [],
+      excluded: [],
+      funnel: null,
       no_product_reason: "该行动不需要产品映射；专业服务本身就是正确承接方式。",
     },
     {
@@ -22,6 +24,28 @@ export const productOntologyFixture = {
       purpose: "仅使用通过前置责任扣减和适当性门的 ELTC 进入长期配置。",
       result: "ranked",
       no_product_reason: null,
+      funnel: {
+        stages: [
+          { code: "sample_pool", label: "产品样本池", count: 8 },
+          { code: "need_fit", label: "用途匹配", count: 5 },
+          { code: "horizon_fit", label: "期限匹配", count: 5 },
+          { code: "risk_suitability", label: "风险适当性", count: 3 },
+          { code: "liquidity_fit", label: "流动性要求", count: 3 },
+          { code: "quality_filters", label: "费用 / 资格 / 冲突过滤", count: 2 },
+          { code: "final_candidates", label: "最终候选", count: 1 },
+        ],
+        calculation_source: "deterministic_product_engine",
+        explanation: "各阶段数量由同一产品资格与排序上下文逐层计算。",
+      },
+      excluded: [
+        {
+          product_id: "product-excluded",
+          product_code: "EXCLUDED-001",
+          product_name: "期限不匹配示例产品",
+          decision: "blocked",
+          reasons: ["最短持有期长于目标期限。"],
+        },
+      ],
       candidates: [
         {
           rank: 1,

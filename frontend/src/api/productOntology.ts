@@ -81,12 +81,32 @@ export interface RankedProductCandidate {
   why_not_other_candidates: string[];
 }
 
+export interface ExcludedProductCandidate {
+  product_id: string;
+  product_code: string;
+  product_name: string;
+  decision: ProductEligibilityDecision;
+  reasons: string[];
+}
+
+export interface ProductCandidateFunnel {
+  stages: Array<{
+    code: "sample_pool" | "need_fit" | "horizon_fit" | "risk_suitability" | "liquidity_fit" | "quality_filters" | "final_candidates";
+    label: string;
+    count: number;
+  }>;
+  calculation_source: "deterministic_product_engine";
+  explanation: string;
+}
+
 export interface CFSProductCandidateGroup {
   component_id: string;
   component_type: CFSComponentType;
   purpose: string;
   result: "ranked" | "no_product";
   candidates: RankedProductCandidate[];
+  excluded: ExcludedProductCandidate[];
+  funnel: ProductCandidateFunnel | null;
   no_product_reason: string | null;
 }
 

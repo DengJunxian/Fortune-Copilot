@@ -26,3 +26,10 @@
 - Productized GRB as a four-layer Family Risk Profile: capacity, willingness, behavior constraint and final family risk budget.
 - Made the one-way behavior guardrail explicit and added regression assertions that the final budget never exceeds capacity, willingness or behavior limits.
 - Reordered the portfolio experience into ELTC, family risk budget, goal, asset direction and explanation before showing allocation detail.
+
+## Phase 4 — Product Intelligence
+
+- Added a deterministic Product Candidate Funnel to the existing ontology, eligibility and buy-side ranking engine.
+- Funnel counts now come from the real product pool and sequential purpose, horizon, risk, liquidity and hard-eligibility filters; the UI contains no fixed counts.
+- Renamed product output to “当前家庭约束下的候选产品” and exposed Why Selected, Why Not Others and per-product exclusion reasons.
+- Kept the verified public catalog at eight products because expanding it without additional official evidence would weaken the data boundary; public evidence remains distinct from a live ICBC shelf.

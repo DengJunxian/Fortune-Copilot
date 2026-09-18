@@ -111,6 +111,7 @@ def compose_cfs_product_candidates(
                     result="no_product",
                     candidates=[],
                     excluded=[],
+                    funnel=None,
                     no_product_reason=(
                         "该行动不需要产品映射；现金保留、偿债、保障询价或专业服务"
                         "本身就是这一步的正确承接方式。"
@@ -149,6 +150,7 @@ def compose_cfs_product_candidates(
                 result=ranking.result,
                 candidates=ranking.candidates,
                 excluded=ranking.excluded,
+                funnel=ranking.funnel,
                 no_product_reason=ranking.no_product_reason,
             )
         )
