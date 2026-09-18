@@ -548,7 +548,7 @@ test("connected demo compares three portfolio candidates with a complete suitabi
 
   await page.goto("/client/advanced");
   await openClientTask(page, "四账户");
-  await expect(page.getByRole("heading", { name: "长期资金的三种走法" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "先确认本次能配置多少钱，再看资产方向" })).toBeVisible();
   await expect(page.getByRole("region", { name: "稳健基准进取方案比较" })).toBeVisible();
   await expect(
     page.getByText("当前没有可执行的长期新增资金", { exact: true }),

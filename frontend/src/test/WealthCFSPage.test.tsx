@@ -63,7 +63,12 @@ describe("WealthCFSPage", () => {
     expect(screen.getByText("NO_ACTION_REQUIRED")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "当前不新增投资" })).toBeInTheDocument();
     expect(screen.getByText(/0 元组合伪装/)).toBeInTheDocument();
-    expect(screen.getByText("风险承担能力")).toBeInTheDocument();
+    expect(screen.getAllByText("风险承担能力")).toHaveLength(2);
+    expect(screen.getByRole("heading", { name: "Family Risk Profile" })).toBeInTheDocument();
+    expect(screen.getByText("风险承受意愿")).toBeInTheDocument();
+    expect(screen.getByText("真实行为约束")).toBeInTheDocument();
+    expect(screen.getByText("最终家庭风险预算")).toBeInTheDocument();
+    expect(screen.getByText(/行为证据只允许保持或下调预算/)).toBeInTheDocument();
     expect(screen.getByText("最短责任期限")).toBeInTheDocument();
     expect(screen.getByText("保障规划专家")).toBeInTheDocument();
     expect(container.textContent).not.toMatch(/\b\d{6}\.(?:OF|SH|SZ)\b/);

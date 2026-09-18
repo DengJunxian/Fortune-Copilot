@@ -891,7 +891,9 @@ describe("Fortune Copilot routes", () => {
     render(<AppRoutes initialPath="/client/advanced" />);
 
     await openClientTask(user, "四账户");
-    expect(await screen.findByRole("heading", { name: "长期资金的三种走法" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "先确认本次能配置多少钱，再看资产方向" })).toBeInTheDocument();
+    expect(screen.getByText("本次可以配置多少钱？")).toBeInTheDocument();
+    expect(screen.getByText("为什么这样配置？")).toBeInTheDocument();
     expect(screen.getByText("当前没有可执行的长期新增资金")).toBeInTheDocument();
     expect(screen.getByText("购买力门槛 PPH")).toBeInTheDocument();
     expect(screen.getByText("单只股票卫星暴露")).toBeInTheDocument();

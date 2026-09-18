@@ -56,10 +56,14 @@ describe("WealthGoalsPage", () => {
     expect(screen.getByRole("heading", { name: "每一笔责任何时需要资金" }))
       .toBeInTheDocument();
     expect(screen.getByText("第 4 / 4 期")).toBeInTheDocument();
-    expect(screen.getByText("长期可配置资本桥")).toBeInTheDocument();
-    expect(screen.getByText(/原固定启动线.*仅用于客户沟通/)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "长期可投资资本 ELTC" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "哪些钱可以投资？" })).toBeInTheDocument();
+    expect(screen.getByText("为什么不是全部金融资产？")).toBeInTheDocument();
+    expect(screen.getByText("暂不进入长期投资")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "专业" }));
+    expect(screen.getByText(/公式版本.*输入哈希/)).toBeInTheDocument();
     expect(screen.getByText(/最低工资趋势只进入 IAI/)).toBeInTheDocument();
-    expect(screen.getByText("锁定制度资产")).toBeInTheDocument();
+    expect(screen.getAllByText("锁定制度资产").length).toBeGreaterThanOrEqual(2);
     expect(screen.getByText("未覆盖")).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: /重新计算责任/ }));

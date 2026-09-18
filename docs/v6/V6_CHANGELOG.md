@@ -18,3 +18,11 @@
 - Reorganized the Wealth Dashboard first screen around safety, goals, ELTC and Next Best Action using existing deterministic APIs.
 - Rewrote the README opening for judges, mentors, financial practitioners and partners before engineering readers.
 - Added the V6 product narrative and retained explicit synthetic, public snapshot, mock and non-live boundaries.
+
+## Phase 3 — Core Wealth Experience
+
+- Elevated the existing deterministic bridge to “长期可投资资本 ELTC” and added a capital-investment-eligibility view without creating a second calculator.
+- Added simple, standard and professional ELTC explanations; every amount still comes from the eligible-capital response.
+- Productized GRB as a four-layer Family Risk Profile: capacity, willingness, behavior constraint and final family risk budget.
+- Made the one-way behavior guardrail explicit and added regression assertions that the final budget never exceeds capacity, willingness or behavior limits.
+- Reordered the portfolio experience into ELTC, family risk budget, goal, asset direction and explanation before showing allocation detail.

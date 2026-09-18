@@ -113,8 +113,8 @@ export function PortfolioWorkspace({ householdId, view = "client" }: { household
     <section className="portfolio-workspace" data-view={view} aria-labelledby={`portfolio-heading-${view}`}>
       <header className="portfolio-header">
         <div>
-          <p className="section-index">组合优化 · 五道闸门</p>
-          <h2 id={`portfolio-heading-${view}`}>{view === "risk" ? "适当性证据与拒绝链" : view === "advisor" ? "三方案顾问复核台" : "长期资金的三种走法"}</h2>
+          <p className="section-index">ELTC → Risk Budget → Goal → Allocation</p>
+          <h2 id={`portfolio-heading-${view}`}>{view === "risk" ? "适当性证据与拒绝链" : view === "advisor" ? "三方案顾问复核台" : "先确认本次能配置多少钱，再看资产方向"}</h2>
           <p>{portfolio.counting_note}</p>
         </div>
         <div className="portfolio-actions">
@@ -124,7 +124,7 @@ export function PortfolioWorkspace({ householdId, view = "client" }: { household
       </header>
 
       <div className="portfolio-context-rail">
-        <ContextValue label="可执行长期金额" value={formatMoney(portfolio.context.eligible_long_term_amount)} />
+        <ContextValue label="长期可投资资本 ELTC" value={formatMoney(portfolio.context.eligible_long_term_amount)} />
         <ContextValue label="当前增长资产" value={formatMoney(portfolio.context.current_growth_assets)} />
         <ContextValue label="应补回安全层" value={formatMoney(portfolio.context.amount_to_restore_safety_layers)} />
         <ContextValue label="客户审慎上限" value={(portfolio.customer_suitability_gate.effective_risk_limit ?? "r1").toUpperCase()} />
@@ -138,6 +138,14 @@ export function PortfolioWorkspace({ householdId, view = "client" }: { household
           </select>
         </label>
       </div>
+
+      <ol className="portfolio-decision-path" aria-label="家庭组合决策五步">
+        <li><span>Step 1</span><small>本次可以配置多少钱？</small><strong>{formatMoney(portfolio.context.eligible_long_term_amount)}</strong><p>只使用通过家庭责任扣减与安全闸门的 ELTC。</p></li>
+        <li><span>Step 2</span><small>家庭风险预算</small><strong>{(portfolio.customer_suitability_gate.effective_risk_limit ?? "r1").toUpperCase()}</strong><p>能力、意愿、行为与适当性共同约束。</p></li>
+        <li><span>Step 3</span><small>家庭目标</small><strong>{formatMoney(portfolio.context.long_term_goal_present_value_gap, true)}</strong><p>长期责任目标的现值缺口，不用近期责任资金补足。</p></li>
+        <li><span>Step 4</span><small>建议资产方向</small><strong>{selectedCandidate.name}</strong><p>{selectedCandidate.strategic_allocations.map((line) => line.asset_class_name).join(" · ")}</p></li>
+        <li><span>Step 5</span><small>为什么这样配置？</small><strong>七项证据</strong><p>Goal · Risk · Behavior · 流动性 · CVaR · 购买力 · 分散度</p></li>
+      </ol>
 
       {Number(portfolio.context.eligible_long_term_amount) <= 0 ? (
         <aside className="portfolio-block-note" role="note">

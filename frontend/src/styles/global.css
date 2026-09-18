@@ -3333,6 +3333,71 @@ li[data-status="no_action_required"] .cfs-status {
   gap: 1px;
 }
 
+.family-risk-profile {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  border: 1px solid var(--color-border);
+  background: var(--color-border);
+  padding: 0;
+  list-style: none;
+}
+
+.family-risk-profile > li {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  min-height: 14rem;
+  background: var(--color-surface);
+  padding: var(--space-4);
+}
+
+.family-risk-profile > li[data-behavior="true"] {
+  border-top: 3px solid var(--color-warning);
+}
+
+.family-risk-profile > li[data-final="true"] {
+  border-top: 3px solid var(--color-action);
+  background: var(--color-surface-subtle);
+}
+
+.family-risk-profile > li > span,
+.family-risk-profile small {
+  color: var(--color-ink-muted);
+  font-family: var(--font-numeric);
+  font-size: var(--text-xs);
+}
+
+.family-risk-profile > li > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--space-1) var(--space-3);
+}
+
+.family-risk-profile small {
+  grid-column: 1 / -1;
+}
+
+.family-risk-profile strong {
+  color: var(--color-action);
+  font-family: var(--font-numeric);
+  font-size: var(--text-2xl);
+  letter-spacing: -0.04em;
+}
+
+.family-risk-profile b {
+  font-size: var(--text-sm);
+}
+
+.family-risk-profile p {
+  margin: 0;
+  color: var(--color-ink-muted);
+  font-size: var(--text-sm);
+  line-height: 1.65;
+}
+
 .cfs-risk-decision[data-open="true"] {
   border-top-color: var(--color-success);
 }
@@ -7436,7 +7501,7 @@ a {
 
 .eltc-outcome > aside {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--space-3);
 }
 
@@ -7449,6 +7514,118 @@ a {
   margin: 0;
   color: var(--color-ink-muted);
   line-height: 1.65;
+}
+
+.eltc-outcome > aside > div {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.eltc-explanation-modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.eltc-explanation-modes button {
+  border: 1px solid var(--color-border-strong);
+  background: transparent;
+  padding: 0.35rem 0.65rem;
+  color: var(--color-ink-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--text-xs);
+}
+
+.eltc-explanation-modes button[aria-pressed="true"] {
+  border-color: var(--color-action);
+  background: var(--color-action);
+  color: var(--color-action-on);
+}
+
+.capital-eligibility-view {
+  display: grid;
+  gap: var(--space-4);
+  border: 1px solid var(--color-border-strong);
+  padding: var(--space-5);
+}
+
+.capital-eligibility-view > header {
+  display: grid;
+  grid-template-columns: minmax(14rem, 0.65fr) minmax(0, 1.35fr);
+  gap: var(--space-5);
+  align-items: end;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-3);
+}
+
+.capital-eligibility-view h3,
+.capital-eligibility-view p {
+  margin: 0;
+}
+
+.capital-eligibility-view h3 {
+  font-size: var(--text-xl);
+  letter-spacing: -0.025em;
+}
+
+.capital-eligibility-view > header > p {
+  color: var(--color-ink-muted);
+  line-height: 1.65;
+}
+
+.capital-eligibility-view ul {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.capital-eligibility-view li {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr) auto minmax(8rem, auto);
+  align-items: center;
+  gap: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  padding-block: var(--space-3);
+}
+
+.capital-eligibility-view li:last-child {
+  border-bottom: 0;
+  background: var(--color-surface-subtle);
+  padding-inline: var(--space-3);
+}
+
+.capital-eligibility-view li > svg {
+  color: var(--color-ink-soft);
+}
+
+.capital-eligibility-view li[data-eligible="true"] > svg {
+  color: var(--color-success);
+}
+
+.capital-eligibility-view li[data-eligible="false"]:last-child > svg {
+  color: var(--color-warning);
+}
+
+.capital-eligibility-view li > div {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.capital-eligibility-view small,
+.capital-eligibility-view li > span {
+  color: var(--color-ink-muted);
+  font-size: var(--text-xs);
+}
+
+.capital-eligibility-view li > b {
+  font-family: var(--font-numeric);
+  font-variant-numeric: tabular-nums;
+}
+
+.capital-eligibility-view li > span {
+  text-align: right;
 }
 
 .eltc-waterfall {
@@ -15203,6 +15380,55 @@ a {
   font-variant-numeric: tabular-nums;
 }
 
+.portfolio-decision-path {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  border: 1px solid var(--color-border);
+  background: var(--color-border);
+  padding: 0;
+  list-style: none;
+}
+
+.portfolio-decision-path > li {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+  min-height: 12rem;
+  background: var(--color-surface);
+  padding: var(--space-4);
+}
+
+.portfolio-decision-path > li:first-child {
+  border-top: 3px solid var(--color-brand);
+}
+
+.portfolio-decision-path span,
+.portfolio-decision-path small {
+  color: var(--color-ink-muted);
+  font-size: var(--text-xs);
+}
+
+.portfolio-decision-path span {
+  color: var(--color-action);
+  font-family: var(--font-numeric);
+  font-weight: 700;
+}
+
+.portfolio-decision-path strong {
+  font-family: var(--font-numeric);
+  font-size: var(--text-lg);
+  font-variant-numeric: tabular-nums;
+}
+
+.portfolio-decision-path p {
+  margin: 0;
+  color: var(--color-ink-muted);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+}
+
 .portfolio-block-note {
   display: grid;
   grid-template-columns: minmax(12rem, 0.4fr) minmax(0, 1fr);
@@ -15956,6 +16182,10 @@ progress.allocation-track::-moz-progress-bar {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  .portfolio-decision-path {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .portfolio-context-rail > :nth-child(3) {
     border-right: 0;
   }
@@ -16024,6 +16254,10 @@ progress.allocation-track::-moz-progress-bar {
   }
 
   .portfolio-context-rail {
+    grid-template-columns: 1fr;
+  }
+
+  .portfolio-decision-path {
     grid-template-columns: 1fr;
   }
 
@@ -17878,6 +18112,10 @@ progress.allocation-track::-moz-progress-bar {
 }
 
 @media (max-width: 72rem) {
+  .family-risk-profile {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .demo-release-hero,
   .demo-operation-rail {
     grid-template-columns: 1fr;
@@ -17907,6 +18145,16 @@ progress.allocation-track::-moz-progress-bar {
 }
 
 @media (max-width: 48rem) {
+  .family-risk-profile,
+  .capital-eligibility-view > header,
+  .capital-eligibility-view li {
+    grid-template-columns: 1fr;
+  }
+
+  .capital-eligibility-view li > span {
+    text-align: left;
+  }
+
   .demo-release-summary,
   .demo-operation-actions,
   .demo-evidence-ledger,

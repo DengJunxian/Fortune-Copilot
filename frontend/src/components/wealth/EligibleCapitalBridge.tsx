@@ -1,24 +1,36 @@
 import {
   CheckCircleIcon,
   InfoIcon,
+  ProhibitIcon,
   WarningCircleIcon,
 } from "@phosphor-icons/react";
+import { useState } from "react";
 import type { EligibleCapitalResponse } from "../../api/liability";
 import type { CalibrationMode, CalibrationStatus } from "../../api/liability";
 import { formatMoney, formatRatio } from "../../utils/format";
 
 export function EligibleCapitalBridge({ result }: { result: EligibleCapitalResponse }) {
   const { calculation } = result;
+  const [explanationMode, setExplanationMode] = useState<"simple" | "standard" | "professional">("standard");
   const dispatchable = Number(calculation.dispatchable_financial_resources);
   const width = (value: string) => dispatchable > 0
     ? `${Math.max(1.5, Number(value) / dispatchable * 100)}%`
     : "1.5%";
+  const reservedCapital = Math.max(0, dispatchable - Number(calculation.eligible_long_term_capital));
+  const simpleExplanation = `并非全部金融资源都适合承担长期市场波动。当前先保留 ${formatMoney(String(reservedCapital))} 用于家庭周转、责任和安全垫。`;
+  const standardExplanation = `当前家庭拥有 ${formatMoney(calculation.dispatchable_financial_resources)} 可调度金融资源；逐项覆盖日常周转、应急、债务、保障、近期责任、已承诺目标与锁定资金后，${formatMoney(calculation.eligible_long_term_capital)} 可以进入长期配置评估。`;
+  const professionalExplanation = `ELTC = ${formatMoney(calculation.dispatchable_financial_resources)} − ${formatMoney(String(reservedCapital))} = ${formatMoney(calculation.eligible_long_term_capital)}。公式版本 ${result.meta.formula_version}，输入哈希 ${result.meta.input_hash.slice(0, 12)}…；资格仍须通过全部安全闸门。`;
+  const explanation = explanationMode === "simple"
+    ? simpleExplanation
+    : explanationMode === "professional"
+      ? professionalExplanation
+      : standardExplanation;
   return (
     <section className="eligible-capital-section" aria-labelledby="eligible-capital-title">
       <header className="goals-section-header">
         <div>
           <p className="section-eyebrow">Eligible Long-Term Capital</p>
-          <h2 id="eligible-capital-title">长期可配置资本桥</h2>
+          <h2 id="eligible-capital-title">长期可投资资本 ELTC</h2>
         </div>
         <p>每一步均保留扣减前、扣减额、扣减后、来源和原因，可回溯而不可跳步。</p>
       </header>
@@ -26,16 +38,55 @@ export function EligibleCapitalBridge({ result }: { result: EligibleCapitalRespo
         <div>
           <span>{calculation.formally_eligible ? "可进入正式配置评估" : "当前应先修复前置责任"}</span>
           <strong>{formatMoney(calculation.eligible_long_term_capital)}</strong>
-          <small>ELTC · 不是总资产，也不是固定门槛</small>
+          <small>只有这部分资金才可以正式进入长期资产配置</small>
         </div>
         <aside>
           <InfoIcon size={19} weight="fill" aria-hidden="true" />
-          <p>
-            原固定启动线 {formatMoney(calculation.growth_entry_threshold.amount, true)}
-            仅用于客户沟通，不决定资格。
-          </p>
+          <div>
+            <strong>为什么不是全部金融资产？</strong>
+            <p>{explanation}</p>
+            <div className="eltc-explanation-modes" aria-label="ELTC 解释详细程度">
+              {(["simple", "standard", "professional"] as const).map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  aria-pressed={explanationMode === mode}
+                  onClick={() => setExplanationMode(mode)}
+                >
+                  {{ simple: "简洁", standard: "标准", professional: "专业" }[mode]}
+                </button>
+              ))}
+            </div>
+          </div>
         </aside>
       </div>
+      <section className="capital-eligibility-view" aria-labelledby="capital-eligibility-title">
+        <header>
+          <div>
+            <p className="section-eyebrow">Investment eligibility</p>
+            <h3 id="capital-eligibility-title">哪些钱可以投资？</h3>
+          </div>
+          <p>资金用途先于产品选择；被家庭责任占用的资金不进入长期组合。</p>
+        </header>
+        <ul>
+          {calculation.bridge.map((step) => (
+            <li key={step.code} data-eligible="false">
+              <ProhibitIcon size={20} weight="fill" aria-hidden="true" />
+              <div><strong>{step.label}</strong><small>{step.reason}</small></div>
+              <b>{formatMoney(step.deduction)}</b>
+              <span>{Number(step.deduction) > 0 ? "不参与长期配置" : "当前无需预留"}</span>
+            </li>
+          ))}
+          <li data-eligible={calculation.formally_eligible}>
+            {calculation.formally_eligible
+              ? <CheckCircleIcon size={20} weight="fill" aria-hidden="true" />
+              : <WarningCircleIcon size={20} weight="fill" aria-hidden="true" />}
+            <div><strong>长期可投资资本 ELTC</strong><small>通过责任扣减后，仍须满足安全与适当性闸门。</small></div>
+            <b>{formatMoney(calculation.eligible_long_term_capital)}</b>
+            <span>{calculation.formally_eligible ? "可进入长期投资" : "暂不进入长期投资"}</span>
+          </li>
+        </ul>
+      </section>
       <ol className="eltc-waterfall">
         <li className="eltc-waterfall-origin">
           <span>起始</span><strong>{formatMoney(calculation.dispatchable_financial_resources)}</strong>

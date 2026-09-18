@@ -109,6 +109,17 @@ def test_case_one_high_interest_debt_blocks_investment_and_records_no_action() -
         assert no_action_step.status == "blocked"
         assert result.risk_budget.decision == "repair_first"
         assert result.risk_budget.additional_risk_allowed is False
+        risk_order = {
+            "low": 0,
+            "medium_low": 1,
+            "medium": 2,
+            "medium_high": 3,
+            "high": 4,
+        }
+        final_level = risk_order[result.risk_budget.household_economic_risk_capacity.value]
+        assert final_level <= risk_order[result.risk_budget.capacity.value]
+        assert final_level <= risk_order[result.risk_budget.willingness.value]
+        assert final_level <= risk_order[result.risk_budget.behavior.value]
         assert {item.code for item in result.risk_budget.factors} == {
             "capacity",
             "willingness",
