@@ -14430,6 +14430,58 @@ a {
   font-family: var(--font-numeric);
 }
 
+.intake-follow-up {
+  display: grid;
+  gap: var(--space-3);
+  border: 1px solid var(--color-border-strong);
+  border-left: 4px solid var(--color-action);
+  background: var(--color-surface-subtle);
+  padding: var(--space-4);
+}
+
+.intake-follow-up > header {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.intake-follow-up h4,
+.intake-follow-up p {
+  margin: 0;
+}
+
+.intake-follow-up > header > span {
+  color: var(--color-action);
+  font-size: var(--text-xs);
+  font-weight: 700;
+}
+
+.intake-follow-up > ol {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.intake-follow-up li {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  border-top: 1px solid var(--color-border);
+  padding-block: var(--space-3);
+}
+
+.intake-follow-up li > span {
+  color: var(--color-action);
+  font-family: var(--font-numeric);
+  font-weight: 700;
+}
+
+.intake-follow-up li > small {
+  color: var(--color-ink-muted);
+  font-size: var(--text-xs);
+}
+
 .missing-fields,
 .graph-data,
 .numeric-ledger {
@@ -14689,6 +14741,7 @@ a {
   .knowledge-answer,
   .citation-ledger li,
   .draft-field,
+  .intake-follow-up li,
   .inference-ledger > li,
   .agent-timeline > li {
     grid-template-columns: 1fr;

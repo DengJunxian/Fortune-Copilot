@@ -200,6 +200,39 @@ def test_natural_language_intake_requires_field_by_field_confirmation() -> None:
     assert "mortgage_balance" not in payload["confirmed_values"]
 
 
+def test_intake_extracts_competition_household_and_prioritizes_material_follow_up() -> None:
+    household_id = seed_all()["DEMO_B"]
+    created = call(
+        "POST",
+        "/api/v1/trust/intake/drafts",
+        role="client",
+        payload={
+            "household_id": household_id,
+            "text": (
+                "我和爱人在上海工作，每个月税后收入大约4万元，还有180万元房贷，"
+                "小孩今年4岁，希望以后去国外读大学。"
+            ),
+        },
+    )
+    assert created.status_code == 201, created.text
+    payload = created.json()
+    by_code = {item["code"]: item for item in payload["extracted_fields"]}
+    assert by_code["spouse_present"]["value"] == "true"
+    assert by_code["joint_monthly_salary"]["value"] == "40000.00"
+    assert by_code["mortgage_balance"]["value"] == "1800000.00"
+    assert by_code["child_age"]["value"] == "4"
+    assert by_code["child_lifecycle_stage"]["value"] == "学龄前"
+    assert by_code["education_goal_present"]["value"] == "true"
+    assert by_code["education_goal_region"]["value"].startswith("海外")
+    assert by_code["household_location"]["value"] == "上海"
+    priorities = [item["priority"] for item in payload["missing_fields"]]
+    assert priorities == sorted(priorities)
+    top_questions = [item["follow_up_question"] for item in payload["missing_fields"][:3]]
+    assert all(top_questions)
+    assert payload["status"] == "pending_confirmation"
+    assert payload["confirmation_required"] is True
+
+
 def test_graph_visualization_covers_required_relations_and_six_inferences() -> None:
     graph = shanghai_demo_graph(as_of=date(2026, 8, 4))
     assert set(REQUIRED_NODE_TYPES) <= set(graph.node_type_coverage)

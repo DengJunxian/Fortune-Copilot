@@ -1092,9 +1092,10 @@ describe("Fortune Copilot routes", () => {
     const user = userEvent.setup();
     render(<AppRoutes initialPath="/client/advanced" />);
 
-    expect(await screen.findByRole("heading", { name: "先形成草稿，再逐项确认" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "待确认家庭信息" })).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "解析为待确认草稿" }));
     expect(await screen.findByText("夫妻月工资合计")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "为了继续计算，优先确认：" })).toBeInTheDocument();
     expect(screen.getByDisplayValue("30000.00")).toBeInTheDocument();
     expect(screen.getByText(/房贷余额/)).toBeInTheDocument();
     expect(screen.getByText(/月供不能推导贷款余额/)).toBeInTheDocument();

@@ -26,7 +26,7 @@ type TrustView = "client" | "advisor" | "risk";
 type GraphMode = "shanghai" | "household";
 
 const DEFAULT_POLICY_QUERY = "个人养老金每年缴费限额和家庭适配需要核对什么?";
-const DEFAULT_INTAKE_TEXT = "我和爱人每月工资合计三万元，房贷八千，孩子上幼儿园";
+const DEFAULT_INTAKE_TEXT = "我和爱人在上海工作，每个月税后收入大约4万元，还有180万元房贷，小孩今年4岁，希望以后去国外读大学。";
 const laneLabels: Record<GraphLane, string> = {
   family: "家庭关系",
   facts: "事实底稿",
@@ -268,7 +268,7 @@ function IntakeLedger({ text, onText, parsing, onParse, draft, values, onValue, 
 }) {
   return (
     <section className="trust-section intake-ledger" aria-labelledby="intake-heading">
-      <header><div><p className="section-index">02 / 自然语言录入</p><h3 id="intake-heading">先形成草稿，再逐项确认</h3></div><p>原文只保存哈希和脱敏预览；草稿不会直接改写家庭事实。</p></header>
+      <header><div><p className="section-index">02 / 自然语言家庭建档</p><h3 id="intake-heading">待确认家庭信息</h3></div><p>AI 只负责理解和追问；原文保存哈希与脱敏预览，确认前绝不改写正式 Household Facts。</p></header>
       <div className="intake-entry">
         <label htmlFor="intake-text"><span>家庭描述</span><textarea id="intake-text" value={text} onChange={(event) => onText(event.target.value)} rows={3} /></label>
         <Button type="button" loading={parsing} onClick={onParse}>解析为待确认草稿</Button>
@@ -288,6 +288,14 @@ function IntakeLedger({ text, onText, parsing, onParse, draft, values, onValue, 
             ))}
           </fieldset>
           {draft.status !== "confirmed" ? <Button type="button" variant="secondary" loading={confirming} onClick={onConfirm}>确认已勾选字段</Button> : null}
+          {draft.missing_fields.length ? (
+            <section className="intake-follow-up" aria-labelledby="intake-follow-up-heading">
+              <header><span>按计算影响排序</span><h4 id="intake-follow-up-heading">为了继续计算，优先确认：</h4></header>
+              <ol>{draft.missing_fields.slice(0, 3).map((field) => (
+                <li key={field.code}><span>P{field.priority}</span><p>{field.follow_up_question}</p><small>影响：{field.required_for.join("、")}</small></li>
+              ))}</ol>
+            </section>
+          ) : null}
           <details className="missing-fields"><summary>仍缺少 {draft.missing_fields.length} 项，不会自动猜测</summary><ul>{draft.missing_fields.map((field) => <li key={field.code}><strong>{field.label}</strong><span>{field.reason} · 用于 {field.required_for.join("、")}</span></li>)}</ul></details>
           <p className="boundary-copy">{draft.boundary_note}</p>
         </div>

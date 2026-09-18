@@ -215,6 +215,8 @@ class MissingDraftField(BaseModel):
     label: str
     reason: str
     required_for: list[str]
+    priority: int = Field(default=3, ge=1, le=5)
+    follow_up_question: str = "请补充这一信息。"
 
 
 class IntakeDraftResponse(BaseModel):

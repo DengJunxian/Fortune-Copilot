@@ -33,3 +33,11 @@
 - Funnel counts now come from the real product pool and sequential purpose, horizon, risk, liquidity and hard-eligibility filters; the UI contains no fixed counts.
 - Renamed product output to “当前家庭约束下的候选产品” and exposed Why Selected, Why Not Others and per-product exclusion reasons.
 - Kept the verified public catalog at eight products because expanding it without additional official evidence would weaken the data boundary; public evidence remains distinct from a live ICBC shelf.
+
+## Phase 5 — Controlled AI Experience
+
+- Expanded deterministic Chinese intake extraction for spouse, after-tax joint income, mortgage balance, child age/lifecycle stage, household location and overseas-education intent.
+- Replaced the default example with the competition household sentence and kept every extracted value in a pending-confirmation draft.
+- Added impact-ranked follow-up questions for cash flow, assets, protection, education stage/destination/prepared capital and debt details.
+- Retained the canonical-fact boundary: confirming a draft records reviewed values but does not silently write or overwrite formal Household Facts.
+- Reused the ELTC explanation modes added in Phase 3; AI changes wording depth but never recalculates the amount.
