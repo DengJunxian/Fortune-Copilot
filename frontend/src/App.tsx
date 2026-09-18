@@ -27,6 +27,9 @@ const PlanningPage = lazy(() =>
 const DemoPage = lazy(() =>
   import("./pages/DemoPage").then((module) => ({ default: module.DemoPage })),
 );
+const CompetitionPage = lazy(() =>
+  import("./pages/CompetitionPage").then((module) => ({ default: module.CompetitionPage })),
+);
 const RiskPage = lazy(() =>
   import("./pages/RiskPage").then((module) => ({ default: module.RiskPage })),
 );
@@ -101,6 +104,7 @@ const routeRegistry: readonly RouteDefinition[] = [
   { paths: ["/wealth/family"], render: () => cfsFeatureEnabled ? <FamilyNeedsPage /> : <NotFoundPage /> },
   { paths: ["/wealth/history"], render: () => persistentTwinFeatureEnabled ? <WealthHistoryPage /> : <NotFoundPage /> },
   { paths: ["/demo"], render: () => <DemoPage /> },
+  { paths: ["/competition"], render: () => <CompetitionPage /> },
   { paths: ["/advisor"], render: () => <AdvisorPage /> },
   { paths: ["/advisor/actions"], render: () => <AdvisorActionCenterPage /> },
   { paths: ["/risk"], render: () => <RiskPage /> },

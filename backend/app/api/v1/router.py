@@ -7,6 +7,7 @@ from app.api.v1.endpoints import (
     cfs,
     client,
     client_profile,
+    competition,
     decisions,
     demo,
     domain,
@@ -57,6 +58,7 @@ api_router.include_router(behavior.router)
 api_router.include_router(trust.router)
 api_router.include_router(client.router)
 api_router.include_router(client_profile.router)
+api_router.include_router(competition.router)
 api_router.include_router(decisions.router)
 api_router.include_router(liability.router)
 api_router.include_router(demo.router)

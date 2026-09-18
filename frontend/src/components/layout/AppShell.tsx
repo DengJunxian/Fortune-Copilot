@@ -18,6 +18,7 @@ import { useRouter } from "../../router/context";
 
 const portalDensity: Record<string, string> = {
   "/demo": "risk",
+  "/competition": "client",
   "/client": "client",
   "/planning": "client",
   "/client/advanced": "client",

@@ -12,7 +12,7 @@ services:
       - alembic upgrade head && python -m app.cli seed --if-empty && exec uvicorn app.main:app --host 0.0.0.0 --port 8000
     environment:
       APP_ENV: demo
-      APP_VERSION: 0.14.0
+      APP_VERSION: 0.15.0
       DATABASE_URL: sqlite:////data/wealthtwin.db
       SYNTHETIC_DATA_PATH: /seed-data/synthetic/v5_personas/personas_v2.json
       V5_PERSONA_DATA_PATH: /seed-data/synthetic/v5_personas/personas_v2.json
@@ -36,6 +36,7 @@ services:
       KNOWLEDGE_BASE_PATH: /seed-data/knowledge/controlled_knowledge_v1.json
       DEMO_BENCHMARK_PATH: /seed-data/benchmarks/demo_release_v1.json
       V5_RELEASE_BENCHMARK_PATH: /seed-data/benchmarks/v5_release_v2.json
+      COMPETITION_DATA_ROOT: /seed-data
       DEMO_STORY_VERSION: wealthtwin-main-demo-v1.0.0
       DEMO_CACHE_TTL_SECONDS: "300"
       DEMO_MAIN_PATH_COUNT: "100"

@@ -1,0 +1,13 @@
+{
+  "schema_version": "competition-product-schema-v1",
+  "data_status": "synthetic_demo_not_live",
+  "products": [
+    {"product_id": "CFS-CASH-01", "product_name": "模拟现金管理账户", "product_type": "cash_management", "asset_class": "cash_equivalent", "risk_level": 1, "expected_return": "0.012", "volatility": "0.003", "liquidity_days": 0, "duration_months": 0, "minimum_investment": "1.00", "fees": "0.000", "suitable_customer": [1,2,3,4,5], "tags": ["高流动性", "应急"], "is_demo": true},
+    {"product_id": "CFS-DEPOSIT-12", "product_name": "模拟一年期存款类型", "product_type": "term_deposit", "asset_class": "fixed_income", "risk_level": 1, "expected_return": "0.020", "volatility": "0.002", "liquidity_days": 30, "duration_months": 12, "minimum_investment": "50.00", "fees": "0.000", "suitable_customer": [1,2,3,4,5], "tags": ["低波动", "目标匹配"], "is_demo": true},
+    {"product_id": "CFS-BOND-01", "product_name": "模拟中短债基金类型", "product_type": "bond_fund", "asset_class": "fixed_income", "risk_level": 2, "expected_return": "0.034", "volatility": "0.045", "liquidity_days": 3, "duration_months": 24, "minimum_investment": "10.00", "fees": "0.004", "suitable_customer": [2,3,4,5], "tags": ["固定收益", "净值波动"], "is_demo": true},
+    {"product_id": "CFS-EQUITY-01", "product_name": "模拟境内宽基指数基金类型", "product_type": "index_fund", "asset_class": "diversified_equity", "risk_level": 4, "expected_return": "0.075", "volatility": "0.200", "liquidity_days": 3, "duration_months": 60, "minimum_investment": "10.00", "fees": "0.004", "suitable_customer": [4,5], "tags": ["长期", "分散权益"], "is_demo": true},
+    {"product_id": "CFS-REIT-01", "product_name": "模拟公募REITs类型", "product_type": "public_reit", "asset_class": "real_assets", "risk_level": 4, "expected_return": "0.060", "volatility": "0.160", "liquidity_days": 5, "duration_months": 60, "minimum_investment": "100.00", "fees": "0.008", "suitable_customer": [4,5], "tags": ["实物资产", "价格波动"], "is_demo": true},
+    {"product_id": "CFS-GOLD-01", "product_name": "模拟黄金ETF类型", "product_type": "gold_etf", "asset_class": "gold", "risk_level": 3, "expected_return": "0.042", "volatility": "0.140", "liquidity_days": 2, "duration_months": 36, "minimum_investment": "100.00", "fees": "0.006", "suitable_customer": [3,4,5], "tags": ["分散", "不产生固定现金流"], "is_demo": true},
+    {"product_id": "CFS-THEME-01", "product_name": "模拟高波动主题基金类型", "product_type": "thematic_fund", "asset_class": "diversified_equity", "risk_level": 5, "expected_return": "0.095", "volatility": "0.350", "liquidity_days": 3, "duration_months": 84, "minimum_investment": "10.00", "fees": "0.015", "suitable_customer": [5], "tags": ["主题集中", "高波动"], "is_demo": true}
+  ]
+}
