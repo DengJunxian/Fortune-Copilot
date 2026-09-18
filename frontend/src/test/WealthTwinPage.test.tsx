@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { WealthTwinPage } from "../pages/WealthTwinPage";
 import { TwinSnapshotReport } from "../components/wealth/TwinSnapshotReport";
 import { RouterProvider } from "../router/RouterProvider";
+import { formatMoney } from "../utils/format";
 import {
   changedTimelineFixture,
   changedWealthTwinFixture,
@@ -86,7 +87,9 @@ describe("WealthTwinPage", () => {
     expect(await screen.findByText(/新快照已生成/)).toBeInTheDocument();
     await waitFor(() => {
       expect(screen.getByText("¥252,000")).toBeInTheDocument();
-      expect(screen.getByText("¥36万 → ¥25.2万")).toBeInTheDocument();
+      const beforeIncome = formatMoney("360000.00", true);
+      const afterIncome = formatMoney("252000.00", true);
+      expect(screen.getByText(`${beforeIncome} → ${afterIncome}`)).toBeInTheDocument();
     }, { timeout: 5_000 });
     expect(screen.getByText(/工资收入调整 -30.0%/)).toBeInTheDocument();
 
