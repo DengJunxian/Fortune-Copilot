@@ -22,6 +22,7 @@ from app.schemas.demo import (
     ExperimentSuiteResponse,
     FamilyComparisonResponse,
 )
+from app.schemas.persona_release import FounderStoryResponse, PersonaReleaseResponse
 from app.services.demo_release import (
     compare_demo_families,
     demo_manifest,
@@ -34,6 +35,8 @@ from app.services.demo_release import (
     run_experiment_suite,
     run_main_demo,
 )
+from app.services.founder_story import run_founder_story
+from app.services.persona_release import run_persona_release
 
 SessionDependency = Annotated[Session, Depends(get_session)]
 ActorDependency = Annotated[ActorContext, Depends(require_actor)]
@@ -134,3 +137,25 @@ def get_latest_demo_experiment_suite(
 ) -> ExperimentSuiteResponse | None:
     require_roles(actor, ("advisor", "compliance", "admin"))
     return latest_experiment_suite(session)
+
+
+@router.post("/v5/release-benchmark", response_model=PersonaReleaseResponse)
+def post_v5_release_benchmark(
+    request: Request,
+    session: SessionDependency,
+    actor: ActorDependency,
+) -> PersonaReleaseResponse:
+    require_roles(actor, ("admin",))
+    require_sensitive_confirmation(request, "run_v5_release_benchmark")
+    return run_persona_release(session, get_settings())
+
+
+@router.post("/v5/founder-story", response_model=FounderStoryResponse)
+def post_v5_founder_story(
+    request: Request,
+    session: SessionDependency,
+    actor: ActorDependency,
+) -> FounderStoryResponse:
+    require_roles(actor, ("admin",))
+    require_sensitive_confirmation(request, "run_founder_story")
+    return run_founder_story(session, get_settings())

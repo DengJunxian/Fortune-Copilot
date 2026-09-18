@@ -226,6 +226,55 @@ export interface ComplaintReplay {
   boundary_note: string;
 }
 
+export type DecisionEvidenceStatus = "bound" | "not_available" | "not_applicable";
+
+export interface DecisionEvidenceSection {
+  status: DecisionEvidenceStatus;
+  version: string;
+  source_record_ids: string[];
+  decision_inputs: Record<string, unknown>;
+  snapshot: unknown;
+  display_only_text: string | null;
+}
+
+export interface DecisionEvidenceV2 {
+  evidence_version: "decision-evidence-v2.0.0";
+  decision_id: string;
+  decision_type: "plan_workflow" | "recommendation" | "plan_report";
+  household_id: string;
+  household_input: DecisionEvidenceSection;
+  financial_graph: DecisionEvidenceSection;
+  client_profile: DecisionEvidenceSection;
+  wealth_needs: DecisionEvidenceSection;
+  liability: DecisionEvidenceSection;
+  ELTC: DecisionEvidenceSection;
+  risk_budget: DecisionEvidenceSection;
+  enterprise: DecisionEvidenceSection;
+  CFS: DecisionEvidenceSection;
+  product_snapshot: DecisionEvidenceSection;
+  suitability: DecisionEvidenceSection;
+  calibration: DecisionEvidenceSection;
+  advisor: DecisionEvidenceSection;
+  client_confirmation: DecisionEvidenceSection;
+  generated_at: string;
+  decision_hash: string;
+  calculation_source: "deterministic_evidence_v2";
+}
+
+export interface DecisionReplayV2 {
+  decision_id: string;
+  decision_type: DecisionEvidenceV2["decision_type"];
+  household_id: string;
+  replayed_from: "frozen_decision_evidence";
+  stored_decision_hash: string;
+  replay_decision_hash: string;
+  hash_identical: boolean;
+  used_snapshot_versions: Record<string, string>;
+  latest_product_data_used: false;
+  replayed_at: string;
+  evidence: DecisionEvidenceV2;
+}
+
 export interface WorkflowActionInput {
   action: PlanWorkflowAction;
   expected_version: number;
@@ -328,6 +377,16 @@ export function replayComplaint(workflowId: string, versionId: string, reason: s
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ version_id: versionId, reason }),
+  });
+}
+
+export function fetchDecisionEvidence(decisionId: string, actor: DemoActor, signal?: AbortSignal): Promise<DecisionEvidenceV2> {
+  return readJson(`/api/v1/decisions/${encodeURIComponent(decisionId)}/evidence`, actor, signal);
+}
+
+export function replayDecision(decisionId: string, actor: DemoActor): Promise<DecisionReplayV2> {
+  return readJson(`/api/v1/decisions/${encodeURIComponent(decisionId)}/replay`, actor, undefined, {
+    method: "POST",
   });
 }
 

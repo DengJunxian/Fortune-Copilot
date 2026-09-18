@@ -8,15 +8,19 @@ from datetime import date
 from decimal import Decimal
 from typing import Any
 
+from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.core.auth import ActorContext
+from app.core.config import get_settings
 from app.core.errors import AppError
 from app.domain.enums import AccountBucket, AuditEventType, RecommendationStatus
 from app.domain.financial import HouseholdFacts
 from app.models.assessment import AccountBucketPlan
 from app.models.governance import ActionItem, AuditEvent, Recommendation
+from app.models.liability import LiabilityStream
+from app.schemas.eligible_capital import EligibleCapitalCalculation
 from app.schemas.planning import (
     AppliedCounterfactual,
     CounterfactualChange,
@@ -27,10 +31,14 @@ from app.schemas.planning import (
     PlanningResponse,
     RatioMeasure,
 )
+from app.services.eligible_capital.engine import calculate_eligible_capital
 from app.services.financial.engine import analyze_facts
 from app.services.financial.facts import load_household_facts
 from app.services.financial.rules import load_financial_rules
 from app.services.financial.utils import ZERO, money
+from app.services.governance.evidence import minimal_v2_from_legacy, searchable_fields
+from app.services.liability_engine.adapters import adapt_goals_and_responsibilities
+from app.services.liability_engine.rules import load_liability_rules
 from app.services.methodology.engine import assess_methodology
 from app.services.methodology.evidence import build_decision_evidence
 from app.services.methodology.models import MethodologyRules
@@ -184,6 +192,7 @@ def plan_facts(
     adjustments: AppliedCounterfactual,
     methodology_rules: MethodologyRules | None = None,
     public_data_snapshot: AuthoritativePublicDataSnapshot | None = None,
+    eligible_capital: EligibleCapitalCalculation | None = None,
 ) -> PlanningResponse:
     financial_rules = load_financial_rules(financial_rules_path)
     financial = analyze_facts(facts, financial_rules, analysis_date)
@@ -254,6 +263,7 @@ def plan_facts(
         adjustments,
         methodology,
         active_methodology_rules,
+        eligible_capital,
     )
     input_version = _planning_input_version(facts, analysis_date, adjustments)
     decision_evidence = build_decision_evidence(
@@ -326,10 +336,12 @@ def plan_household(
 ) -> PlanningResponse:
     facts = load_household_facts(session, household_id)
     planning_rules = load_planning_rules(planning_rules_path)
+    financial_rules = load_financial_rules(financial_rules_path)
+    methodology_rules = load_methodology_rules(methodology_rules_path)
+    public_data_snapshot = load_public_data_snapshot(public_data_snapshot_path)
     if request is None:
         adjustments = empty_counterfactual()
     else:
-        financial_rules = load_financial_rules(financial_rules_path)
         financial = analyze_facts(facts, financial_rules, analysis_date)
         adjustments = _validate_counterfactual(
             facts,
@@ -337,14 +349,45 @@ def plan_household(
             set(financial_rules.classification.investable_financial_asset_categories),
             request,
         )
+    eligible_capital: EligibleCapitalCalculation | None = None
+    settings = get_settings()
+    if settings.enable_v5_liability_engine:
+        liability_rules = load_liability_rules(settings.liability_rules_path)
+        derived_streams = adapt_goals_and_responsibilities(
+            facts,
+            liability_rules,
+            analysis_date,
+        )
+        custom_streams = tuple(
+            session.scalars(
+                select(LiabilityStream)
+                .where(
+                    LiabilityStream.household_id == household_id,
+                    LiabilityStream.source_goal_id.is_(None),
+                    LiabilityStream.source_responsibility_id.is_(None),
+                    LiabilityStream.is_deleted.is_(False),
+                )
+                .order_by(LiabilityStream.start_date, LiabilityStream.id)
+            ).all()
+        )
+        eligible_capital = calculate_eligible_capital(
+            facts,
+            (*derived_streams, *custom_streams),
+            financial_rules,
+            methodology_rules,
+            liability_rules,
+            analysis_date,
+            public_data_snapshot,
+        ).calculation
     return plan_facts(
         facts,
         financial_rules_path,
         planning_rules,
         analysis_date,
         adjustments,
-        load_methodology_rules(methodology_rules_path),
-        load_public_data_snapshot(public_data_snapshot_path),
+        methodology_rules,
+        public_data_snapshot,
+        eligible_capital,
     )
 
 
@@ -487,6 +530,19 @@ def persist_planning(
     )
     session.add(recommendation)
     session.flush()
+    evidence_v2 = minimal_v2_from_legacy(
+        decision_id=recommendation.id,
+        decision_type="recommendation",
+        household_id=recommendation.household_id,
+        legacy=plan.decision_evidence.model_dump(mode="json"),
+        suitability=recommendation.suitability_evidence,
+        generated_at=recommendation.created_at,
+    )
+    search = searchable_fields(evidence_v2)
+    recommendation.decision_evidence = evidence_v2.model_dump(mode="json")
+    recommendation.decision_hash = evidence_v2.decision_hash
+    for field_name, value in search.model_dump().items():
+        setattr(recommendation, field_name, value)
 
     account_ids: list[str] = []
     for account in plan.accounts:

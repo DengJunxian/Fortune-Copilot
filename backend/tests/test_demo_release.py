@@ -62,7 +62,7 @@ def test_demo_controls_are_synthetic_only_admin_guarded_and_confirmed() -> None:
     load_demo()
     loaded = call("GET", "/api/v1/demo/manifest", role="advisor").json()
     assert loaded["ready"] is True
-    assert loaded["seeded_household_count"] == 3
+    assert loaded["seeded_household_count"] == 8
     assert loaded["mock_mode"] is True
     assert loaded["external_network_required"] is False
 
@@ -74,8 +74,8 @@ def test_demo_controls_are_synthetic_only_admin_guarded_and_confirmed() -> None:
         headers={"X-Confirm-Action": "reset_synthetic_demo"},
     )
     assert reset.status_code == 200, reset.text
-    assert reset.json()["removed"] == 3
-    assert reset.json()["loaded"] == 3
+    assert reset.json()["removed"] == 8
+    assert reset.json()["loaded"] == 8
 
 
 def test_preheat_and_three_family_comparison_prove_dynamic_configurations() -> None:
@@ -170,7 +170,12 @@ def test_one_click_main_demo_and_seven_experiments_are_durable_and_offline() -> 
     assert no_retry.status_code == 409
 
 
-def _create_release_database(path: Path, *, synthetic_only: bool = True) -> None:
+def _create_release_database(
+    path: Path,
+    *,
+    synthetic_only: bool = True,
+    household_codes: tuple[str, ...] = ("DEMO_A", "DEMO_B", "DEMO_C"),
+) -> None:
     with sqlite3.connect(path) as connection:
         connection.executescript(
             """
@@ -186,7 +191,7 @@ def _create_release_database(path: Path, *, synthetic_only: bool = True) -> None
             """
         )
         connection.execute("INSERT INTO alembic_version VALUES ('0013_demo_release')")
-        for code in ("DEMO_A", "DEMO_B", "DEMO_C"):
+        for code in household_codes:
             connection.execute(
                 "INSERT INTO households VALUES (?, ?, 1, 0)", (code, f"{code} 初始")
             )
@@ -229,4 +234,21 @@ def test_demo_backup_restore_is_verified_synthetic_only_and_recoverable(
         backup_demo_database(
             Settings(APP_ENV="test", DATABASE_URL=f"sqlite:///{unsafe}"),
             tmp_path / "unsafe-backup.sqlite",
+        )
+
+
+def test_demo_backup_accepts_v5_persona_set_and_rejects_partial_sets(tmp_path: Path) -> None:
+    v5_database = tmp_path / "v5.sqlite"
+    v5_codes = tuple(f"DEMO_{letter}" for letter in "ABCDEFGH")
+    _create_release_database(v5_database, household_codes=v5_codes)
+    settings = Settings(APP_ENV="test", DATABASE_URL=f"sqlite:///{v5_database}")
+    result = backup_demo_database(settings, tmp_path / "v5-backup.sqlite")
+    assert result.household_codes == list(v5_codes)
+
+    partial_database = tmp_path / "partial.sqlite"
+    _create_release_database(partial_database, household_codes=v5_codes[:-1])
+    with pytest.raises(AppError, match="V5 A-H"):
+        backup_demo_database(
+            Settings(APP_ENV="test", DATABASE_URL=f"sqlite:///{partial_database}"),
+            tmp_path / "partial-backup.sqlite",
         )

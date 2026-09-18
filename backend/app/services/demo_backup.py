@@ -17,6 +17,9 @@ from app.core.errors import AppError
 
 ALLOWED_ENVIRONMENTS = {"development", "demo", "test"}
 REQUIRED_TABLES = {"alembic_version", "households", "demo_runs", "experiment_suite_runs"}
+LEGACY_HOUSEHOLD_CODES = tuple(f"DEMO_{letter}" for letter in "ABC")
+V5_HOUSEHOLD_CODES = tuple(f"DEMO_{letter}" for letter in "ABCDEFGH")
+SUPPORTED_HOUSEHOLD_CODE_SETS = {LEGACY_HOUSEHOLD_CODES, V5_HOUSEHOLD_CODES}
 
 
 @dataclass(frozen=True)
@@ -98,10 +101,10 @@ def _inspect_database(path: Path) -> list[str]:
             status_code=409,
         ) from exc
     codes = [str(row[0]) for row in rows]
-    if codes != ["DEMO_A", "DEMO_B", "DEMO_C"]:
+    if tuple(codes) not in SUPPORTED_HOUSEHOLD_CODE_SETS:
         raise AppError(
             "demo_backup_family_set_invalid",
-            "备份必须且只能包含当前三套活动合成家庭",
+            "备份必须且只能包含 V5 A-H，或兼容的 V4 A-C 活动合成家庭",
             status_code=409,
             details={"household_codes": codes},
         )

@@ -3,6 +3,8 @@ import type {
   AdvisorHouseholdList,
   ComplianceEvidence,
   ComplianceQueue,
+  DecisionEvidenceSection,
+  DecisionEvidenceV2,
   PlanWorkflow,
   PlanWorkflowAction,
   PlanWorkflowState,
@@ -196,4 +198,60 @@ export const complianceQueueFixture: ComplianceQueue = {
     warning_count: 2,
     recommendation_reason: "提交合规测试理由",
   }],
+};
+
+function decisionSection(
+  version: string,
+  decisionInputs: Record<string, unknown> = { bound: true },
+  sourceRecordIds: string[] = [],
+): DecisionEvidenceSection {
+  return {
+    status: "bound",
+    version,
+    source_record_ids: sourceRecordIds,
+    decision_inputs: decisionInputs,
+    snapshot: {},
+    display_only_text: null,
+  };
+}
+
+export const decisionEvidenceFixture: DecisionEvidenceV2 = {
+  evidence_version: "decision-evidence-v2.0.0",
+  decision_id: workflowFixture.workflow_id,
+  decision_type: "plan_workflow",
+  household_id: "household-b",
+  household_input: decisionSection("fixture-input-version", { input_version: "fixture-input-version" }),
+  financial_graph: decisionSection("financial-graph:fixture", { positions: 8 }, ["position-1"]),
+  client_profile: decisionSection("client-profile-v2:fixture", { profile_hash: "profile-fixture" }, ["profile-1"]),
+  wealth_needs: decisionSection("wealth-need-set:fixture", { need_set_hash: "need-fixture" }, ["need-1"]),
+  liability: decisionSection("liability-set:fixture", { streams: 5 }, ["liability-1"]),
+  ELTC: decisionSection("eltc:fixture", { eligible_long_term_amount: "0.00" }),
+  risk_budget: decisionSection("risk-budget:fixture", { decision: "repair_first" }),
+  enterprise: {
+    ...decisionSection("enterprise-snapshot-not-materialized"),
+    status: "not_available",
+    decision_inputs: {},
+  },
+  CFS: decisionSection("cfs-v1:fixture", { solution_id: "cfs-solution-fixture", solution_version: 1 }, ["cfs-solution-fixture"]),
+  product_snapshot: decisionSection("verified-real-funds-v1:fixture", {
+    snapshots: Array.from({ length: 8 }, (_, index) => ({
+      snapshot_id: `product-snapshot-${index + 1}`,
+      snapshot_hash: String(index + 1).repeat(64),
+    })),
+  }),
+  suitability: decisionSection("suitability:fixture", { selected_candidate: "balanced" }),
+  calibration: {
+    ...decisionSection("calibration-v1-not-enabled"),
+    status: "not_applicable",
+    decision_inputs: {},
+  },
+  advisor: decisionSection("advisor:fixture", { selected_candidate: "balanced" }, ["advisor-review-1"]),
+  client_confirmation: {
+    ...decisionSection("client-confirmation-pending"),
+    status: "not_available",
+    decision_inputs: {},
+  },
+  generated_at: "2026-08-04T05:00:00Z",
+  decision_hash: "d".repeat(64),
+  calculation_source: "deterministic_evidence_v2",
 };

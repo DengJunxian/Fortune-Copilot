@@ -149,6 +149,16 @@ def capabilities() -> CapabilitiesResponse:
                 ),
             ),
             Capability(
+                id="competition_cfs",
+                status="available",
+                implementation="real",
+                notes=(
+                    "Shanghai age-38 synthetic CFS story, bank-grade aggregate schema, "
+                    "MVO/Risk-Parity/CVaR/Black-Litterman comparison, compliance product "
+                    "pipeline and 60-profile benchmark; not an ICBC production connection"
+                ),
+            ),
+            Capability(
                 id="authoritative_public_data",
                 status="available",
                 implementation="real",

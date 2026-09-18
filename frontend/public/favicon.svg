@@ -1,6 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="智运财富">
-  <rect width="64" height="64" rx="10" fill="#102f46"/>
-  <text x="32" y="39" text-anchor="middle" font-family="system-ui, sans-serif" font-size="24" font-weight="700" fill="#f7f8f5">WT</text>
-  <rect x="12" y="51" width="40" height="3" rx="1.5" fill="#a61d2d"/>
+  <rect width="64" height="64" rx="8" fill="#9f1d2d"/>
+  <text x="32" y="42" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="30" font-weight="700" fill="#f7f4f2">运</text>
+  <rect x="14" y="52" width="36" height="2" rx="1" fill="#d8b7bb"/>
 </svg>
-

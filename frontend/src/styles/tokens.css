@@ -28,7 +28,8 @@
   --color-info-surface: #eaf2f7;
   --color-focus: #8f1522;
 
-  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC",
+  --font-sans: "Avenir Next", "PingFang SC", -apple-system, BlinkMacSystemFont,
+    "SF Pro Text",
     "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
   --font-numeric: ui-monospace, "SFMono-Regular", "Roboto Mono", "Cascadia Mono",
     monospace;

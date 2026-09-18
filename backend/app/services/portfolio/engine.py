@@ -43,6 +43,7 @@ from app.services.financial.engine import analyze_facts
 from app.services.financial.facts import load_household_facts
 from app.services.financial.rules import load_financial_rules
 from app.services.financial.utils import ZERO, money
+from app.services.governance.evidence import minimal_v2_from_legacy, searchable_fields
 from app.services.methodology.evidence import build_decision_evidence
 from app.services.methodology.rules import load_methodology_rules
 from app.services.planning.engine import (
@@ -673,6 +674,19 @@ def persist_portfolio(
     )
     session.add(recommendation)
     session.flush()
+    evidence_v2 = minimal_v2_from_legacy(
+        decision_id=recommendation.id,
+        decision_type="recommendation",
+        household_id=recommendation.household_id,
+        legacy=portfolio.decision_evidence.model_dump(mode="json"),
+        suitability=recommendation.suitability_evidence,
+        generated_at=recommendation.created_at,
+    )
+    search = searchable_fields(evidence_v2)
+    recommendation.decision_evidence = evidence_v2.model_dump(mode="json")
+    recommendation.decision_hash = evidence_v2.decision_hash
+    for field_name, value in search.model_dump().items():
+        setattr(recommendation, field_name, value)
     plan_ids: list[str] = []
     check_ids: list[str] = []
     for candidate in portfolio.candidates:

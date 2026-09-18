@@ -1,0 +1,81 @@
+{
+  "personal_profile": {
+    "customer_id": "SYNTH-SH-038",
+    "name": "周先生（合成）",
+    "age": 38,
+    "city": "上海",
+    "occupation": "工业科技企业产品负责人",
+    "employment_type": "salaried",
+    "marital_status": "married"
+  },
+  "family_profile": {
+    "members": [
+      {"relationship": "本人", "age": 38, "financially_dependent": false},
+      {"relationship": "配偶", "age": 36, "financially_dependent": false},
+      {"relationship": "子女", "age": 7, "financially_dependent": true}
+    ],
+    "dependent_count": 1,
+    "has_minor_child": true,
+    "has_elder_support": true
+  },
+  "income_profile": {
+    "annual_income": "420000.00",
+    "spouse_annual_income": "230000.00",
+    "passive_annual_income": "0.00",
+    "stability_score": "0.85",
+    "concentration_score": "0.646154"
+  },
+  "expense_profile": {
+    "essential_monthly_expense": "25000.00",
+    "discretionary_monthly_expense": "8000.00",
+    "annual_special_expense": "40000.00"
+  },
+  "assets": [
+    {"asset_id": "A01", "name": "活期与现金", "category": "cash", "market_value": "100000.00", "liquidity_days": 0, "is_financial_asset": true, "is_investment_asset": false},
+    {"asset_id": "A02", "name": "定期存款", "category": "deposit", "market_value": "400000.00", "liquidity_days": 30, "is_financial_asset": true, "is_investment_asset": true},
+    {"asset_id": "A03", "name": "债券与低波资产", "category": "fixed_income", "market_value": "400000.00", "liquidity_days": 7, "is_financial_asset": true, "is_investment_asset": true},
+    {"asset_id": "A04", "name": "混合及公募基金", "category": "fund", "market_value": "350000.00", "liquidity_days": 3, "is_financial_asset": true, "is_investment_asset": true},
+    {"asset_id": "A05", "name": "宽基权益基金", "category": "equity", "market_value": "450000.00", "liquidity_days": 3, "is_financial_asset": true, "is_investment_asset": true},
+    {"asset_id": "A06", "name": "个人养老金账户", "category": "pension", "market_value": "100000.00", "liquidity_days": 3650, "is_financial_asset": true, "is_investment_asset": true},
+    {"asset_id": "A07", "name": "上海自住房", "category": "primary_residence", "market_value": "4800000.00", "liquidity_days": 180, "is_financial_asset": false, "is_investment_asset": false, "pledged": true},
+    {"asset_id": "A08", "name": "家庭用车", "category": "vehicle", "market_value": "200000.00", "liquidity_days": 60, "is_financial_asset": false, "is_investment_asset": false}
+  ],
+  "liabilities": [
+    {"liability_id": "L01", "name": "自住房按揭", "category": "mortgage", "outstanding_balance": "2100000.00", "annual_interest_rate": "0.034000", "monthly_payment": "13000.00", "remaining_months": 216}
+  ],
+  "insurance": [
+    {"policy_id": "I01", "name": "家庭支柱定期寿险", "protection_type": "life", "coverage_amount": "1200000.00", "annual_premium": "4800.00", "insured_relationship": "本人"},
+    {"policy_id": "I02", "name": "家庭支柱重疾险", "protection_type": "critical_illness", "coverage_amount": "500000.00", "annual_premium": "9000.00", "insured_relationship": "本人"},
+    {"policy_id": "I03", "name": "家庭医疗险", "protection_type": "medical", "coverage_amount": "3000000.00", "annual_premium": "6000.00", "insured_relationship": "全家"}
+  ],
+  "risk_profile": {
+    "tolerance_score": "0.68",
+    "maximum_acceptable_loss": "0.20",
+    "investment_knowledge_score": "0.72",
+    "loss_reaction": "hold"
+  },
+  "behavior_profile": {
+    "evidence": [
+      {"signal": "panic_sale", "observation": "2024年市场快速下跌时曾在一周内减仓约三成。", "observed_on": "2024-02-05"},
+      {"signal": "hold_loser", "observation": "一只亏损基金持有两年以上且没有复核原投资逻辑。", "observed_on": "2025-12-31"},
+      {"signal": "follow_crowd", "observation": "曾因同事集中讨论某主题基金而买入。", "observed_on": "2025-03-18"},
+      {"signal": "excessive_trading", "observation": "过去一年调仓17次，明显高于既定半年复核频率。", "observed_on": "2026-06-30"},
+      {"signal": "recent_return_anchor", "observation": "评价基金时主要引用最近三个月收益。", "observed_on": "2026-07-15"},
+      {"signal": "chase_top_performer", "observation": "两次申购发生在产品进入同类短期业绩前列之后。", "observed_on": "2026-07-20"}
+    ]
+  },
+  "financial_goals": [
+    {"goal_id": "G01", "name": "补足家庭应急储备", "goal_type": "emergency_fund", "target_amount": "180000.00", "target_date": "2027-09-01", "current_assets": "150000.00", "monthly_contribution": "3000.00", "expected_return": "0.015", "inflation_rate": "0.02", "priority": 1},
+    {"goal_id": "G02", "name": "子女大学教育", "goal_type": "education", "target_amount": "1200000.00", "target_date": "2037-09-01", "current_assets": "280000.00", "monthly_contribution": "6000.00", "expected_return": "0.045", "inflation_rate": "0.05", "priority": 2},
+    {"goal_id": "G03", "name": "夫妻退休生活", "goal_type": "retirement", "target_amount": "5000000.00", "target_date": "2050-09-01", "current_assets": "650000.00", "monthly_contribution": "7000.00", "expected_return": "0.055", "inflation_rate": "0.03", "priority": 3},
+    {"goal_id": "G04", "name": "家庭大额消费", "goal_type": "major_purchase", "target_amount": "300000.00", "target_date": "2030-09-01", "current_assets": "50000.00", "monthly_contribution": "2000.00", "expected_return": "0.025", "inflation_rate": "0.025", "priority": 4}
+  ],
+  "portfolio": {
+    "holdings": [
+      {"holding_id": "H01", "product_id": "DEMO-DEPOSIT-01", "product_name": "模拟定期存款", "product_type": "deposit", "market_value": "400000.00", "risk_level": 1, "liquidity_days": 30},
+      {"holding_id": "H02", "product_id": "DEMO-BOND-01", "product_name": "模拟债券基金", "product_type": "bond_fund", "market_value": "400000.00", "risk_level": 2, "liquidity_days": 3},
+      {"holding_id": "H03", "product_id": "DEMO-EQUITY-01", "product_name": "模拟宽基基金", "product_type": "index_fund", "market_value": "450000.00", "risk_level": 4, "liquidity_days": 3}
+    ],
+    "total_market_value": "1250000.00"
+  }
+}

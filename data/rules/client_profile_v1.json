@@ -1,0 +1,80 @@
+{
+  "code": "client_profile_policy",
+  "semantic_version": "1.0.2",
+  "formula_version": "client-profile-engine-v1.0.2",
+  "effective_from": "2026-08-10",
+  "effective_to": null,
+  "source_type": "internal_demo",
+  "source_summary": "Fortune Copilot V5 E02 deterministic profile and need calibration; planning classifications only, not bank customer segmentation.",
+  "wealth_tiers": {
+    "emerging_affluent_minimum": "300000.00",
+    "affluent_minimum": "1000000.00",
+    "high_net_worth_minimum": "6000000.00"
+  },
+  "risk_score_thresholds": {
+    "low": "0.20",
+    "medium_low": "0.40",
+    "medium": "0.60",
+    "medium_high": "0.80",
+    "high": "1.00"
+  },
+  "tag_thresholds": {
+    "young_worker_max_age": 35,
+    "high_income_annual_amount": "500000.00",
+    "income_stability_watch_below": "0.60",
+    "income_concentration_watch_above": "0.70",
+    "property_concentration_watch_above": "0.55",
+    "single_security_concentration_watch_above": "0.25",
+    "family_complexity_member_count": 4,
+    "cross_border_currency_count": 2,
+    "succession_watch_net_worth": "3000000.00",
+    "succession_high_net_worth": "8000000.00",
+    "professional_occupation_keywords": ["工程师", "医生", "律师", "教师", "会计师", "教授", "研究员", "科学家", "产品经理"],
+    "founder_occupation_keywords": ["创始人", "企业主", "创业者", "董事长"],
+    "scientist_occupation_keywords": ["研究员", "科学家", "科研", "教授"]
+  },
+  "service_complexity": {
+    "enhanced_score": 1,
+    "complex_score": 3,
+    "specialist_score": 5
+  },
+  "needs": {
+    "liquidity_months": "1",
+    "emergency_months": "6",
+    "medical_minimum_per_member": "300000.00",
+    "death_income_replacement_years": "5",
+    "long_term_growth_minimum": "0.00",
+    "trust_review_net_worth": "6000000.00",
+    "priority_scores": {
+      "liquidity": "0.98",
+      "emergency": "0.96",
+      "debt_repayment": "0.95",
+      "medical_protection": "0.92",
+      "death_protection": "0.90",
+      "education": "0.80",
+      "housing": "0.78",
+      "retirement": "0.82",
+      "long_term_growth": "0.60",
+      "enterprise_concentration": "0.75",
+      "currency_matching": "0.72",
+      "succession": "0.55",
+      "trust": "0.50",
+      "philanthropy": "0.30"
+    },
+    "hard_constraint_need_types": [
+      "liquidity",
+      "emergency",
+      "debt_repayment",
+      "medical_protection",
+      "death_protection"
+    ],
+    "professional_review_need_types": [
+      "enterprise_concentration",
+      "currency_matching",
+      "succession",
+      "trust",
+      "philanthropy"
+    ]
+  },
+  "required_profile_domains": ["members", "income", "assets", "expenses", "risk", "behavior", "goals"]
+}

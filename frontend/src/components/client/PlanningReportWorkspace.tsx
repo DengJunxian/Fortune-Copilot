@@ -134,11 +134,11 @@ export function PlanningReportWorkspace({
       <header className="formal-report-control">
         <div>
           <p className="page-kicker">正式报告 · 不可变快照</p>
-          <h2>{formalReport ? `当前 R${formalReport.sequence}` : reportUnderReview ? "正式规划书审核中" : "一键生成完整八章规划书"}</h2>
+          <h2>{formalReport ? `当前 R${formalReport.sequence}` : reportUnderReview ? "正式规划书审核中" : "生成完整八章规划书"}</h2>
           <p>财务、规划、组合、数字孪生与行动数字只来自确定性工具；政策事实只来自受控引用。</p>
         </div>
         <div className="formal-report-control-actions">
-          {!formalReport && !reportUnderReview ? <Button type="button" loading={busy} disabled={loadingFormal} onClick={() => void generate()}>一键生成完整八章规划书</Button> : null}
+          {!formalReport && !reportUnderReview ? <Button type="button" loading={busy} disabled={loadingFormal} onClick={() => void generate()}>生成完整八章规划书</Button> : null}
           {formalReport ? <Button type="button" variant="secondary" loading={busy} onClick={() => void recalculate("monthly_review")}>月度复盘新快照</Button> : null}
           {formalReport ? <Button type="button" variant="secondary" loading={busy} onClick={() => void recalculate("major_event")}>重大事件后重算</Button> : null}
         </div>

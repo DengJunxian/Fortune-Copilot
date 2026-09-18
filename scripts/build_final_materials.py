@@ -26,10 +26,10 @@ MUTED = "5C6B76"
 GRID = "CED8E0"
 PALE_RED = "F8ECEC"
 WHITE = "FFFFFF"
-# LibreOffice's bundled renderer cannot reliably read on-demand macOS system
-# fonts such as PingFang. Arial Unicode MS is locally installed and gives the
-# exported review PDF complete Simplified Chinese glyph coverage.
-BODY_FONT = "Arial Unicode MS"
+# Use a preinstalled macOS system font whose Simplified Chinese glyphs remain
+# visible in both Word and LibreOffice's headless renderer. Arial Unicode MS is
+# present on this machine but LibreOffice 25 can emit blank CJK glyphs for it.
+BODY_FONT = "Heiti SC"
 CODE_FONT = "Menlo"
 
 
@@ -245,7 +245,7 @@ def add_cover(document: Document) -> None:
     metadata.paragraph_format.space_after = Pt(22)
     add_inline(
         metadata,
-        "软件版本 0.13.0\n材料版本 1.0\n数据日 2026-08-04\n生成日 2026-08-05",
+        "软件版本 0.14.0\n材料版本 1.0\n数据日 2026-08-10\n生成日 2026-08-11",
         color=MUTED,
         size=10,
     )

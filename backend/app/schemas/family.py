@@ -29,6 +29,7 @@ class HouseholdCreate(RecordInput):
     region: str = Field(min_length=1, max_length=120)
     demo_profile: str | None = Field(default=None, max_length=32)
     is_synthetic: bool = False
+    planning_preferences: dict[str, Any] = Field(default_factory=dict)
 
 
 class HouseholdUpdate(RecordUpdate):
@@ -36,6 +37,7 @@ class HouseholdUpdate(RecordUpdate):
     lifecycle_stage: LifecycleStage | None = None
     region: str | None = Field(default=None, min_length=1, max_length=120)
     demo_profile: str | None = Field(default=None, max_length=32)
+    planning_preferences: dict[str, Any] | None = None
 
 
 class HouseholdOut(RecordOut):
@@ -45,6 +47,7 @@ class HouseholdOut(RecordOut):
     region: str
     demo_profile: str | None
     is_synthetic: bool
+    planning_preferences: dict[str, Any]
 
 
 class HouseholdMemberCreate(RecordInput):

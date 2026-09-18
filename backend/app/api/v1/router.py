@@ -1,21 +1,34 @@
 from fastapi import APIRouter
 
 from app.api.v1.endpoints import (
+    agents,
     behavior,
+    calibration,
+    cfs,
     client,
+    client_profile,
+    competition,
+    decisions,
     demo,
     domain,
+    family_enterprise,
     financial,
+    financial_graph,
+    financial_twin,
     fund_advisory,
     health,
     integrations,
+    liability,
     meta,
+    monitoring,
     planning,
     portfolio,
+    products,
     public_data,
     reports,
     review,
     security,
+    specialized_cfs,
     trust,
     twin,
     wealth_planning,
@@ -23,11 +36,20 @@ from app.api.v1.endpoints import (
 
 api_router = APIRouter()
 api_router.include_router(health.router)
+api_router.include_router(agents.router)
+api_router.include_router(calibration.router)
 api_router.include_router(integrations.router)
 api_router.include_router(meta.router)
 api_router.include_router(public_data.router)
 api_router.include_router(domain.router)
 api_router.include_router(financial.router)
+api_router.include_router(financial_graph.router)
+api_router.include_router(financial_twin.router)
+api_router.include_router(family_enterprise.router)
+api_router.include_router(cfs.router)
+api_router.include_router(specialized_cfs.router)
+api_router.include_router(products.router)
+api_router.include_router(monitoring.router)
 api_router.include_router(fund_advisory.router)
 api_router.include_router(planning.router)
 api_router.include_router(portfolio.router)
@@ -35,6 +57,10 @@ api_router.include_router(twin.router)
 api_router.include_router(behavior.router)
 api_router.include_router(trust.router)
 api_router.include_router(client.router)
+api_router.include_router(client_profile.router)
+api_router.include_router(competition.router)
+api_router.include_router(decisions.router)
+api_router.include_router(liability.router)
 api_router.include_router(demo.router)
 api_router.include_router(review.router)
 api_router.include_router(reports.router)

@@ -1,0 +1,34 @@
+{
+  "code": "v5_liability_streams_eltc",
+  "semantic_version": "1.0.0",
+  "formula_version": "eltc-purchasing-power-v2.0.0",
+  "effective_from": "2026-08-10",
+  "effective_to": null,
+  "source_type": "internal_demo",
+  "source_summary": "Fortune Copilot V5 E03 controlled liability-stream and eligible-capital policy.",
+  "education_installment_years": 4,
+  "short_term_hard_liability_months": 60,
+  "operating_liquidity_months": "1.00",
+  "emergency_reserve_months": "6.00",
+  "protection_funding_months": 12,
+  "minimum_suitability_score": "0.400000",
+  "minimum_suitability_levels": ["low", "medium_low", "medium", "medium_high", "high"],
+  "inflation_indexes": {
+    "education": "GCI_EDUCATION",
+    "housing": "GCI_HOUSING",
+    "retirement": "GCI_RETIREMENT",
+    "medical": "GCI_MEDICAL",
+    "family_support": "GCI_FAMILY_SUPPORT",
+    "debt_service": "CONTRACT_RATE",
+    "protection": "GCI_PROTECTION",
+    "living": "HCI",
+    "succession": "GCI_SUCCESSION",
+    "philanthropy": "GCI_PHILANTHROPY",
+    "other": "GCI_OTHER"
+  },
+  "iai_thresholds": {
+    "critical_below": "0.800000",
+    "watch_below": "1.000000",
+    "comfortable_at": "1.200000"
+  }
+}

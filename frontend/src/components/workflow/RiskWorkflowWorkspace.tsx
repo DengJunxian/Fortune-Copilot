@@ -4,12 +4,14 @@ import {
   downloadWorkflowAudit,
   fetchComplianceEvidence,
   fetchComplianceQueue,
+  fetchDecisionEvidence,
   fetchWorkflow,
   replayComplaint,
   transitionWorkflow,
   type ComplaintReplay,
   type ComplianceEvidence,
   type ComplianceQueue,
+  type DecisionEvidenceV2,
   type PlanWorkflow,
   type WorkflowActionInput,
 } from "../../api/reviewWorkflow";
@@ -24,6 +26,7 @@ import {
   WorkflowVersionLedger,
 } from "./WorkflowShared";
 import { workflowStateLabels, workflowTone } from "./workflowLabels";
+import { DecisionEvidencePanel } from "./DecisionEvidencePanel";
 
 const controlStatusLabels = {
   pass: "通过",
@@ -45,6 +48,7 @@ export function RiskWorkflowWorkspace() {
   const [workflowId, setWorkflowId] = useState("");
   const [workflow, setWorkflow] = useState<PlanWorkflow | null>(null);
   const [evidence, setEvidence] = useState<ComplianceEvidence | null>(null);
+  const [decisionEvidence, setDecisionEvidence] = useState<DecisionEvidenceV2 | null>(null);
   const [reportChain, setReportChain] = useState<ReportGenerationChain | null>(null);
   const [reportChainLoading, setReportChainLoading] = useState(false);
   const [reason, setReason] = useState("复核三道闸门、文案、数字、来源、授权与版本链");
@@ -63,6 +67,7 @@ export function RiskWorkflowWorkspace() {
       setQueue(null);
       setWorkflow(null);
       setEvidence(null);
+      setDecisionEvidence(null);
       setReportChain(null);
       setLoading(false);
       setError("当前模拟账号没有风险合规控制台权限。");
@@ -95,6 +100,12 @@ export function RiskWorkflowWorkspace() {
       ]);
       setWorkflow(nextWorkflow);
       setEvidence(nextEvidence);
+      try {
+        setDecisionEvidence(await fetchDecisionEvidence(nextWorkflow.current.id, actor, signal));
+      } catch (decisionError) {
+        if (decisionError instanceof DOMException && decisionError.name === "AbortError") return;
+        setDecisionEvidence(null);
+      }
       setReplayVersionId(nextWorkflow.current.id);
       try {
         setReportChain(await fetchReportGenerationChain(nextWorkflow.household_id, actor, signal));
@@ -106,6 +117,7 @@ export function RiskWorkflowWorkspace() {
       if (loadError instanceof DOMException && loadError.name === "AbortError") return;
       setWorkflow(null);
       setEvidence(null);
+      setDecisionEvidence(null);
       setReportChain(null);
       setError(loadError instanceof Error ? loadError.message : "合规证据读取失败。");
     } finally {
@@ -149,6 +161,11 @@ export function RiskWorkflowWorkspace() {
         setEvidence(await fetchComplianceEvidence(next.workflow_id, actor));
       } else {
         setEvidence(null);
+      }
+      try {
+        setDecisionEvidence(await fetchDecisionEvidence(next.current.id, actor));
+      } catch {
+        setDecisionEvidence(null);
       }
     } catch (actionError) {
       const prefix = actionError instanceof WorkflowApiError && actionError.code === "compliance_blocked" ? "规则阻断：" : "";
@@ -243,6 +260,14 @@ export function RiskWorkflowWorkspace() {
             <div><p className="section-index">风险结论</p><h3 id="compliance-decision-heading">{evidence.overall_decision === "block" ? "当前版本必须阻断" : evidence.overall_decision === "human_review" ? "规则允许进入人工复核" : "当前证据可通过"}</h3><p>{evidence.explanation}</p></div>
             <dl><div><dt>阻断</dt><dd>{evidence.blocked_codes.length}</dd></div><div><dt>预警</dt><dd>{evidence.warning_codes.length}</dd></div><div><dt>版本</dt><dd>V{evidence.version_number}</dd></div></dl>
           </section>
+
+          {decisionEvidence ? (
+            <DecisionEvidencePanel
+              actor={actor}
+              evidence={decisionEvidence}
+              onError={setError}
+            />
+          ) : null}
 
           <section aria-labelledby="control-matrix-heading">
             <header className="section-header-row"><div><p className="section-index">三道闸门与十类控制</p><h3 id="control-matrix-heading">为什么通过或被拦截</h3></div><span>状态不只依赖颜色</span></header>

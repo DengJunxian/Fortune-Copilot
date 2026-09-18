@@ -133,6 +133,16 @@ def evaluate_quality_gate(
         for item in document.consistency_checks
         if item.code in {"deterministic_numeric_ledger", "twin_validation"}
     )
+    numeric_consistency_checks_ok = all(
+        item.status == "passed"
+        for item in document.consistency_checks
+        if item.code
+        in {
+            "deterministic_numeric_ledger",
+            "twin_validation",
+            "action_status_balance",
+        }
+    )
 
     goal_chapter = document.chapters[1]
     goals_ok = goal_chapter.title == "理财目标" and bool(goal_chapter.sections)
@@ -241,10 +251,10 @@ def evaluate_quality_gate(
         _gate(
             "numeric_consistency",
             "数值一致性",
-            hash_ok and document.consistency_status == "passed",
-            "报告哈希与一致性状态通过。"
-            if hash_ok and document.consistency_status == "passed"
-            else "报告哈希或一致性状态未通过。",
+            hash_ok and numeric_consistency_checks_ok,
+            "报告哈希与数值一致性检查通过。"
+            if hash_ok and numeric_consistency_checks_ok
+            else "报告哈希或数值一致性检查未通过。",
         ),
         _gate(
             "prohibited_language",

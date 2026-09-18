@@ -24,7 +24,7 @@ from app.schemas.trust import (
 from app.services.security.model_risk import record_model_run
 from app.services.trust.knowledge import scan_untrusted_instructions
 
-PARSER_VERSION = "deterministic-zh-intake-v1.0.0"
+PARSER_VERSION = "deterministic-zh-intake-v1.1.0"
 CHINESE_DIGITS = {
     "零": 0,
     "一": 1,
@@ -43,16 +43,110 @@ BIG_UNITS = {"万": 10000, "亿": 100000000}
 MONEY_TOKEN = r"[零一二两三四五六七八九十百千万亿\d.,]+"
 
 MISSING_FIELD_DEFINITIONS = (
-    ("member_ages", "家庭成员年龄", "原文没有完整年龄", ["生命周期", "退休期限"]),
-    ("salary_split", "夫妻收入拆分", "只提供合计工资，未说明各自金额", ["收入稳定性", "失业压力"]),
-    ("mortgage_balance", "房贷余额", "月供不能推导贷款余额", ["资产负债表", "偿债压力"]),
-    ("mortgage_rate", "房贷利率", "原文未提供合同利率", ["利息成本", "提前还款比较"]),
-    ("mortgage_term", "房贷剩余期限", "原文未提供到期日", ["现金流压力", "生命周期"]),
-    ("living_expenses", "其他必要生活支出", "原文未提供完整支出", ["结余", "应急金"]),
-    ("assets", "家庭资产", "原文未提供资产余额", ["净资产", "四账户"]),
-    ("insurance", "现有保险", "原文未提供保障事实", ["保障缺口"]),
-    ("education_horizon_years", "教育目标期限", "原文未提供明确年限", ["目标规划"]),
-    ("education_goal_amount", "教育目标金额", "原文未提供明确金额", ["目标规划"]),
+    (
+        "living_expenses",
+        "必要生活支出",
+        "原文未提供完整支出",
+        ["结余", "应急金"],
+        1,
+        "家庭每月必要生活支出大约是多少?",
+    ),
+    (
+        "assets",
+        "家庭资产",
+        "原文未提供资产余额",
+        ["净资产", "四账户"],
+        1,
+        "目前现金、存款、理财和其他主要资产分别有多少?",
+    ),
+    (
+        "insurance",
+        "现有保险",
+        "原文未提供保障事实",
+        ["保障缺口"],
+        1,
+        "家庭成员目前有哪些医疗、重疾、寿险或意外保障?",
+    ),
+    (
+        "education_target_stage",
+        "留学阶段",
+        "原文未说明教育阶段",
+        ["教育目标"],
+        1,
+        "预计在哪个教育阶段留学?",
+    ),
+    (
+        "education_destination_detail",
+        "目标地区",
+        "只识别到海外方向，未说明地区",
+        ["教育成本"],
+        1,
+        "留学的目标国家或地区是哪里?",
+    ),
+    (
+        "education_prepared_amount",
+        "已准备教育资金",
+        "原文未提供已准备金额",
+        ["教育缺口"],
+        1,
+        "当前已经为教育目标准备了多少资金?",
+    ),
+    (
+        "mortgage_balance",
+        "房贷余额",
+        "月供不能推导贷款余额",
+        ["资产负债表", "偿债压力"],
+        2,
+        "当前房贷剩余本金是多少?",
+    ),
+    (
+        "member_ages",
+        "家庭成员年龄",
+        "原文没有完整年龄",
+        ["生命周期", "退休期限"],
+        2,
+        "请补充两位成人的年龄。",
+    ),
+    (
+        "mortgage_rate",
+        "房贷利率",
+        "原文未提供合同利率",
+        ["利息成本", "提前还款比较"],
+        2,
+        "房贷当前执行利率是多少?",
+    ),
+    (
+        "mortgage_term",
+        "房贷剩余期限",
+        "原文未提供到期日",
+        ["现金流压力", "生命周期"],
+        2,
+        "房贷还剩多少年?",
+    ),
+    (
+        "education_horizon_years",
+        "教育目标期限",
+        "原文未提供明确年限",
+        ["目标规划"],
+        2,
+        "预计从哪一年开始使用教育资金?",
+    ),
+    (
+        "education_goal_amount",
+        "教育目标金额",
+        "原文未提供明确金额",
+        ["目标规划"],
+        2,
+        "教育目标总预算大约是多少?",
+    ),
+    (
+        "salary_split",
+        "夫妻收入拆分",
+        "只提供合计收入，未说明各自金额",
+        ["收入稳定性", "失业压力"],
+        3,
+        "两位成人的税后月收入分别是多少?",
+    ),
 )
 
 
@@ -123,7 +217,8 @@ def extract_intake_fields(text: str) -> tuple[list[ExtractedDraftField], list[Mi
         code="joint_monthly_salary",
         label="夫妻月工资合计",
         pattern=(
-            rf"(?:每月|月)?(?:工资|收入)(?:合计|共|一共)?\s*"
+            rf"(?:每月|每个月|月)?(?:税后)?(?:工资|收入)(?:合计|共|一共)?"
+            rf"(?:大约|约|近)?\s*"
             rf"(?P<amount>{MONEY_TOKEN})(?:元)?"
         ),
     )
@@ -137,6 +232,15 @@ def extract_intake_fields(text: str) -> tuple[list[ExtractedDraftField], list[Mi
     )
     if mortgage is not None:
         extracted.append(mortgage)
+    mortgage_balance = _money_field(
+        text,
+        code="mortgage_balance",
+        label="房贷余额",
+        pattern=rf"(?P<amount>{MONEY_TOKEN})(?:元)?(?:的)?房贷(?:余额)?",
+        unit="CNY",
+    )
+    if mortgage_balance is not None:
+        extracted.append(mortgage_balance)
     if re.search(r"(?:我和爱人|我和配偶|夫妻|爱人)", text):
         extracted.append(
             ExtractedDraftField(
@@ -161,6 +265,78 @@ def extract_intake_fields(text: str) -> tuple[list[ExtractedDraftField], list[Mi
                 confidence=Decimal("0.970000"),
                 confirmed=False,
             )
+        )
+    child_age = re.search(r"(?:孩子|小孩|子女)(?:今年)?\s*(?P<age>\d{1,2})\s*岁", text)
+    if child_age is not None:
+        age = int(child_age.group("age"))
+        extracted.append(
+            ExtractedDraftField(
+                code="child_age",
+                label="子女年龄",
+                value=str(age),
+                value_type="count",
+                unit="岁",
+                evidence=child_age.group(0),
+                confidence=Decimal("0.990000"),
+                confirmed=False,
+            )
+        )
+        inferred_stage = (
+            "学龄前"
+            if age <= 6
+            else "小学阶段"
+            if age <= 12
+            else "中学阶段"
+            if age <= 18
+            else "成年阶段"
+        )
+        extracted.append(
+            ExtractedDraftField(
+                code="child_lifecycle_stage",
+                label="子女生命周期阶段",
+                value=inferred_stage,
+                value_type="stage",
+                evidence=child_age.group(0),
+                confidence=Decimal("0.900000"),
+                confirmed=False,
+            )
+        )
+    location = re.search(r"在(?P<location>[\u4e00-\u9fff]{2,8})(?:工作|生活|居住)", text)
+    if location is not None:
+        extracted.append(
+            ExtractedDraftField(
+                code="household_location",
+                label="家庭所在地",
+                value=location.group("location"),
+                value_type="text",
+                evidence=location.group(0),
+                confidence=Decimal("0.980000"),
+                confirmed=False,
+            )
+        )
+    overseas_goal = re.search(r"(?:国外|海外|留学)", text)
+    if overseas_goal is not None and re.search(r"(?:孩子|小孩|子女|教育|大学)", text):
+        extracted.extend(
+            [
+                ExtractedDraftField(
+                    code="education_goal_present",
+                    label="子女教育目标",
+                    value="true",
+                    value_type="relationship",
+                    evidence=overseas_goal.group(0),
+                    confidence=Decimal("0.960000"),
+                    confirmed=False,
+                ),
+                ExtractedDraftField(
+                    code="education_goal_region",
+                    label="教育目标方向",
+                    value="海外（待确认国家或地区）",
+                    value_type="text",
+                    evidence=overseas_goal.group(0),
+                    confidence=Decimal("0.940000"),
+                    confirmed=False,
+                ),
+            ]
         )
     primary_age = re.search(r"(?:我|本人)(?:今年)?\s*(?P<age>\d{1,2})\s*岁", text)
     if primary_age is not None:
@@ -206,8 +382,15 @@ def extract_intake_fields(text: str) -> tuple[list[ExtractedDraftField], list[Mi
         extracted.append(education_amount)
     extracted_codes = {item.code for item in extracted}
     missing = [
-        MissingDraftField(code=code, label=label, reason=reason, required_for=required_for)
-        for code, label, reason, required_for in MISSING_FIELD_DEFINITIONS
+        MissingDraftField(
+            code=code,
+            label=label,
+            reason=reason,
+            required_for=required_for,
+            priority=priority,
+            follow_up_question=question,
+        )
+        for code, label, reason, required_for, priority, question in MISSING_FIELD_DEFINITIONS
         if code not in extracted_codes
     ]
     if salary is None:
@@ -218,6 +401,8 @@ def extract_intake_fields(text: str) -> tuple[list[ExtractedDraftField], list[Mi
                 label="家庭月收入",
                 reason="未识别到明确金额",
                 required_for=["现金流", "结余"],
+                priority=1,
+                follow_up_question="家庭税后月收入合计大约是多少?",
             ),
         )
     if mortgage is None:
@@ -228,8 +413,11 @@ def extract_intake_fields(text: str) -> tuple[list[ExtractedDraftField], list[Mi
                 label="每月房贷",
                 reason="未识别到明确金额",
                 required_for=["现金流", "偿债压力"],
+                priority=2,
+                follow_up_question="目前每月房贷月供是多少?",
             ),
         )
+    missing.sort(key=lambda item: (item.priority, item.code))
     return extracted, missing
 
 

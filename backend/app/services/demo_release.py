@@ -114,6 +114,11 @@ def _resolve_data_file(configured_path: str, fallback: str) -> Path:
     )
 
 
+def _release_data_file_exists(configured_path: str, fallback: str) -> bool:
+    configured = Path(configured_path)
+    return configured.is_file() or (_repository_root() / fallback).is_file()
+
+
 def _benchmark(settings: Settings) -> dict[str, Any]:
     path = _resolve_data_file(settings.demo_benchmark_path, "data/benchmarks/demo_release_v1.json")
     try:
@@ -204,15 +209,28 @@ def demo_manifest(session: Session, settings: Settings) -> DemoManifestResponse:
         "license": (root / "LICENSE").is_file(),
         "third_party_notice": (root / "THIRD_PARTY_NOTICES.md").is_file(),
         "changelog": (root / "CHANGELOG.md").is_file(),
+        "v5_persona_dataset": _release_data_file_exists(
+            settings.v5_persona_data_path,
+            "data/synthetic/v5_personas/personas_v2.json",
+        ),
+        "v5_golden_outcomes": _release_data_file_exists(
+            settings.v5_persona_golden_path,
+            "data/synthetic/v5_personas/golden_outcomes_v2.json",
+        ),
+        "v5_release_benchmark": _release_data_file_exists(
+            settings.v5_release_benchmark_path,
+            "data/benchmarks/v5_release_v2.json",
+        ),
     }
     codes = {item.code for item in households}
+    expected_codes = {item.household.code for item in dataset.households}
     return DemoManifestResponse(
         release_version=settings.app_version,
         story_version=settings.demo_story_version,
         dataset_version=dataset.dataset_version,
         runtime_mode=settings.app_env,
         mock_mode=settings.is_mock_mode,
-        ready={"DEMO_A", "DEMO_B", "DEMO_C"}.issubset(codes),
+        ready=expected_codes.issubset(codes),
         seeded_household_count=len(households),
         households=[
             DemoHouseholdOut(
@@ -235,6 +253,7 @@ def demo_manifest(session: Session, settings: Settings) -> DemoManifestResponse:
             "信用卡额度不进入资产；四账户由安全约束和目标期限动态计算。",
             "语言模型只参与理解与解释，关键金额、比率和配置来自确定性工具。",
             "所有实验结果均明确标记 test/internal_demo，不冒充真实银行结果。",
+            "V5 正式种子覆盖 A-H 八类异构 Persona，旧三家庭对照仍保持兼容。",
         ],
     )
 
@@ -253,7 +272,9 @@ def load_demo_data(
         household_codes=list(result.household_codes),
         cache_cleared=True,
         message=(
-            "三套合成家庭已加载。" if result.loaded else "三套合成家庭已存在，未重复写入。"
+            f"{result.loaded} 套合成 Persona 已加载。"
+            if result.loaded
+            else "配置中的合成 Persona 已存在，未重复写入。"
         ),
     )
 
@@ -320,14 +341,15 @@ def _comparison_cache_key(households: list[Household], analysis_date: date) -> s
 
 def compare_demo_families(session: Session, settings: Settings) -> FamilyComparisonResponse:
     global _comparison_cache
-    households = _synthetic_households(session)
-    if len(households) != 3 or {item.code for item in households} != {
-        "DEMO_A",
-        "DEMO_B",
-        "DEMO_C",
-    }:
+    comparison_codes = {"DEMO_A", "DEMO_B", "DEMO_C"}
+    households = [
+        item for item in _synthetic_households(session) if item.code in comparison_codes
+    ]
+    if len(households) != 3 or {item.code for item in households} != comparison_codes:
         _seed(session, settings)
-        households = _synthetic_households(session)
+        households = [
+            item for item in _synthetic_households(session) if item.code in comparison_codes
+        ]
     if len(households) != 3:
         raise AppError("demo_family_set_incomplete", "三家庭对照数据不完整", status_code=409)
     analysis_date = max(

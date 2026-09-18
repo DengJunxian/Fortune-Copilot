@@ -26,7 +26,7 @@ type TrustView = "client" | "advisor" | "risk";
 type GraphMode = "shanghai" | "household";
 
 const DEFAULT_POLICY_QUERY = "个人养老金每年缴费限额和家庭适配需要核对什么?";
-const DEFAULT_INTAKE_TEXT = "我和爱人每月工资合计三万元，房贷八千，孩子上幼儿园";
+const DEFAULT_INTAKE_TEXT = "我和爱人在上海工作，每个月税后收入大约4万元，还有180万元房贷，小孩今年4岁，希望以后去国外读大学。";
 const laneLabels: Record<GraphLane, string> = {
   family: "家庭关系",
   facts: "事实底稿",
@@ -80,7 +80,7 @@ export function TrustWorkspace({ householdId, view = "client" }: { householdId: 
       if (agentsResult.status === "fulfilled") setAgentCatalog(agentsResult.value);
       if (runResult.status === "fulfilled") setOrchestration(runResult.value);
       if (results.every((result) => result.status === "rejected")) {
-        setError("可信 AI 服务不可用；财务计算、规划和 Mock 主流程仍可独立运行。");
+        setError("可信智能服务暂不可用；财务计算、规划和演示主流程仍可独立运行。");
       }
       setLoading(false);
     });
@@ -154,11 +154,11 @@ export function TrustWorkspace({ householdId, view = "client" }: { householdId: 
     <section className="trust-workspace" data-view={view} aria-labelledby={`trust-heading-${view}`}>
       <header className="trust-header">
         <div>
-          <p className="section-index">可信 AI / 可追溯证据</p>
-          <h2 id={`trust-heading-${view}`}>政策、关系与智能体都要留下证据</h2>
+          <p className="section-index">可信智能与可追溯证据</p>
+          <h2 id={`trust-heading-${view}`}>政策、家庭关系与智能服务都要留下证据</h2>
           <p>知识只来自受控快照；数字只来自确定性工具；缺失、过期、隔离和高风险结果都会明确阻断。</p>
         </div>
-        <aside className="trust-boundary" aria-label="可信 AI 边界">
+        <aside className="trust-boundary" aria-label="可信智能服务边界">
           <strong>{catalog ? `知识更新 ${formatDate(catalog.updated_at)}` : "等待知识目录"}</strong>
           <span>Mock 可完整运行 · 不依赖外部模型或网络</span>
         </aside>
@@ -204,7 +204,7 @@ function TrustLoading() {
   return (
     <div className="trust-loading" aria-live="polite">
       <span className="loading-mark" aria-hidden="true" />
-      <div><strong>正在核对知识版本和图谱关系</strong><p>不会在等待时显示缓存政策或伪造智能体结果。</p></div>
+      <div><strong>正在核对知识版本和图谱关系</strong><p>等待期间不展示过期政策或未经核验的智能分析结果。</p></div>
     </div>
   );
 }
@@ -268,7 +268,7 @@ function IntakeLedger({ text, onText, parsing, onParse, draft, values, onValue, 
 }) {
   return (
     <section className="trust-section intake-ledger" aria-labelledby="intake-heading">
-      <header><div><p className="section-index">02 / 自然语言录入</p><h3 id="intake-heading">先形成草稿，再逐项确认</h3></div><p>原文只保存哈希和脱敏预览；草稿不会直接改写家庭事实。</p></header>
+      <header><div><p className="section-index">02 / 自然语言家庭建档</p><h3 id="intake-heading">待确认家庭信息</h3></div><p>AI 只负责理解和追问；原文保存哈希与脱敏预览，确认前绝不改写正式 Household Facts。</p></header>
       <div className="intake-entry">
         <label htmlFor="intake-text"><span>家庭描述</span><textarea id="intake-text" value={text} onChange={(event) => onText(event.target.value)} rows={3} /></label>
         <Button type="button" loading={parsing} onClick={onParse}>解析为待确认草稿</Button>
@@ -288,6 +288,14 @@ function IntakeLedger({ text, onText, parsing, onParse, draft, values, onValue, 
             ))}
           </fieldset>
           {draft.status !== "confirmed" ? <Button type="button" variant="secondary" loading={confirming} onClick={onConfirm}>确认已勾选字段</Button> : null}
+          {draft.missing_fields.length ? (
+            <section className="intake-follow-up" aria-labelledby="intake-follow-up-heading">
+              <header><span>按计算影响排序</span><h4 id="intake-follow-up-heading">为了继续计算，优先确认：</h4></header>
+              <ol>{draft.missing_fields.slice(0, 3).map((field) => (
+                <li key={field.code}><span>P{field.priority}</span><p>{field.follow_up_question}</p><small>影响：{field.required_for.join("、")}</small></li>
+              ))}</ol>
+            </section>
+          ) : null}
           <details className="missing-fields"><summary>仍缺少 {draft.missing_fields.length} 项，不会自动猜测</summary><ul>{draft.missing_fields.map((field) => <li key={field.code}><strong>{field.label}</strong><span>{field.reason} · 用于 {field.required_for.join("、")}</span></li>)}</ul></details>
           <p className="boundary-copy">{draft.boundary_note}</p>
         </div>
@@ -354,15 +362,15 @@ function GraphLedger({ graph, mode, onMode, hasHousehold }: {
 function AgentChain({ catalog, run, running, onRun }: { catalog: AgentCatalog | null; run: Orchestration | null; running: boolean; onRun: () => void }) {
   return (
     <section className="trust-section agent-chain" aria-labelledby="agent-chain-heading">
-      <header><div><p className="section-index">04 / 九智能体状态机</p><h3 id="agent-chain-heading">每一步都要有工具、Schema、禁令和审计</h3></div><Button type="button" loading={running} onClick={onRun}>运行可信编排</Button></header>
-      {catalog ? <div className="agent-contract"><span>{catalog.agent_count} 类智能体</span><span>{catalog.orchestrator_version}</span><span>{catalog.hard_gates.length} 道硬门禁</span></div> : null}
+      <header><div><p className="section-index">九项智能服务状态</p><h3 id="agent-chain-heading">每一步都有工具约束、数据契约、禁令和审计</h3></div><Button type="button" loading={running} onClick={onRun}>运行可信编排</Button></header>
+      {catalog ? <div className="agent-contract"><span>{catalog.agent_count} 类智能服务</span><span>{catalog.orchestrator_version}</span><span>{catalog.hard_gates.length} 道硬门禁</span></div> : null}
       {run ? (
         <>
           <div className="run-verdict"><StatusBadge tone={run.status === "completed" ? "success" : run.status === "blocked" ? "danger" : "warning"}>{run.status === "completed" ? "终检通过" : run.status === "blocked" ? "输出已阻断" : "降级完成"}</StatusBadge><strong>运行 {run.run_id.slice(0, 12)}</strong><span>{run.provider_mode} · 数字引用 {run.numeric_ledger.length} · 政策切片 {run.citation_chunk_ids.length}</span></div>
           <ol className="agent-timeline">
             {run.steps.map((step) => <li key={step.step_id} data-status={step.status}><span className="agent-sequence">{String(step.sequence).padStart(2, "0")}</span><div><strong>{step.agent_name}</strong><span>{step.input_schema_name} → {step.output_schema_name}</span><small>{step.tool_calls.map((tool) => tool.tool).join(" · ")} · 禁止事项已核 {step.prohibitions_checked.length} 项 · 超时预算 {step.timeout_seconds}s</small></div><StatusBadge tone={step.status === "completed" ? "success" : step.status === "blocked" ? "danger" : "warning"}>{step.status === "completed" ? "已审计" : step.status === "blocked" ? "阻断" : "降级"}</StatusBadge></li>)}
           </ol>
-          <details className="numeric-ledger"><summary>数字工具账本（{run.numeric_ledger.length} 项）</summary><div className="data-table-wrap" tabIndex={0} role="region" aria-label="智能体数字工具账本"><table className="data-table"><thead><tr><th>引用代码</th><th>值</th><th>单位</th><th>确定性工具</th><th>路径</th></tr></thead><tbody>{run.numeric_ledger.map((item) => <tr key={item.code}><td><code>{item.code}</code></td><td className="numeric-cell">{item.unit.startsWith("CNY") ? formatMoney(item.value) : item.value}</td><td>{item.unit}</td><td>{item.source_tool}</td><td><code>{item.source_path}</code></td></tr>)}</tbody></table></div></details>
+          <details className="numeric-ledger"><summary>数字工具账本（{run.numeric_ledger.length} 项）</summary><div className="data-table-wrap" tabIndex={0} role="region" aria-label="智能服务数字工具账本"><table className="data-table"><thead><tr><th>引用代码</th><th>值</th><th>单位</th><th>确定性工具</th><th>路径</th></tr></thead><tbody>{run.numeric_ledger.map((item) => <tr key={item.code}><td><code>{item.code}</code></td><td className="numeric-cell">{item.unit.startsWith("CNY") ? formatMoney(item.value) : item.value}</td><td>{item.unit}</td><td>{item.source_tool}</td><td><code>{item.source_path}</code></td></tr>)}</tbody></table></div></details>
           <p className="boundary-copy">{run.boundary_note}</p>
         </>
       ) : <div className="trust-empty"><strong>尚无真实调用链</strong><p>点击“运行可信编排”后才会依次执行九个工具受限步骤；目录标签不会冒充运行结果。</p></div>}
@@ -386,7 +394,7 @@ export function TrustPortalWorkspace({ view }: { view: "advisor" | "risk" }) {
   }, []);
   return (
     <section className="trust-portal-wrapper">
-      <label className="portal-household-control"><span>可信 AI 复核家庭</span><select value={householdId} onChange={(event) => setHouseholdId(event.target.value)} disabled={households.length === 0}>{households.map((household) => <option key={household.id} value={household.id}>{household.name} · {household.code}</option>)}</select></label>
+      <label className="portal-household-control"><span>可信服务复核家庭</span><select value={householdId} onChange={(event) => setHouseholdId(event.target.value)} disabled={households.length === 0}>{households.map((household) => <option key={household.id} value={household.id}>{household.name} · {household.code}</option>)}</select></label>
       {error ? <p role="alert">{error}</p> : null}
       {householdId ? <TrustWorkspace householdId={householdId} view={view} /> : null}
     </section>

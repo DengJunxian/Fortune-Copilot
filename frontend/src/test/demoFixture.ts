@@ -43,21 +43,30 @@ function familyRow(code: "DEMO_A" | "DEMO_B" | "DEMO_C", index: number): FamilyC
 }
 
 export const demoManifestFixture: DemoManifest = {
-  release_version: "0.13.0",
+  release_version: "0.14.0",
   story_version: "main-demo-v1.0.0",
-  dataset_version: "synthetic-family-v1.0.0",
+  dataset_version: "synthetic-v5-personas-v2.0.0",
   runtime_mode: "test",
   mock_mode: true,
   external_network_required: false,
   ready: true,
-  seeded_household_count: 3,
+  seeded_household_count: 8,
   main_household_code: "DEMO_B",
-  households: [0, 1, 2].map((index) => ({
+  households: [0, 1, 2, 3, 4, 5, 6, 7].map((index) => ({
     household_id: `household-${String.fromCharCode(97 + index)}`,
     code: `DEMO_${String.fromCharCode(65 + index)}`,
     name: `合成家庭 ${String.fromCharCode(65 + index)}`,
-    profile: ["单身职场新人", "35 岁双收入育儿家庭", "临近退休家庭"][index]!,
-    valuation_date: "2026-08-04",
+    profile: [
+      "刚工作的个人／新市民",
+      "上海双职工中产家庭",
+      "高收入专业人士",
+      "科创企业创始人",
+      "科创专家／科学家",
+      "多代际高净值家族",
+      "跨境家庭",
+      "退休家庭",
+    ][index]!,
+    valuation_date: "2026-08-10",
   })) as DemoManifest["households"],
   latest_run_id: null,
   latest_run_status: null,
@@ -72,6 +81,9 @@ export const demoManifestFixture: DemoManifest = {
     license: true,
     third_party_notice: true,
     changelog: true,
+    v5_persona_dataset: true,
+    v5_golden_outcomes: true,
+    v5_release_benchmark: true,
   },
   boundaries: ["只使用合成数据", "信用卡额度不计入资产", "关键数字来自确定性工具"],
 };
@@ -185,19 +197,19 @@ export const demoLoadFixture: DemoControlResult = {
   action: "load",
   dataset_version: demoManifestFixture.dataset_version,
   loaded: 0,
-  skipped: 3,
+  skipped: 8,
   removed: 0,
-  household_codes: ["DEMO_A", "DEMO_B", "DEMO_C"],
+  household_codes: ["DEMO_A", "DEMO_B", "DEMO_C", "DEMO_D", "DEMO_E", "DEMO_F", "DEMO_G", "DEMO_H"],
   cache_cleared: true,
-  message: "三套合成家庭已存在，未重复写入。",
+  message: "八类 V5 合成 Persona 已存在，未重复写入。",
 };
 
 export const demoResetFixture: DemoControlResult = {
   ...demoLoadFixture,
   action: "reset",
-  loaded: 3,
+  loaded: 8,
   skipped: 0,
-  removed: 3,
+  removed: 8,
   message: "只删除并重建了标记为合成数据的家庭及其演示运行记录。",
 };
 

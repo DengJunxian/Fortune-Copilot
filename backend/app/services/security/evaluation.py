@@ -258,7 +258,18 @@ def run_adversarial_evaluation(
     reports = list(
         session.scalars(select(PlanReport).where(PlanReport.is_deleted.is_(False))).all()
     )
-    consistent_reports = sum(item.consistency_status == "passed" for item in reports)
+    reviewed_report_ids = set(
+        session.scalars(
+            select(QualityGateRun.report_id).where(
+                QualityGateRun.passed.is_(True),
+                QualityGateRun.is_deleted.is_(False),
+            )
+        ).all()
+    )
+    consistent_reports = sum(
+        item.consistency_status == "passed" or item.id in reviewed_report_ids
+        for item in reports
+    )
     passed_count = sum(item.passed for item in cases)
     completed_at = utc_now()
     runtime_ms = max(0, int((monotonic() - timer) * 1000))

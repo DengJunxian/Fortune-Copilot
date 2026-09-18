@@ -1,6 +1,339 @@
 # 智运财富 Fortune Copilot 实施进度
 
-最后更新：2026-08-07
+最后更新：2026-08-11
+
+## 2026-08-11：V5 E00—E14 反向核验与遗留闭环
+
+本轮没有新增 Epic，而是按任务书逐条执行“承诺 → 代码 → 测试 → 交付物”反向核验。核心后端、165 个 OpenAPI 路径与 E00—E14 功能均已存在；确认并补齐的是此前缺少真实浏览器证据的部分，以及仍停留在 V4 口径的交付清单。
+
+### 已补齐
+
+- `/planning` 的精细资产可选步骤新增“企业关联”桥接入口。个人／家庭账户继续在 Position Editor 记录，企业股权、估值、分红、担保和依赖度进入家企底稿，文案明确避免重复计入。
+- Playwright 新增真实 Compose 的 A-H Release Benchmark V2 与 14 阶段创始人故事；这两条现在从部署后的 HTTP 服务运行，不再只依赖进程内集成测试或黑盒脚本。
+- 新增 `planning → detailed assets → planning result` 浏览器路径，验证精细资产可跳过、企业关联入口可达、回到财务分析后旅程连续。
+- 11 个 V5 客户／顾问路由在 1440、1024、768 与 390 四档宽度逐页检查主内容、控制台和页面级横向溢出。
+- 修正 E11 折叠式顾问工作区后的旧 Playwright 路径：先从 Action Center 展开方案工作区；同时把 DEMO_C 旧名称更新为 Canonical V5 的“高收入专业人士”。
+- `file_api_inventory.md` 补入 0027、30 个端点模块、V5 服务、A-H 数据集、194/65/21/24 测试口径与 V5 公开 API；`final_function_matrix.md` 补入完整 V5 操作链。
+
+### 最终验证
+
+- `make check` 通过：Ruff、Mypy 256 个源文件、ESLint、TypeScript、194 项 Pytest、65 项 Vitest 与 5,276 模块生产构建全部成功。
+- 真实 Compose Playwright 21/21 通过，总用时 1.1 分钟；新增长链与四档 V5 路由均为 0 console error／warning、0 页面级横向溢出。
+- 重置式黑盒验收 24/24，通过时间 4,664 ms，外部网络调用 0；服务为 `runtime_mode=demo`、`mock_mode=true`。
+- 仍保留一个上游 Starlette/httpx 弃用提示、Node 测试环境 localStorage 提示和 Vite 大 chunk 提示，均不影响功能或发布门禁。
+
+## 2026-08-11：V5 E13 中国校准层
+
+本轮把 HCI、GCI、IAI 的关键参数从规则常量和来源记录提升为可查询、可冻结、可降级的校准注册表。重点是区分来源性质并失败关闭，不是用少量公开数据制造“银行模型已经校准”的假象。
+
+### 已实施
+
+- 新增 `0027_v5_calibration_registry`，建立 CalibrationDataset 与 CalibrationParameter；在统一行版本之外保存数据集来源版本、参数业务版本、方法、置信度、上下界、分群、地区、有效期和限制。
+- 新增严格的 `china_purchasing_power_v1.json`，包含 5 个数据集和 17 个参数：受控 HCI 分类率／IAI 阈值、全国官方 CPI 锚点，以及杭州、南京、广州最低工资 CAGR。人均消费支出同比因不是价格指数而未进入 HCI。
+- 新增 `CalibrationPort.get_parameter(code, segment, region, date)` 和数据库实现；按银行授权、经验校准、受控演示排序但不改写真实模式，指定模式缺失时返回空值、`needs_review` 与 `missing_verified_parameter`。
+- HCI、每条 GCI 和 IAI 分别返回参数引用、校准模式和状态。GCI 绑定目标／责任流版本，不套用全国 CPI；最低工资只进入 IAI。
+- 新增校准目录与参数查询 API；`ENABLE_V5_CALIBRATION` 本地默认关闭、Docker Demo 开启。`bank_authorized` 当前明确不可用，不允许用公开或演示参数顶替。
+- `/wealth/goals` 增加模式／状态徽标；八章报告第四章和附录 F 分开披露三种模式；Decision Evidence V2 冻结注册表、模式可用性、数据集版本和来源记录。
+
+### 验证
+
+- 新增 7 项专项测试，覆盖数据清单唯一性与幂等、地区／分群解析、官方 CPI 与最低工资口径、银行模式失败关闭、证据冻结、HCI／GCI／IAI 前端契约、报告分栏、API 开关和真实 `0026 → 0027 → 0026` 往返。
+- `make check` 全量通过：后端 Ruff、Mypy 与 189 项 Pytest；前端 ESLint、TypeScript、65 项 Vitest 和生产构建全部成功。仅保留既有 Starlette TestClient 弃用提示、Node localStorage 实验提示与 Vite 大 chunk 提示。
+- 空库可完整升级到 `0027 (head)`，Alembic 自动比对为零待迁移操作；真实 `0026 → 0027 → 0026` 往返只增加／删除两张校准表。当前 Compose 数据库含 `alembic_version` 共 81 张表。
+- 隔离 Compose 在 18001／18081 重建并保持健康，持久化 5 个数据集和 17 个参数。目录 API 明确显示 controlled demo 13 个、empirical 4 个、bank authorized 0 个；指定银行模式查询返回空值、`needs_review` 和禁止静默猜测说明。
+- DEMO_B 黑盒购买力响应为 `degraded`，HCI／IAI 同时披露经验与演示来源，三条 GCI 分别绑定责任流版本；最低工资只进入 IAI。后端与前端日志没有 ERROR／Traceback／5xx。
+- 使用 Playwright skill 在 1440px 实际检查 `/wealth/goals`：四个校准徽标内容正确，`scrollWidth = innerWidth = 1440`，控制台 0 error／0 warning；截图保存于 `output/playwright/e13-calibration-wealth-goals-1440.png`。
+- 数据质量结论、参数粒度、来源限制、模式优先级和消费者保护边界见 `docs/calibration/china_purchasing_power_calibration.md`。
+
+## 2026-08-11：V5 E12 受限工具型金融 Agent
+
+本轮在既有 trusted-ai 编排、IntakeDraft、受控知识和 E01—E11 确定性服务之上增加六类受限 Agent。核心不是扩大模型权限，而是通过 deny-by-default Tool Registry 把每次读取、草稿和证据整理限定到角色 Allowlist。
+
+### 已实施
+
+- 新增 `services/agents/tool_registry.py`，统一定义工具、角色 Allowlist、只读／确认属性和 deny-by-default 执行器；跨 Agent 工具与未注册工具返回 `agent_tool_not_allowed` 或 `agent_tool_unavailable`。
+- 复用 AgentOrchestrationRun、AgentStepRun、IntakeDraft 和 KnowledgeChunk，没有新增 Agent 表或 Alembic 迁移。旧九智能体查询按 orchestrator version 隔离，不会误读 E12 单步运行。
+- Intake Agent 只生成候选事实、缺失事实和待逐项确认草稿，明确 `facts_written=false`；不会把自然语言直接写入收入、目标或风险事实。
+- Goal Agent 生成 Goal Draft 和责任假设确认清单。未提供的学费、教育成本增长率、币种和汇率保持缺失；一般通胀只能作为受控候选来源，不能自动替代教育通胀。
+- Household Analyst 只解释确定性 Financial Analysis、Wealth Needs 和 CFS；Scenario Agent 只能选择启用的 Scenario Catalog 条目，不运行任意收益预测。
+- Product Research Agent 只读取 Product Ontology、Product Snapshot 和 Approved Knowledge，输出 facts／differences／evidence，并固定标记未调用 Eligibility、未生成推荐、不可执行。
+- Advisor Copilot 把 trigger、profile changes、needs、CFS 和 decision evidence 整理为 meeting brief、待核实问题、客户解释、风险提醒和专业转介摘要；客户端角色无权运行。
+- 新增 Tool Registry、运行和回放三个 feature-flag API；Docker Demo 开启 `ENABLE_V5_AGENTS`，本地开发继续默认关闭。
+- 新增提示注入、最高收益导向、代替客户决定购买金额、提高风险等级和覆盖适当性护栏。任务书三条攻击基准均只调用 guardrail check，运行和步骤持久化为 blocked。
+
+### 验证
+
+- E12 新增 11 项专项测试，覆盖精确 Allowlist、Intake 无事实写入、Goal 无虚构假设、Scenario 目录约束、Product Research 不越过 Eligibility、Advisor Copilot 五段输出、三条攻击基准、feature flag／RBAC／回放和旧九智能体历史隔离。
+- `make check` 全量通过：后端 Ruff、Mypy 与 182 项 Pytest；前端 ESLint、TypeScript、65 项 Vitest 和生产构建全部成功。仅保留既有 Starlette TestClient 弃用提示、Node localStorage 实验提示和 Vite 大 chunk 提示。
+- 隔离 Compose 在 18001／18081 重建并保持健康，数据库仍为 `0026 (head)`。DEMO_B 的六类正常 Agent 均 completed；三条攻击基准均 blocked 且只有 `guardrail_check`，9 次运行对应 9 条步骤证据，AgentOrchestrationRun 输入信封只保存消息哈希和长度。
+- Goal Agent 回放接口返回相同运行和四条工具证据；旧九智能体 latest 仍返回 `trusted-agent-state-machine-v1.0.0` 的 9 个步骤，后端日志无 ERROR／Traceback，前端 `/wealth` 为 200。
+- 完整工具矩阵、输出契约、护栏和 API 见 `docs/architecture/v5_bounded_financial_agents.md`。
+
+## 2026-08-11：V5 E11 家庭财富总览与顾问行动中心
+
+本轮把 E01—E10 已完成的画像、需要、责任、ELTC、持久快照、CFS、专业模块和持续监控整理成客户与顾问的日常入口。前端只编排已有证据，不新增金融计算、销售动作或第九章报告。
+
+### 已实施
+
+- `App.tsx` 从路径 `switch` 改为受控路由注册表；新增 `/wealth`、`/wealth/history` 和 `/advisor/actions`，保留 `/client`、`/client/advanced`、`/demo` 与 `/wealth/family` 等兼容入口。
+- 客户 Dashboard 首屏回答“家庭安全吗、目标缺口多少、下一笔钱先做什么、最近是否值得重规划”，下层展示 Need Graph、ELTC、Goals、Risk Budget、CFS、Recent Events、Monitoring Alerts 和 Advisor Follow-up。
+- Dashboard 对八个数据域并行、分区容错；核心事实全部失败时明确报错，任何局部失败都不使用模拟数字补位。
+- 新增 `CfsOverview`、`CfsComponentCard`、`ProductCandidateComparison` 和 `ProfessionalReferralCard`，继续保持“先需要与行动、后产品候选”的顺序。
+- `/wealth/twin` 升级为 Scenario Lab，覆盖收入中断、医疗支出上升、企业估值变化、提前退休和教育成本上升；只有已支持且经确认的工资变化可以写入事件账本。
+- `/wealth/history` 增加 Twin Snapshot Report，展示 snapshot id、profile／liability／CFS 版本和 decision hash，并明确它是八章报告的证据附件。
+- `/advisor` 默认先展示 Action Center，`/advisor/actions` 提供独立入口；五组为 Critical、Today、This Week、No Action Required 和 Specialist Routing。
+- 客户行动展开后展示 Trigger、Changed Facts、Changed Needs、Changed CFS、Evidence 与 Recommended Conversation；`do_not_sell` 会直接进入沟通边界。
+- 原顾问方案流程和 Portfolio／Twin／Behavior／Trust 工作区保持存在，收在渐进披露区域；E10 没有状态写 API，前端未伪造处理按钮。
+- 新增前端监控类型与 `VITE_ENABLE_V5_MONITORING`，Docker Demo 开启，本地默认关闭。
+
+### 验证
+
+- 前端 ESLint、TypeScript、生产构建通过；Vitest 从 59 项增至 65 项，Dashboard、Action Center 和 Twin Snapshot Report 均有专项测试，新增页面通过 axe-core。
+- 既有顾问流程、CFS、Persistent Twin、八章正式报告和全部入口回归继续通过。
+- 真实 Compose 在 1440／1024／768／390 四档检查 `/wealth` 与 `/advisor/actions`，全部 `scrollWidth = innerWidth`；Action Center 完成专业转介展开并核对六段证据，浏览器控制台 0 error／0 warning。
+- 截图保存在 `output/playwright/e11-wealth-1440.png`、`e11-wealth-1024.png`、`e11-wealth-768.png`、`e11-wealth-390.png`、`e11-advisor-1440-expanded.png`、`e11-advisor-1024.png`、`e11-advisor-768.png` 和 `e11-advisor-390-expanded.png`。
+- 完整路由、组件、数据源、响应式与边界见 `docs/architecture/v5_frontend_dashboard_action_center.md`。
+
+## 2026-08-10：V5 E10 持续监控、行为观察与 Next Best Action
+
+本轮在持久家庭孪生、家企风险预算、CFS、产品快照与 E09 专业模块之后完成持续复盘后端。监控只围绕客户影响生成复核、教育、冷静期和专业转介，不把事件或行为信号转成销售机会。
+
+### 已实施
+
+- 新增 `0026_v5_monitoring_and_triggers`，建立 MonitoringPolicy、MonitoringAlert、AdvisorTrigger 和 BehaviorObservation 四张表；既有 ActionItem 增加触发绑定、动作类型、禁售标记和专业角色，没有新增 `advisor_actions`。已有 CustomerConfirmation 可作为家庭确认依据进入观察、告警和干预证据。
+- 新增严格 `monitoring_v1.json`，完整覆盖目标资金漂移、ELTC 变化、风险预算越界、资产集中、家企依赖、币种错配、产品到期、快照陈旧、退休缺口、生活事件和行为漂移 11 类策略。
+- 行为观察覆盖追逐表现、恐慌赎回、频繁覆盖、目标频改、提前支取、高频关注和忽视保障；风险效果只能 `maintain` 或 `reduce`。
+- 复用 BehaviorIntervention，在“市场冲击 + 行为偏差 + 家庭硬事实未变”时生成教育、冷静期、情景对比和顾问联系，不提高风险上限。
+- 新增家庭告警、监控评估、行为干预、Next Best Action 与顾问行动中心五个 API；评估要求 advisor／admin、明确确认和 feature flag，行动中心限制 advisor／compliance／admin。
+- NBA 对无重大变化正式输出 `NO_ACTION_REQUIRED`。全部监控动作 `do_not_sell=true`；家企风险进入联合复核，产品到期不自动替代，市场上涨不触发热门基金或交易。
+- Docker Demo 开启 `ENABLE_V5_MONITORING`；本地开发仍默认关闭。E11 前端行动中心未提前实现。
+
+### 验证
+
+- 专项覆盖正式无动作、市场冲击行为降档、家企联合复核、产品到期不替代、告警／触发／ActionItem 重放幂等，以及 feature flag、二次确认、RBAC 和五个 API。
+- `0025 → 0026 → 0025` 在真实 SQLite 往返，四张监控表与 ActionItem 四个新字段可完整增加和回退，E09 表保持存在。
+- `make check` 全量通过：后端 Ruff、Mypy、171 项 Pytest；前端 ESLint、TypeScript、59 项 Vitest 与生产构建。仅保留既有 Starlette TestClient 弃用提示和 Vite 大 chunk 提示。
+- 本地运行库升级到 `0026 (head)`，Alembic 自动比对为零待迁移操作；升级前备份为 `output/backups/wealthtwin-pre-e10-20260810.sqlite`。当前 78 张应用表，加 `alembic_version` 共 79 张。
+- 隔离 Compose Demo 已重建后端并自动升级到 `0026 (head)`。DEMO_B 实测评估 11 类策略、触发 3 条告警；告警、行为干预、NBA 和顾问行动中心五个路径均为 200，3 条 NBA 全部 `do_not_sell=true`。
+- E10 未新增前端路由，真实浏览器行动中心验收按任务书留给 E11；本阶段通过后端 API／RBAC／迁移与全量回归验收。
+- 完整数据契约、策略、权限与消费者保护边界见 `docs/architecture/v5_monitoring_next_best_action.md`。
+
+## 2026-08-10：V5 E09 Specialized CFS
+
+本轮在 E06 综合方案与专业转介、E08 冻结证据之后完成养老、币种、家庭延续与公益四个专业工作区。系统负责识别、量化和资料追溯，法律、税务、跨境、信托设立与专业判断继续由既有转介链承接。
+
+### 已实施
+
+- 新增 `0024_v5_retirement_cross_border` 与 `0025_v5_trust_philanthropy`，建立制度权益、币种暴露、家庭延续需要和公益目标四张表；没有创建第二套 CFS 或审批表。
+- 新增严格 `specialized_cfs_v1.json`，养老金提取率、退休年限、医疗／照护系数、币种金额门和公益复核门都来自受控规则。
+- 养老引擎归一化社保、年金、养老金账户、租金和金融资产提取，输出退休收入底线、保障收入、年度收入缺口、长寿缺口和流动性缺口。
+- 币种引擎按原币识别资产、收入、负债、教育、企业和未来责任，保留方向、期限与来源记录；不做汇率预测或跨币种加总。
+- 家庭延续引擎识别未成年受益人、特殊照护、多代家庭、企业延续、权属复杂与保单协同，只输出 `NO_NEED_DETECTED`／`EXPERT_REVIEW_REQUIRED` 和资料范围。
+- 公益目标只由显式 WealthNeed 或家庭明确预算生成，作为家庭目标进入规划，不作为财富标签或营销入口。
+- 复用 E06 ProfessionalServiceReferral，把五类专业组件明确接成 `Need → Complexity Gate → Professional Referral → Advisor Workflow`。
+- 新增四个 GET API 与 `/wealth/retirement`、`/wealth/global`、`/wealth/family`。专业入口由当前 CFS 组件动态显示；年轻单身家庭不会默认看到信托中心。
+- 前端按 `redesign-existing-projects` 做增量升级，延续银行红、暖白、细分线和账表数字；复杂度路由按专业角色去重，仍保留全部触发需要。
+
+### 验证
+
+- 后端覆盖权益物化幂等、原币双向暴露、DEMO_A 无默认信托、DEMO_B 未成年触发、显式公益目标、feature flag、合规只读与四个 API 边界。
+- `0023 → 0024 → 0025 → 0024 → 0023` 在真实 SQLite 往返，E08 ProductSnapshot 与 Decision Evidence 保持存在。
+- `make check` 全量通过：后端 Ruff、Mypy、164 项 Pytest；前端 ESLint、TypeScript、59 项 Vitest 与生产构建。
+- 本地运行库升级到 `0025 (head)`，Alembic 自动比对为零待迁移操作；升级前备份为 `output/backups/wealthtwin-pre-e09-20260810.sqlite`。
+- Playwright 真实 Compose 验收三条页面，家庭／专业 API 均为 200，浏览器控制台 0 error／0 warning；1440px 与 390px 均满足 `scrollWidth = innerWidth`。
+- 截图：`output/playwright/e09-retirement-desktop.png`、`e09-retirement-mobile.png`、`e09-global-empty-desktop.png`、`e09-global-empty-mobile.png`、`e09-family-needs-desktop.png`、`e09-family-empty-mobile.png`。
+- 完整数据契约、算法、路由与专业边界见 `docs/architecture/v5_specialized_cfs.md`。
+
+## 2026-08-10：V5 E08 Decision Evidence V2 与 CFS 审批闭环
+
+本轮把 E01—E07 的家庭输入、图谱、画像、需要、责任、ELTC、家企、CFS 与产品快照接入现有顾问／合规／客户审批链，使正式决定可搜索、可验证、可按原快照回放。
+
+### 已实施
+
+- 新增 `0023_v5_decision_evidence_v2`：Recommendation／PlanReport 增加八个索引字段，PlanReport 增加 `decision_evidence JSON`；不新增平行审批表。
+- 新增严格 `DecisionEvidenceV2`，固定包含 household input、financial graph、client profile、wealth needs、liability、ELTC、risk budget、enterprise、CFS、product snapshot、suitability、calibration、advisor 和 client confirmation 14 个域。
+- 新增确定性哈希材料规范：排除生成时间、request id、决策记录 id 和展示文字；需求、产品快照、风险或画像改变会改变哈希。
+- 复用 PlanWorkflowVersion、AdvisorReview 与 CustomerConfirmation。计算时冻结 CFS 版本、组件、专业转介和 E07 产品证据；后续审核只更新适当性、顾问和客户确认域。
+- 新增 `/decisions/{decision_id}/evidence` 与 `/decisions/{decision_id}/replay`。Replay 只使用冻结包，返回 `latest_product_data_used=false`，不会用今天的产品数据覆盖历史。
+- 规划／组合 Recommendation 与正式 PlanReport 均保存 V2 证据；旧 V1 记录按明确 not-bound 状态兼容读取。
+- 合规端新增 14 域证据账本、CFS／产品快照摘要和冻结回放反馈。依照 `redesign-existing-projects` 保留现有视觉语言，以渐进披露代替原始 JSON 堆叠。
+
+### 验证
+
+- 专项覆盖相同输入哈希稳定、生成时间／request id／展示文字不影响哈希，以及 need／product snapshot／risk／profile 任一变化即改变哈希。
+- CFS 审批测试实际冻结 8 份公开产品快照；修改数据库中的“最新”快照后，历史 replay 仍使用冻结哈希且结果一致。
+- `0022 → 0023 → 0022` 在真实 SQLite 往返，八个索引字段和 PlanReport JSON 可完整回退，E07 ProductSnapshot 保持存在。
+- 既有规划、组合、正式报告和八状态审批回归均通过；旧接口、角色边界和客户草稿隐藏行为保持不变。
+- `make check` 全量通过：后端 Ruff、Mypy、158 项 Pytest；前端 ESLint、TypeScript、54 项 Vitest 与生产构建。Alembic 当前为 `0023 (head)`，自动比对为零待迁移操作。
+- Playwright 在真实 Compose 合规工作台完成 14 域读取和冻结快照回放：CFS 与 8 份产品快照均存在，回放返回哈希一致、`latest_product_data_used=false`，GET／POST 均为 200，控制台 0 error／0 warning。
+- 1440×1100 与 390×844 已人工目检；移动端摘要与证据账本收为单列，证据面板宽度等于可用内容宽度且页面不可横向拖动。截图：`output/playwright/e08-decision-evidence-desktop.png`、`output/playwright/e08-decision-evidence-mobile.png`。
+- 完整实现与边界见 `docs/architecture/v5_decision_evidence_v2.md`。
+
+## 2026-08-10：V5 E07 买方产品本体与候选排序
+
+本轮在 E06 的需要、CFS 行动与家庭风险预算之后完成 E07，使产品成为决策链末端的 0—N 候选，而不是规划入口或交易授权。
+
+### 已实施
+
+- 新增 `0022_v5_product_ontology`：扩展既有 `products`，新增版本化 `product_snapshots`；没有创建 `products_v2`，统一币种列继续复用 `RecordMixin`。
+- 新增十一类 `ProductFamily` 与五态资格结果；把发行人、法域、全口径成本、渠道激励、利益冲突、专业复核、CFS 角色、分类版本和证据纳入产品语义。
+- 保留现有 Fund Advisory，把 `verified_real_funds_v1.json` 的 8 只公开基金幂等适配到产品本体与证据快照；公开列示只标记“需渠道核验”，不伪装实时可售。
+- 新增产品资格引擎，依次核对用途、风险预算、账户、期限、流动性、客户资格、渠道和快照新鲜度；目录过期只能教育比较，不能生成可执行建议。
+- 新增买方排序，比较需要、硬资格、流动性、风险、期限、成本、分散度、发行人集中、操作简洁度和利益冲突；渠道激励永不获得正向分数。
+- 新增产品搜索、详情、资格、排名和 CFS 候选 API。CFS 组件映射为 0—N 候选，`NO PRODUCT` 为正式结构化结果。
+- `/wealth/cfs` 增加产品决策区，披露客户总成本、流动性、风险、入选／未选原因和利益冲突；无购买按钮，费用缺失明确显示待补齐。
+- 前端继续按 `redesign-existing-projects` 做增量升级，用同一银行红、暖白、细分线和账表层级呈现候选比较与 `NO PRODUCT`，没有引入产品货架式首页。
+
+### 验证
+
+- 测试覆盖适配幂等、11 类 taxonomy、五态资格、过期目录教育模式、渠道激励不改善排名、0—N CFS 映射和四个规定产品 API。
+- `0021 → 0022 → 0021` 在真实 SQLite 往返；旧产品记录与 E06 CFS 表均保留。
+- 全量质量门禁通过：后端 Ruff、Mypy、154 项 Pytest；前端 ESLint、TypeScript、54 项 Vitest 与生产构建。
+- Playwright 验收家庭 B 的全 `NO PRODUCT` 和风险预算开放后的 3 候选路径；1440×1000 与 390×844 均正常，控制台 0 error／0 warning。
+- 截图：`output/playwright/e07-product-ontology-no-product-desktop.png`、`e07-product-ontology-no-product-mobile.png`、`e07-product-ontology-candidates-desktop.png`、`e07-product-ontology-candidates-mobile.png`。
+
+## 2026-08-10：V5 E06 CFS Composer 与 Wealth Orchestrator
+
+本轮在 E01—E05 的金融图、动态画像、责任／ELTC、持久快照与家企暴露上完成 E06，把需要、金额、正式家庭风险预算、确定性工具和专业服务路由合成可版本 CFS；没有提前实现 E07 产品本体。
+
+### 已实施
+
+- 新增 `0021_v5_cfs_orchestration`，建立 CFS 方案、方案组件和专业服务转介三张表，并使用家庭内方案版本和决策哈希双重唯一约束。
+- 新增受控 `cfs_composer_v1.json`，覆盖 14 类家庭需要到 CFS 组件、行动、确定性工具、产品映射边界和专家类型的严格映射，规则内不包含产品代码。
+- 新增七因子 Household Economic Risk Capacity，联合能力、意愿、行为、现有经济暴露、流动性、刚性责任和最短期限；不把风险问卷等同于家庭可承担风险。
+- 新增正式 `NO_ACTION_REQUIRED`：未通过 ELTC、高息债务、现金流或家企风险门时，保留长期需求的目标金额并明确阻断产品映射，不生成伪装的 0 元投资组合。
+- Wealth Orchestrator 把方案组件组成 `purpose → allowed risk → deterministic tool → status → output`，安全类、目标类、家企类、专业复核和无行动分别收紧可用风险。
+- 新增 CFS 生成／读取／重算和专业转介四个 API，接入家庭对象授权、写角色、敏感操作确认、feature flag、审计、版本与幂等重放。
+- 新增 `/wealth/cfs`，按“需要 → 优先原因 → 行动 → 金额 → 风险预算 → 工具 → 专业服务”展示；必须客户勾选确认后才保存方案，回读时不静默生成新方案。
+- 继续使用 `redesign-existing-projects` 做增量升级：保留银行红、暖白、细分线和同一 AppShell，用决策账表和七因子风险底稿代替通用卡片堆叠。
+
+### 验证
+
+- 案例 1：家庭 B 存在高息债务，方案包含 debt 与 `NO_ACTION_REQUIRED`，不包含 investment，长期目标金额仍为正。
+- 案例 2：现金流、适当性和 ELTC 门通过后，方案同时包含 protection、retirement 和金额为正的 investment。
+- 案例 3：1700 万元企业股权、多币种和传承复杂度生成 enterprise risk、cross-border 和 succession，并自动路由私行、跨境和法律税务专家。
+- `0020 → 0021 → 0020` 和空库 `head → 0020 → head` 均在真实 SQLite 执行，回退 E06 后 E05 家企表保持可读。
+- 全量质量门禁通过：后端 Ruff、Mypy、148 项 Pytest；前端 ESLint、TypeScript、52 项 Vitest 与生产构建。
+- Playwright 实机从客户确认走到 201 Created，核对请求头与请求体；1440×1100 与 390×844 无页面级水平溢出，控制台 0 error／0 warning。
+- 本轮截图：`output/playwright/e06-cfs-desktop.png`、`output/playwright/e06-cfs-mobile.png`。
+
+## 2026-08-10：V5 E05 家庭—企业财富孪生
+
+本轮在 E01—E04 的金融图、动态画像、责任／ELTC 与持久快照上完成 E05，将企业股权、工资／分红、担保、质押和流动性事件纳入家庭经济财富与风险预算；没有提前生成 E06 CFS 方案。
+
+### 已实施
+
+- 新增 `0020_v5_family_enterprise`，建立企业档案、所有权、估值、现金流、担保和流动性事件六张表，并为 `positions` 叠加可空 `enterprise_id`。
+- 企业先进入 Canonical Financial Graph，再由确定性引擎计算财富、收入、担保、质押和币种五项依赖，以及带规则／公式版本和输入哈希的 Enterprise–Household Dependency Score。
+- 经济权益风险统一纳入未上市企业股权、上市雇主股、股权激励和普通证券持仓；证券账户股票少不再被解释为家庭权益风险低，高家企依赖会阻止机械新增权益风险。
+- 估值、分红、现金流恶化、担保及融资／IPO／解禁／股权出售等事件写入 E04 Financial Event Ledger，并在新 Household Snapshot 的风险预算中持久保存家企依赖、经济权益暴露、剩余容量和 CFS 约束。
+- 新增 enterprise、enterprise-exposures 和 family-enterprise-view API，接入家庭对象授权、写角色、双重确认、feature flag、审计和幂等重放。
+- 新增 `/wealth/family-enterprise` 客户驾驶舱，展示 Household Wealth、Enterprise Wealth、Income Dependency、Guarantees、Concentration、Liquidity Events 和 CFS Implications；企业事件同时呈现在 `/wealth/twin` 时间线。
+- 使用 `redesign-existing-projects` 做增量升级，延续银行红、暖白、细分线、非对称账表布局和同一 AppShell，未引入第二套视觉体系。
+
+### 验证
+
+- Hero 家庭的 300 万金融资产、500 万房产、1700 万企业股权、60 万企业工资／分红和 500 万担保得到 65.2% “高 Enterprise Dependency”。普通证券权益为 0，但经济权益暴露为 1700 万，结论为“不建议新增权益风险”。
+- 首次写入形成估值、分红、担保和 IPO 四条事件、两个快照；相同载荷重放后仍为 1 家企业、4 条事件、2 个快照。
+- `0019 → 0020 → 0019 → 0020` 已在真实 SQLite 空库执行；数据库包含六张企业表并成功叠加／恢复 Position 外键字段。
+- 全量质量门禁通过：后端 Ruff、Mypy、143 项 Pytest；前端 ESLint、TypeScript、50 项 Vitest 与生产构建。
+- Playwright 实机检查 `/wealth/family-enterprise` 的 1440×1100 与 390×844，并核对 `/wealth/twin` 的四条企业事件；两种视口无页面级水平溢出，控制台 0 error／0 warning。
+- 本轮截图：`output/playwright/e05-family-enterprise-desktop.png`、`output/playwright/e05-family-enterprise-mobile.png`。
+
+## 2026-08-10：V5 E04 持久家庭财富孪生与事件账本
+
+本轮在 E01—E03 确定性金融底座上完成 E04，把家庭当前状态从一次性响应升级为可版本、可比较、可审计的持久快照，并将已确认生活事件落入幂等账本；原有 Twin Simulator 保留为场景分析引擎。
+
+### 已实施
+
+- 新增 `0019_v5_persistent_financial_twin`，建立 `household_snapshots`、`financial_events` 和 `life_events`；为 `simulation_runs` 叠加可空 `household_snapshot_id`，保留旧 `snapshot_id`。
+- 新增快照引擎：组合 Graph、Profile、Needs、Liability、ELTC 和模拟初始状态，生成输入／链式快照哈希、父快照、事件游标和审计记录；相同输入幂等复用。
+- 新增快照差异：返回年收支、资产负债、每项收入来源、画像、需求状态／金额、风险预算和 CFS 的前后变化。
+- 新增工资生活事件处理器：确认、校验、更新已确认就业收入、重算画像／需求／责任／ELTC、生成新快照并留痕。同一 `event_hash` 重放直接返回已有结果，不再扣减收入。
+- 原 `services/twin/` 新增持久快照入口；模拟运行可固化 `household_snapshot_id`，后续步骤从同一历史 `TwinModelInput` 重演，未选快照时兼容旧路径。
+- 新增 wealth-twin、life-events、event-timeline 和历史 snapshot API，接入家庭对象授权、写角色、敏感确认头、feature flag 和审计。
+- 新增 `/wealth/twin` 客户页面，呈现 Current State、Timeline、Changed Facts／Needs／Risk Budget／CFS；前端不重算金融结论，不默认暴露 Monte Carlo。
+- 界面继续使用 `redesign-existing-projects` 约束的银行红、暖白、细分线与账表字级，不引入第二套设计系统。
+
+### 验证
+
+- 家庭 B 工资收入下降 30% 后，年收入从 360,000 元降至 252,000 元，画像 V1 → V2，身故保障目标 1,800,000 → 1,260,000 元，并生成新快照与审计证据。
+- 完全相同事件重放后仍为 2 个快照、1 个事件，年收入保持 252,000 元，没有发生二次扣减。
+- 新测试覆盖快照幂等、工资事件、审计、重放、持久快照驱动旧模拟器、API flag／RBAC／确认头和 `0018 → 0019 → 0018` 迁移。空库也实际执行了 upgrade／downgrade／re-upgrade。
+- 全量质量门禁通过：后端 Ruff、Mypy、140 项 Pytest；前端 ESLint、TypeScript、48 项 Vitest 与生产构建。
+- Playwright 实机检查 `/wealth/twin` 的 1440×1100 与 390×844；两种视口无页面级水平溢出，控制台 0 error／0 warning。
+- 本轮截图：`output/playwright/e04-wealth-twin-desktop.png`、`output/playwright/e04-wealth-twin-mobile.png`。
+
+## 2026-08-10：V5 E03 责任现金流、ELTC 与购买力 V2
+
+本轮在 E00／E01／E02 兼容底座上完成 E03，把目标和家庭责任落成可重演的现金流日历，并用长期可配置资本 ELTC 替代固定金额作为长期配置资格核心；未提前实现 E04 CFS、Persistent Twin、Dashboard 或 Agent。
+
+### 已实施
+
+- 新增 `0018_v5_liability_streams_eltc`，建立版本化责任流和分期现金流两张表；目标／责任继续作为事实源，派生流保持来源引用、估值日、规则／公式版本、客户确认和审计记录。
+- 新增受控 `liability_engine_v1.json` 与严格校验；教育目标默认拆为四期年度现金流并做分币尾差修正，其他目标和责任保留自身日期、刚性、增长率、准备金来源和备选动作。
+- 新增责任流幂等物化：相同输入复用，事实变化增量更新并重算现金流，来源失效后软删除；自定义流要求写角色和 `X-Confirm-Action: create_liability_stream` 双重确认。
+- 新增 ELTC 七步扣减桥：从可调度金融资源依次扣除经营周转、应急、高息债务、保障、短期刚性责任、已承诺目标资本和锁定制度资产；每步同时披露实际扣减与未覆盖缺口。
+- 正式长期配置改为同时检查 ELTC 为正、适当性、无高息债务和现金流安全。旧地区启动线明确降级为沟通参考，不决定资格；长期增长金额由 ELTC 封顶，不再生成固定门槛下学习仓。
+- 新增购买力 V2：HCI 按家庭实际支出结构计算，GCI 保留每条责任流的成本增长，IAI 观察可持续收入覆盖；最低工资趋势只进入 IAI，不充当 CPI 或投资收益门槛。
+- 新增 liability calendar／custom stream／eligible capital API 与 `/wealth/goals` 客户页面，展示时间线、现金流、资金缺口、ELTC 桥、资格门和 HCI／GCI／IAI；前端不重算金融结论。
+- 使用 `redesign-existing-projects` 在既有银行红、暖白、账表数字和 AppShell 上做增量设计，避免引入第二套设计系统。
+
+### 验证
+
+- 后端覆盖教育分期、尾差、幂等、事实变化重算、审计、A／B 两类 ELTC、固定门槛退役、购买力最低工资边界、规划兼容、RBAC、确认头和 feature flag。
+- existing DB 测试实际执行 `0017 → 0018 → 0017`；空库迁移到 `0018` 后 ORM 57 张业务表与数据库一致。
+- 全量质量门禁通过：后端 Ruff、Mypy、136 项 Pytest；前端 ESLint、TypeScript、46 项 Vitest 与生产构建。
+- Playwright 实机检查 `/wealth/goals` 的 1440×1100 与 390×844，并完成家庭 B→家庭 A 切换；两种视口无页面级水平溢出，控制台 0 error／0 warning。
+- 本轮截图：`output/playwright/e03-wealth-goals-desktop.png`、`output/playwright/e03-wealth-goals-mobile.png`。
+
+## 2026-08-10：V5 E02 动态客户财富画像与财富需求图谱
+
+本轮在 E00／E01 兼容底座上完成 E02；E03 已在后续批次交付。
+
+### 已实施
+
+- 新增 `0017_v5_client_profile_and_needs`，建立版本化画像、多标签、财富需求和需求优先级四张表；迁移不改写 V4 事实。
+- 新增受控 `client_profile_v1.json` 规则、严格 Pydantic 校验和 RuleVersion 记录；画像与需求金额、阈值、优先级全部由确定性 Python／SQL 逻辑计算。
+- 输入哈希覆盖家庭事实、金融图、分析日与规则版本；相同输入幂等复用，事实变化时旧画像保留为 superseded，新画像版本递增。
+- 画像规则覆盖生命周期、收入结构／稳定性、财富层级、房产／单一股票集中度、企业／股权激励、养老、多币种和家庭复杂度；同一家庭允许多个带来源证据的标签。
+- 财富需求覆盖任务书规定的 14 个 NeedType，按硬约束、目标期限、责任刚性和受控分数排序，并对企业、跨境、传承、信托和公益类需求标记专业复核。
+- 新增 profile／wealth-needs 的 GET 与 recalculate API，接入家庭对象授权、角色写权限、feature flag 和审计事件。
+- 新增 `/wealth/profile` 客户页面，显示家庭阶段、收入职业、资产负债、目标责任、三类风险边界、需求顺序和资料缺口；不暴露内部标签代码，不在前端重算金融结果。
+- 使用 `redesign-existing-projects` 做增量视觉校准，复用现有银行红、暖白、细分线、账表数字和客户端 AppShell，不改写全局设计系统。
+
+### 验证
+
+- 后端新增三类 Demo 的画像／需求幂等、审计与排序测试，并用事实组合覆盖 young worker、middle-class family、high-income professional、founder、scientist 和 retiree 六类场景；同一画像可多标签，事实变化会改变 profile hash。
+- existing DB 测试实际执行 `0015 → 0016 → 0017 → 0016 → 0015`，确认 E02 回退只删除四张新表，Financial Graph 和 V4 家庭事实仍可读取。
+- 前端覆盖画像、需求顺序、重新核对、客户边界、错误降级和 axe 可访问性；原客户规划流程继续通过。
+- `make check` 全量通过：后端 Ruff、Mypy、131 项 Pytest；前端 ESLint、TypeScript、44 项 Vitest 与生产构建全部通过。
+- Playwright 实机检查 `/wealth/profile` 的 1440×1100 与 390×844：家庭 B／C 切换、幂等重新核对、专业复核状态与中文金额解释均正确；两种视口 `scrollWidth = innerWidth`，控制台 0 error／0 warning。
+- 本轮截图：`output/playwright/v5-e02-profile-desktop.png`、`output/playwright/v5-e02-profile-mobile.png`。
+
+## 2026-08-10：V5 E00／E01 兼容底座与家庭金融图
+
+本轮严格按 V5 实施任务书的第一批顺序完成 E00 compatibility foundation 与 E01 Household Financial Graph，未提前实现 Profile、Need、ELTC、CFS、Dashboard 或 Agent。
+
+### 已实施
+
+- 新增九个 V5 feature flags，本地开发全部默认关闭；Docker 独立 Demo 只开启已验收的 Financial Graph。
+- 新增 `0016_v5_financial_graph_core`，建立 financial entities、accounts、positions 与 ownership edges，并从 `0015` 的家庭、成员和资产做 additive backfill。
+- 新增 Canonical Graph repository、幂等 runtime adapter、完整性检查、V4 `HouseholdFacts` 投影与 shadow parity diagnostic；V4 planning／portfolio／twin 继续使用原 loader。
+- 新增 Financial Graph GET 与 Position POST／PATCH／DELETE API，接入家庭对象授权、三角色写权限、估值日、来源、客户确认、乐观版本、审计事件和敏感删除二次确认。
+- 在原五步 onboarding 的财务报表后增加 feature-flag 控制的“精细资产（可选）”，支持账户、币种、类别、锁定、期限、风险、用途和所有权；关闭 flag 时客户路径无可见变化。
+- 新增 A／B／C V4 contract fixture，冻结核心财务、规划、组合、Twin 配置和八章报告元数据；不冻结运行时 ID、时间戳或展示文案。
+- 新增 V5 执行架构与 V4／V5 兼容文档，明确 LLM 金融权限、工行集成 fail-closed、迁移顺序与当前限制。
+
+### 验证
+
+- V4 变更前基线：后端 122 项、前端 40 项测试以及 Ruff、Mypy、ESLint、TypeScript 和生产构建通过。
+- `0016` 已验证空库 upgrade／downgrade；existing DB 测试实际执行 `0015 → head → 0015`，三类 Demo 的 legacy／graph 资产总额差异均不超过 0.01 CNY。
+- 三类 Demo 在建立 Graph 前后的 V4 规划 denominators 保持一致；Financial Graph API 的 flag、RBAC、审计、版本冲突和删除确认均有测试。
+- 首次 Graph 物化已覆盖同一家庭六路并发读取：进程内按家庭串行，跨 worker 由数据库唯一约束收敛，避免 React 开发模式重复读取造成重复实体或 500。
+- PositionEditor 覆盖加载、完善资产、可访问性检查、API 不可用时跳过等状态；原五步主流程测试保持通过。
+- `make check` 全量通过：后端 Ruff、Mypy、128 项 Pytest；前端 ESLint、TypeScript、42 项 Vitest 与生产构建全部通过。
+- Playwright 实机走完开启 flag 后的六步主流程，并在 1440×1100 与 390×844 检查“精细资产”列表、编辑反馈和后续财务分析；合法 `localhost` 来源下控制台无错误。
 
 ## 2026-08-07：客户主流程与基金投顾产品化重构
 
@@ -110,7 +443,7 @@
 
 ## 当前结论
 
-“理念对齐与合规校准说明”已经落实为持续工程边界，提示词 0 的总控 Goal 已完成；提示词 1—14 已按顺序完成。仓库现可在无外部模型、无真实银行接口、无 PostgreSQL 和无运行时网络时，以 SQLite、Mock LLM、三套合成家庭、本地规则和确定性工具完成家庭财务体检、目标规划、动态四账户、组合适当性、家庭财富数字孪生、行为金融双画像／干预、受控政策检索、关系图谱、九智能体可信编排、客户端完整旅程、顾问—合规—客户三端不可变方案审核闭环、正式八章规划书生成与持续重算、安全发布门禁、十阶段完整 Demo、七项有边界实验，以及与真实实现一致的比赛材料和最终总验收。
+“理念对齐与合规校准说明”已经落实为持续工程边界，提示词 0 的总控 Goal 已完成；提示词 1—14 已按顺序完成。仓库现可在无外部模型、无真实银行接口、无 PostgreSQL 和无运行时网络时，以 SQLite、Mock LLM、A-H 八类 Canonical 合成 Persona、本地规则和确定性工具完成家庭财务体检、目标规划、动态四账户、组合适当性、家庭财富数字孪生、行为金融双画像／干预、受控政策检索、关系图谱、九智能体可信编排、客户端完整旅程、顾问—合规—客户三端不可变方案审核闭环、正式八章规划书生成与持续重算、安全发布门禁、十阶段完整 Demo、七项有边界实验，以及与真实实现一致的比赛材料和最终总验收。A／B／C 仍作为旧主 Demo 的动态配置对照。
 
 当前已真实实现五张财务底表、20 项指标、保障与购买力、六阶段生命周期、目标现值与冲突、七步资金瀑布、三尺、五硬一软、反事实、19 项 Mock 产品、三候选确定性优化／降级、三道闸门、有限战术再平衡、逐月家庭状态、相关 Monte Carlo、19 个可组合压力场景、行为金融双画像、受控知识与九智能体治理、13 步客户端旅程、11 个任务工作区、ECharts 可访问图表、严格八章正式报告、229 项数字账本、受控引用、自包含 HTML／PDF、五组持久化行动、短会话与对象授权、分场景隐私权利、四类模型运行台账、八类对抗套件、十项报告发布门禁、八状态不可跳步工作流、顾问／合规工作台、客户逐项确认、投诉回放、审计导出、八类 Mock 银行适配、A／B／C 唯一配置对照、预热／缓存／进度／恢复、合成数据备份恢复和本机黑盒验收。提示词 14 已补齐 README、12 主题白皮书及 DOCX、三分钟脚本、15 问答、工行业务价值、14 页比赛 PPT、功能／测试／限制／风险／文件 API 清单、30 项理念矩阵与 23 项最终交付校验。
 
@@ -613,4 +946,16 @@
 - Demo 进度采用同步请求内的持久化阶段检查点，三家庭缓存与限流同样是单进程实现；竞赛本机模式可靠，但多实例生产需要共享缓存、任务队列、幂等调度和分布式追踪。SQLite 备份恢复通道刻意只支持纯合成文件库，PostgreSQL 或真实数据必须走机构级备份、加密、保留和恢复演练。
 - 用户理解度与客户经理流程时间目前只有经边界约束的实验协议和模拟基线，参与者／员工实测数均为 0；行为 A/B 也只有合成／授权测试数据。任何真实工行效果、效率、显著性或因果结论都仍未建立。
 
-提示词 0—14 已全部闭环。后续若进入真实机构验证，应按“治理先于规模”推进脱敏影子运行、人工对照、受控数据适配、持牌与合规复核、授权可退出试点和规模评审；在取得证据前，不得声称已实现工行生产接入、真实客户效果、经营改善或生产认证。
+## E14：异构 Persona、Golden Outcomes 与发布加固
+
+- 发布版本升级为 `0.14.0`。默认数据集 `synthetic-v5-personas-v2.0.0` 精确包含 A-H 八类 Persona：新市民、上海双职工、高收入专业人士、科创创始人、科学家／股权激励、多代际高净值、跨境与退休家庭。
+- 八类全部走同一 Financial Graph → Profile → Need → Liability／ELTC → Persistent Twin → CFS → Product／Specialized → Monitoring 管线；业务服务不按 Persona 代码分叉。D／E／F 的家企扩展使用稳定名称引用解析 Canonical UUID，重复种子不会复制家庭、企业或暴露。
+- `golden_outcomes_v2.json` 只断言结构、状态、类型、门禁、告警和专业路由，不写死最终金额。`v5_release_v2.json` 固定九项发布指标；实测画像完整度、需求覆盖、CFS 覆盖、无行动正确性、产品冲突独立性、顾问触发精度、决策回放与财务正确性均为 `1.0`，无效告警率为 `0`。
+- 创始人 D 的融资事件按 14 个阶段完成：初始 Twin、估值与稀释事件、新快照、画像／需要哈希变化、经济暴露与风险预算变化、家企 Trigger、100 路径 Scenario Lab、新 CFS、产品／专业路由、顾问复核、合规批准、客户确认与最终快照。企业估值 3000 万元 → 5000 万元、持股 80% → 62%，但高家企依赖下仍不允许机械增加权益风险。
+- 新增管理员确认接口 `/api/v1/demo/v5/release-benchmark` 与 `/api/v1/demo/v5/founder-story`，均只重置合成数据。E14 没有新增迁移；隔离空库 `upgrade head + alembic check` 通过，head 保持 `0027_v5_calibration_registry`，共 81 张含 Alembic 版本表。
+- 全仓 `make check` 通过：Ruff、ESLint、严格 Mypy（256 个后端源文件）、TypeScript、Pytest 194 项、Vitest 65 项与 Vite 生产构建全部通过。Compose 黑盒验收 24／24，OpenAPI 165 个路径／196 个 HTTP 操作，八类 Persona 与所有发布资产就绪。
+- Playwright CLI 在真实 Compose 的 1440 视口验证 `8 Personas`、`加载 A-H Persona` 与 A／B／C 对照同时存在；页面宽度 1440／1440，无横向溢出，控制台 0 error／0 warning。截图位于 `output/playwright/e14-v5-release-demo-1440.png`。
+- 最终材料验收 23／23：比赛 PPT 已同步当前 A-H 截图与 194／65、24／24、165／196 评测口径，14 页逐页复核且 `slides_test.py` 无画布溢出；技术白皮书更新同一口径后以显式系统中文字体目录渲染为 18 页，全部页面无缺字、裁切、重叠或错误续号。
+- 数据质量、Golden 语义、九指标与 14 阶段事件契约见 `docs/architecture/v5_heterogeneous_persona_release.md`。这些结果只属于本地合成发布回归，不代表客户效果、投资业绩、银行生产质量或真实机构验收。
+
+提示词 0—14 与 V5 E00—E14 已全部闭环。后续若进入真实机构验证，应按“治理先于规模”推进脱敏影子运行、人工对照、受控数据适配、持牌与合规复核、授权可退出试点和规模评审；在取得证据前，不得声称已实现工行生产接入、真实客户效果、经营改善或生产认证。

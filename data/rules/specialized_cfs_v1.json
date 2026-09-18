@@ -1,0 +1,33 @@
+{
+  "code": "v5-specialized-cfs",
+  "semantic_version": "1.0.0",
+  "formula_version": "specialized-cfs-v1",
+  "effective_from": "2026-08-10",
+  "source_type": "internal_demo",
+  "source_summary": "Deterministic E09 need detection and gap calculation assumptions; not legal, tax, product or execution advice.",
+  "retirement": {
+    "basic_expense_replacement_ratio": "0.850000",
+    "medical_expense_ratio": "0.120000",
+    "long_term_care_annual_per_adult": "18000.00",
+    "longevity_age": 90,
+    "liquidity_bridge_years": 5,
+    "social_security_income_factor": "1.800000",
+    "financial_withdrawal_rate": "0.040000",
+    "near_retirement_years": 10
+  },
+  "cross_border": {
+    "material_amount": "50000.00",
+    "material_ratio": "0.010000",
+    "short_term_days": 1095,
+    "medium_term_days": 3650
+  },
+  "trust_succession": {
+    "minor_age": 18,
+    "ownership_complexity_count": 3,
+    "high_value_asset_threshold": "10000000.00"
+  },
+  "philanthropy": {
+    "professional_review_annual_budget": "100000.00",
+    "default_time_horizon": "ongoing"
+  }
+}

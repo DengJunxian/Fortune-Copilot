@@ -116,7 +116,7 @@ export function ClientPage() {
       </header>
 
       {households.length > 1 ? (
-        <nav className="household-quick-switch" aria-label="一键切换演示家庭">
+        <nav className="household-quick-switch" aria-label="切换演示家庭">
           <span>家庭差异演示</span>
           {households.slice(0, 3).map((household) => (
             <button key={household.id} type="button" aria-pressed={household.id === householdId} onClick={() => setHouseholdId(household.id)}>

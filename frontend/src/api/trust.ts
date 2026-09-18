@@ -122,6 +122,8 @@ export interface IntakeDraft {
     label: string;
     reason: string;
     required_for: string[];
+    priority: number;
+    follow_up_question: string;
   }>;
   confirmed_values: Record<string, string>;
   contains_untrusted_instruction: boolean;

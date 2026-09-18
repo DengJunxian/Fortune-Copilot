@@ -1,0 +1,1930 @@
+{
+  "schema_version": "fortune-copilot-competition-benchmark-v1",
+  "dataset_version": "synthetic-competition-personas-v1.0.0",
+  "as_of_date": "2026-09-01",
+  "synthetic": true,
+  "real_customer_data": false,
+  "generator": "scripts/generate_competition_benchmark.py",
+  "profiles": [
+    {
+      "profile_id": "BENCH-01-01",
+      "segment": "young_professional",
+      "segment_label": "年轻职场人士",
+      "age": 23,
+      "annual_income": 180400.0,
+      "financial_assets": 135000.0,
+      "liabilities": 31500.0,
+      "essential_monthly_expense": 6160.0,
+      "dependents": 0,
+      "income_stability": 0.82,
+      "risk_tolerance": 0.548,
+      "maximum_acceptable_loss": 0.118,
+      "knowledge_score": 0.52,
+      "goal": {
+        "target_amount": 360800.0,
+        "current_assets": 43296.0,
+        "horizon_months": 72,
+        "expected_return": 0.035,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "hold_loser"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "personal_pension"
+      ]
+    },
+    {
+      "profile_id": "BENCH-01-02",
+      "segment": "young_professional",
+      "segment_label": "年轻职场人士",
+      "age": 24,
+      "annual_income": 189200.0,
+      "financial_assets": 144900.0,
+      "liabilities": 29400.0,
+      "essential_monthly_expense": 6370.0,
+      "dependents": 0,
+      "income_stability": 0.808,
+      "risk_tolerance": 0.566,
+      "maximum_acceptable_loss": 0.126,
+      "knowledge_score": 0.535,
+      "goal": {
+        "target_amount": 401104.0,
+        "current_assets": 62171.12,
+        "horizon_months": 78,
+        "expected_return": 0.035,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "hold_loser"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "personal_pension"
+      ]
+    },
+    {
+      "profile_id": "BENCH-01-03",
+      "segment": "young_professional",
+      "segment_label": "年轻职场人士",
+      "age": 25,
+      "annual_income": 198000.0,
+      "financial_assets": 154800.0,
+      "liabilities": 27300.0,
+      "essential_monthly_expense": 6580.0,
+      "dependents": 0,
+      "income_stability": 0.796,
+      "risk_tolerance": 0.584,
+      "maximum_acceptable_loss": 0.134,
+      "knowledge_score": 0.55,
+      "goal": {
+        "target_amount": 443520.0,
+        "current_assets": 84268.8,
+        "horizon_months": 84,
+        "expected_return": 0.035,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "chase_top_performer"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "personal_pension"
+      ]
+    },
+    {
+      "profile_id": "BENCH-01-04",
+      "segment": "young_professional",
+      "segment_label": "年轻职场人士",
+      "age": 26,
+      "annual_income": 206800.0,
+      "financial_assets": 164700.0,
+      "liabilities": 25200.0,
+      "essential_monthly_expense": 6790.0,
+      "dependents": 0,
+      "income_stability": 0.784,
+      "risk_tolerance": 0.602,
+      "maximum_acceptable_loss": 0.142,
+      "knowledge_score": 0.565,
+      "goal": {
+        "target_amount": 488048.0,
+        "current_assets": 109810.8,
+        "horizon_months": 90,
+        "expected_return": 0.035,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "hold_loser"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "personal_pension"
+      ]
+    },
+    {
+      "profile_id": "BENCH-01-05",
+      "segment": "young_professional",
+      "segment_label": "年轻职场人士",
+      "age": 27,
+      "annual_income": 215600.0,
+      "financial_assets": 174600.0,
+      "liabilities": 23100.0,
+      "essential_monthly_expense": 7000.0,
+      "dependents": 0,
+      "income_stability": 0.772,
+      "risk_tolerance": 0.62,
+      "maximum_acceptable_loss": 0.15,
+      "knowledge_score": 0.58,
+      "goal": {
+        "target_amount": 534688.0,
+        "current_assets": 139018.88,
+        "horizon_months": 96,
+        "expected_return": 0.035,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "hold_loser"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "personal_pension"
+      ]
+    },
+    {
+      "profile_id": "BENCH-01-06",
+      "segment": "young_professional",
+      "segment_label": "年轻职场人士",
+      "age": 23,
+      "annual_income": 224400.0,
+      "financial_assets": 184500.0,
+      "liabilities": 21000.0,
+      "essential_monthly_expense": 7210.0,
+      "dependents": 0,
+      "income_stability": 0.76,
+      "risk_tolerance": 0.638,
+      "maximum_acceptable_loss": 0.158,
+      "knowledge_score": 0.595,
+      "goal": {
+        "target_amount": 583440.0,
+        "current_assets": 172114.8,
+        "horizon_months": 102,
+        "expected_return": 0.035,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "chase_top_performer"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "personal_pension"
+      ]
+    },
+    {
+      "profile_id": "BENCH-01-07",
+      "segment": "young_professional",
+      "segment_label": "年轻职场人士",
+      "age": 24,
+      "annual_income": 233200.0,
+      "financial_assets": 194400.0,
+      "liabilities": 18900.0,
+      "essential_monthly_expense": 7420.0,
+      "dependents": 0,
+      "income_stability": 0.748,
+      "risk_tolerance": 0.656,
+      "maximum_acceptable_loss": 0.166,
+      "knowledge_score": 0.61,
+      "goal": {
+        "target_amount": 634304.0,
+        "current_assets": 209320.32,
+        "horizon_months": 108,
+        "expected_return": 0.035,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "hold_loser"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "personal_pension"
+      ]
+    },
+    {
+      "profile_id": "BENCH-01-08",
+      "segment": "young_professional",
+      "segment_label": "年轻职场人士",
+      "age": 25,
+      "annual_income": 242000.0,
+      "financial_assets": 204300.0,
+      "liabilities": 16800.0,
+      "essential_monthly_expense": 7630.0,
+      "dependents": 1,
+      "income_stability": 0.736,
+      "risk_tolerance": 0.674,
+      "maximum_acceptable_loss": 0.174,
+      "knowledge_score": 0.625,
+      "goal": {
+        "target_amount": 687280.0,
+        "current_assets": 250857.2,
+        "horizon_months": 114,
+        "expected_return": 0.035,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "hold_loser"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "personal_pension"
+      ]
+    },
+    {
+      "profile_id": "BENCH-01-09",
+      "segment": "young_professional",
+      "segment_label": "年轻职场人士",
+      "age": 26,
+      "annual_income": 250800.0,
+      "financial_assets": 214200.0,
+      "liabilities": 14700.0,
+      "essential_monthly_expense": 7840.0,
+      "dependents": 1,
+      "income_stability": 0.724,
+      "risk_tolerance": 0.692,
+      "maximum_acceptable_loss": 0.182,
+      "knowledge_score": 0.64,
+      "goal": {
+        "target_amount": 742368.0,
+        "current_assets": 296947.2,
+        "horizon_months": 120,
+        "expected_return": 0.035,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "chase_top_performer"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "personal_pension"
+      ]
+    },
+    {
+      "profile_id": "BENCH-01-10",
+      "segment": "young_professional",
+      "segment_label": "年轻职场人士",
+      "age": 27,
+      "annual_income": 259600.0,
+      "financial_assets": 224100.0,
+      "liabilities": 12600.0,
+      "essential_monthly_expense": 8050.0,
+      "dependents": 0,
+      "income_stability": 0.712,
+      "risk_tolerance": 0.71,
+      "maximum_acceptable_loss": 0.19,
+      "knowledge_score": 0.655,
+      "goal": {
+        "target_amount": 799568.0,
+        "current_assets": 347812.08,
+        "horizon_months": 126,
+        "expected_return": 0.035,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "hold_loser"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "personal_pension"
+      ]
+    },
+    {
+      "profile_id": "BENCH-02-01",
+      "segment": "middle_class_family",
+      "segment_label": "中产家庭",
+      "age": 36,
+      "annual_income": 524800.0,
+      "financial_assets": 1350000.0,
+      "liabilities": 1890000.0,
+      "essential_monthly_expense": 20240.0,
+      "dependents": 1,
+      "income_stability": 0.86,
+      "risk_tolerance": 0.588,
+      "maximum_acceptable_loss": 0.148,
+      "knowledge_score": 0.62,
+      "goal": {
+        "target_amount": 1049600.0,
+        "current_assets": 125952.0,
+        "horizon_months": 120,
+        "expected_return": 0.039,
+        "inflation_rate": 0.05
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "hold_loser"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-02-02",
+      "segment": "middle_class_family",
+      "segment_label": "中产家庭",
+      "age": 37,
+      "annual_income": 550400.0,
+      "financial_assets": 1449000.0,
+      "liabilities": 1764000.0,
+      "essential_monthly_expense": 20930.0,
+      "dependents": 1,
+      "income_stability": 0.848,
+      "risk_tolerance": 0.606,
+      "maximum_acceptable_loss": 0.156,
+      "knowledge_score": 0.635,
+      "goal": {
+        "target_amount": 1166848.0,
+        "current_assets": 180861.44,
+        "horizon_months": 126,
+        "expected_return": 0.039,
+        "inflation_rate": 0.05
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "hold_loser"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-02-03",
+      "segment": "middle_class_family",
+      "segment_label": "中产家庭",
+      "age": 38,
+      "annual_income": 576000.0,
+      "financial_assets": 1548000.0,
+      "liabilities": 1638000.0,
+      "essential_monthly_expense": 21620.0,
+      "dependents": 1,
+      "income_stability": 0.836,
+      "risk_tolerance": 0.624,
+      "maximum_acceptable_loss": 0.164,
+      "knowledge_score": 0.65,
+      "goal": {
+        "target_amount": 1290240.0,
+        "current_assets": 245145.6,
+        "horizon_months": 132,
+        "expected_return": 0.039,
+        "inflation_rate": 0.05
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "chase_top_performer"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-02-04",
+      "segment": "middle_class_family",
+      "segment_label": "中产家庭",
+      "age": 39,
+      "annual_income": 601600.0,
+      "financial_assets": 1647000.0,
+      "liabilities": 1512000.0,
+      "essential_monthly_expense": 22310.0,
+      "dependents": 1,
+      "income_stability": 0.824,
+      "risk_tolerance": 0.642,
+      "maximum_acceptable_loss": 0.172,
+      "knowledge_score": 0.665,
+      "goal": {
+        "target_amount": 1419776.0,
+        "current_assets": 319449.6,
+        "horizon_months": 138,
+        "expected_return": 0.039,
+        "inflation_rate": 0.05
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "hold_loser"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-02-05",
+      "segment": "middle_class_family",
+      "segment_label": "中产家庭",
+      "age": 40,
+      "annual_income": 627200.0,
+      "financial_assets": 1746000.0,
+      "liabilities": 1386000.0,
+      "essential_monthly_expense": 23000.0,
+      "dependents": 1,
+      "income_stability": 0.812,
+      "risk_tolerance": 0.66,
+      "maximum_acceptable_loss": 0.18,
+      "knowledge_score": 0.68,
+      "goal": {
+        "target_amount": 1555456.0,
+        "current_assets": 404418.56,
+        "horizon_months": 144,
+        "expected_return": 0.039,
+        "inflation_rate": 0.05
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "hold_loser"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-02-06",
+      "segment": "middle_class_family",
+      "segment_label": "中产家庭",
+      "age": 36,
+      "annual_income": 652800.0,
+      "financial_assets": 1845000.0,
+      "liabilities": 1260000.0,
+      "essential_monthly_expense": 23690.0,
+      "dependents": 1,
+      "income_stability": 0.8,
+      "risk_tolerance": 0.678,
+      "maximum_acceptable_loss": 0.188,
+      "knowledge_score": 0.695,
+      "goal": {
+        "target_amount": 1697280.0,
+        "current_assets": 500697.6,
+        "horizon_months": 150,
+        "expected_return": 0.039,
+        "inflation_rate": 0.05
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "chase_top_performer"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-02-07",
+      "segment": "middle_class_family",
+      "segment_label": "中产家庭",
+      "age": 37,
+      "annual_income": 678400.0,
+      "financial_assets": 1944000.0,
+      "liabilities": 1134000.0,
+      "essential_monthly_expense": 24380.0,
+      "dependents": 1,
+      "income_stability": 0.788,
+      "risk_tolerance": 0.696,
+      "maximum_acceptable_loss": 0.196,
+      "knowledge_score": 0.71,
+      "goal": {
+        "target_amount": 1845248.0,
+        "current_assets": 608931.84,
+        "horizon_months": 156,
+        "expected_return": 0.039,
+        "inflation_rate": 0.05
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "hold_loser"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-02-08",
+      "segment": "middle_class_family",
+      "segment_label": "中产家庭",
+      "age": 38,
+      "annual_income": 704000.0,
+      "financial_assets": 2043000.0,
+      "liabilities": 1008000.0,
+      "essential_monthly_expense": 25070.0,
+      "dependents": 2,
+      "income_stability": 0.776,
+      "risk_tolerance": 0.714,
+      "maximum_acceptable_loss": 0.204,
+      "knowledge_score": 0.725,
+      "goal": {
+        "target_amount": 1999360.0,
+        "current_assets": 729766.4,
+        "horizon_months": 162,
+        "expected_return": 0.039,
+        "inflation_rate": 0.05
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "hold_loser"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-02-09",
+      "segment": "middle_class_family",
+      "segment_label": "中产家庭",
+      "age": 39,
+      "annual_income": 729600.0,
+      "financial_assets": 2142000.0,
+      "liabilities": 882000.0,
+      "essential_monthly_expense": 25760.0,
+      "dependents": 2,
+      "income_stability": 0.764,
+      "risk_tolerance": 0.732,
+      "maximum_acceptable_loss": 0.212,
+      "knowledge_score": 0.74,
+      "goal": {
+        "target_amount": 2159616.0,
+        "current_assets": 863846.4,
+        "horizon_months": 168,
+        "expected_return": 0.039,
+        "inflation_rate": 0.05
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "chase_top_performer"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-02-10",
+      "segment": "middle_class_family",
+      "segment_label": "中产家庭",
+      "age": 40,
+      "annual_income": 755200.0,
+      "financial_assets": 2241000.0,
+      "liabilities": 756000.0,
+      "essential_monthly_expense": 26450.0,
+      "dependents": 1,
+      "income_stability": 0.752,
+      "risk_tolerance": 0.75,
+      "maximum_acceptable_loss": 0.22,
+      "knowledge_score": 0.755,
+      "goal": {
+        "target_amount": 2326016.0,
+        "current_assets": 1011816.96,
+        "horizon_months": 174,
+        "expected_return": 0.039,
+        "inflation_rate": 0.05
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "hold_loser"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-03-01",
+      "segment": "high_net_worth",
+      "segment_label": "高净值客户",
+      "age": 44,
+      "annual_income": 1394000.0,
+      "financial_assets": 9000000.0,
+      "liabilities": 2625000.0,
+      "essential_monthly_expense": 57200.0,
+      "dependents": 2,
+      "income_stability": 0.78,
+      "risk_tolerance": 0.628,
+      "maximum_acceptable_loss": 0.188,
+      "knowledge_score": 0.74,
+      "goal": {
+        "target_amount": 2788000.0,
+        "current_assets": 334560.0,
+        "horizon_months": 156,
+        "expected_return": 0.043,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "hold_loser"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-03-02",
+      "segment": "high_net_worth",
+      "segment_label": "高净值客户",
+      "age": 45,
+      "annual_income": 1462000.0,
+      "financial_assets": 9660000.0,
+      "liabilities": 2450000.0,
+      "essential_monthly_expense": 59150.0,
+      "dependents": 2,
+      "income_stability": 0.768,
+      "risk_tolerance": 0.646,
+      "maximum_acceptable_loss": 0.196,
+      "knowledge_score": 0.755,
+      "goal": {
+        "target_amount": 3099440.0,
+        "current_assets": 480413.2,
+        "horizon_months": 162,
+        "expected_return": 0.043,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "hold_loser"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-03-03",
+      "segment": "high_net_worth",
+      "segment_label": "高净值客户",
+      "age": 46,
+      "annual_income": 1530000.0,
+      "financial_assets": 10320000.0,
+      "liabilities": 2275000.0,
+      "essential_monthly_expense": 61100.0,
+      "dependents": 2,
+      "income_stability": 0.756,
+      "risk_tolerance": 0.664,
+      "maximum_acceptable_loss": 0.204,
+      "knowledge_score": 0.77,
+      "goal": {
+        "target_amount": 3427200.0,
+        "current_assets": 651168.0,
+        "horizon_months": 168,
+        "expected_return": 0.043,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "chase_top_performer"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-03-04",
+      "segment": "high_net_worth",
+      "segment_label": "高净值客户",
+      "age": 47,
+      "annual_income": 1598000.0,
+      "financial_assets": 10980000.0,
+      "liabilities": 2100000.0,
+      "essential_monthly_expense": 63050.0,
+      "dependents": 2,
+      "income_stability": 0.744,
+      "risk_tolerance": 0.682,
+      "maximum_acceptable_loss": 0.212,
+      "knowledge_score": 0.785,
+      "goal": {
+        "target_amount": 3771280.0,
+        "current_assets": 848538.0,
+        "horizon_months": 174,
+        "expected_return": 0.043,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "hold_loser"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-03-05",
+      "segment": "high_net_worth",
+      "segment_label": "高净值客户",
+      "age": 48,
+      "annual_income": 1666000.0,
+      "financial_assets": 11640000.0,
+      "liabilities": 1925000.0,
+      "essential_monthly_expense": 65000.0,
+      "dependents": 2,
+      "income_stability": 0.732,
+      "risk_tolerance": 0.7,
+      "maximum_acceptable_loss": 0.22,
+      "knowledge_score": 0.8,
+      "goal": {
+        "target_amount": 4131680.0,
+        "current_assets": 1074236.8,
+        "horizon_months": 180,
+        "expected_return": 0.043,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "hold_loser"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-03-06",
+      "segment": "high_net_worth",
+      "segment_label": "高净值客户",
+      "age": 44,
+      "annual_income": 1734000.0,
+      "financial_assets": 12300000.0,
+      "liabilities": 1750000.0,
+      "essential_monthly_expense": 66950.0,
+      "dependents": 2,
+      "income_stability": 0.72,
+      "risk_tolerance": 0.718,
+      "maximum_acceptable_loss": 0.228,
+      "knowledge_score": 0.815,
+      "goal": {
+        "target_amount": 4508400.0,
+        "current_assets": 1329978.0,
+        "horizon_months": 186,
+        "expected_return": 0.043,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "chase_top_performer"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-03-07",
+      "segment": "high_net_worth",
+      "segment_label": "高净值客户",
+      "age": 45,
+      "annual_income": 1802000.0,
+      "financial_assets": 12960000.0,
+      "liabilities": 1575000.0,
+      "essential_monthly_expense": 68900.0,
+      "dependents": 2,
+      "income_stability": 0.708,
+      "risk_tolerance": 0.736,
+      "maximum_acceptable_loss": 0.236,
+      "knowledge_score": 0.83,
+      "goal": {
+        "target_amount": 4901440.0,
+        "current_assets": 1617475.2,
+        "horizon_months": 192,
+        "expected_return": 0.043,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "hold_loser"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-03-08",
+      "segment": "high_net_worth",
+      "segment_label": "高净值客户",
+      "age": 46,
+      "annual_income": 1870000.0,
+      "financial_assets": 13620000.0,
+      "liabilities": 1400000.0,
+      "essential_monthly_expense": 70850.0,
+      "dependents": 3,
+      "income_stability": 0.696,
+      "risk_tolerance": 0.754,
+      "maximum_acceptable_loss": 0.244,
+      "knowledge_score": 0.845,
+      "goal": {
+        "target_amount": 5310800.0,
+        "current_assets": 1938442.0,
+        "horizon_months": 198,
+        "expected_return": 0.043,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "hold_loser"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-03-09",
+      "segment": "high_net_worth",
+      "segment_label": "高净值客户",
+      "age": 47,
+      "annual_income": 1938000.0,
+      "financial_assets": 14280000.0,
+      "liabilities": 1225000.0,
+      "essential_monthly_expense": 72800.0,
+      "dependents": 3,
+      "income_stability": 0.684,
+      "risk_tolerance": 0.772,
+      "maximum_acceptable_loss": 0.252,
+      "knowledge_score": 0.86,
+      "goal": {
+        "target_amount": 5736480.0,
+        "current_assets": 2294592.0,
+        "horizon_months": 204,
+        "expected_return": 0.043,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "chase_top_performer"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-03-10",
+      "segment": "high_net_worth",
+      "segment_label": "高净值客户",
+      "age": 48,
+      "annual_income": 2006000.0,
+      "financial_assets": 14940000.0,
+      "liabilities": 1050000.0,
+      "essential_monthly_expense": 74750.0,
+      "dependents": 2,
+      "income_stability": 0.672,
+      "risk_tolerance": 0.79,
+      "maximum_acceptable_loss": 0.26,
+      "knowledge_score": 0.875,
+      "goal": {
+        "target_amount": 6178480.0,
+        "current_assets": 2687638.8,
+        "horizon_months": 210,
+        "expected_return": 0.043,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "hold_loser"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-04-01",
+      "segment": "business_owner",
+      "segment_label": "企业主",
+      "age": 41,
+      "annual_income": 885600.0,
+      "financial_assets": 6000000.0,
+      "liabilities": 4410000.0,
+      "essential_monthly_expense": 42240.0,
+      "dependents": 2,
+      "income_stability": 0.48,
+      "risk_tolerance": 0.648,
+      "maximum_acceptable_loss": 0.218,
+      "knowledge_score": 0.7,
+      "goal": {
+        "target_amount": 1771200.0,
+        "current_assets": 212544.0,
+        "horizon_months": 132,
+        "expected_return": 0.047,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "hold_loser"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-04-02",
+      "segment": "business_owner",
+      "segment_label": "企业主",
+      "age": 42,
+      "annual_income": 928800.0,
+      "financial_assets": 6440000.0,
+      "liabilities": 4116000.0,
+      "essential_monthly_expense": 43680.0,
+      "dependents": 2,
+      "income_stability": 0.468,
+      "risk_tolerance": 0.666,
+      "maximum_acceptable_loss": 0.226,
+      "knowledge_score": 0.715,
+      "goal": {
+        "target_amount": 1969056.0,
+        "current_assets": 305203.68,
+        "horizon_months": 138,
+        "expected_return": 0.047,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "hold_loser"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-04-03",
+      "segment": "business_owner",
+      "segment_label": "企业主",
+      "age": 43,
+      "annual_income": 972000.0,
+      "financial_assets": 6880000.0,
+      "liabilities": 3822000.0,
+      "essential_monthly_expense": 45120.0,
+      "dependents": 2,
+      "income_stability": 0.456,
+      "risk_tolerance": 0.684,
+      "maximum_acceptable_loss": 0.234,
+      "knowledge_score": 0.73,
+      "goal": {
+        "target_amount": 2177280.0,
+        "current_assets": 413683.2,
+        "horizon_months": 144,
+        "expected_return": 0.047,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "chase_top_performer"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-04-04",
+      "segment": "business_owner",
+      "segment_label": "企业主",
+      "age": 44,
+      "annual_income": 1015200.0,
+      "financial_assets": 7320000.0,
+      "liabilities": 3528000.0,
+      "essential_monthly_expense": 46560.0,
+      "dependents": 2,
+      "income_stability": 0.444,
+      "risk_tolerance": 0.702,
+      "maximum_acceptable_loss": 0.242,
+      "knowledge_score": 0.745,
+      "goal": {
+        "target_amount": 2395872.0,
+        "current_assets": 539071.2,
+        "horizon_months": 150,
+        "expected_return": 0.047,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "hold_loser"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-04-05",
+      "segment": "business_owner",
+      "segment_label": "企业主",
+      "age": 45,
+      "annual_income": 1058400.0,
+      "financial_assets": 7760000.0,
+      "liabilities": 3234000.0,
+      "essential_monthly_expense": 48000.0,
+      "dependents": 2,
+      "income_stability": 0.432,
+      "risk_tolerance": 0.72,
+      "maximum_acceptable_loss": 0.25,
+      "knowledge_score": 0.76,
+      "goal": {
+        "target_amount": 2624832.0,
+        "current_assets": 682456.32,
+        "horizon_months": 156,
+        "expected_return": 0.047,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "hold_loser"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-04-06",
+      "segment": "business_owner",
+      "segment_label": "企业主",
+      "age": 41,
+      "annual_income": 1101600.0,
+      "financial_assets": 8200000.0,
+      "liabilities": 2940000.0,
+      "essential_monthly_expense": 49440.0,
+      "dependents": 2,
+      "income_stability": 0.42,
+      "risk_tolerance": 0.738,
+      "maximum_acceptable_loss": 0.258,
+      "knowledge_score": 0.775,
+      "goal": {
+        "target_amount": 2864160.0,
+        "current_assets": 844927.2,
+        "horizon_months": 162,
+        "expected_return": 0.047,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "chase_top_performer"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-04-07",
+      "segment": "business_owner",
+      "segment_label": "企业主",
+      "age": 42,
+      "annual_income": 1144800.0,
+      "financial_assets": 8640000.0,
+      "liabilities": 2646000.0,
+      "essential_monthly_expense": 50880.0,
+      "dependents": 2,
+      "income_stability": 0.408,
+      "risk_tolerance": 0.756,
+      "maximum_acceptable_loss": 0.266,
+      "knowledge_score": 0.79,
+      "goal": {
+        "target_amount": 3113856.0,
+        "current_assets": 1027572.48,
+        "horizon_months": 168,
+        "expected_return": 0.047,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "hold_loser"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-04-08",
+      "segment": "business_owner",
+      "segment_label": "企业主",
+      "age": 43,
+      "annual_income": 1188000.0,
+      "financial_assets": 9080000.0,
+      "liabilities": 2352000.0,
+      "essential_monthly_expense": 52320.0,
+      "dependents": 3,
+      "income_stability": 0.396,
+      "risk_tolerance": 0.774,
+      "maximum_acceptable_loss": 0.274,
+      "knowledge_score": 0.805,
+      "goal": {
+        "target_amount": 3373920.0,
+        "current_assets": 1231480.8,
+        "horizon_months": 174,
+        "expected_return": 0.047,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "hold_loser"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-04-09",
+      "segment": "business_owner",
+      "segment_label": "企业主",
+      "age": 44,
+      "annual_income": 1231200.0,
+      "financial_assets": 9520000.0,
+      "liabilities": 2058000.0,
+      "essential_monthly_expense": 53760.0,
+      "dependents": 3,
+      "income_stability": 0.384,
+      "risk_tolerance": 0.792,
+      "maximum_acceptable_loss": 0.282,
+      "knowledge_score": 0.82,
+      "goal": {
+        "target_amount": 3644352.0,
+        "current_assets": 1457740.8,
+        "horizon_months": 180,
+        "expected_return": 0.047,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "chase_top_performer"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-04-10",
+      "segment": "business_owner",
+      "segment_label": "企业主",
+      "age": 45,
+      "annual_income": 1274400.0,
+      "financial_assets": 9960000.0,
+      "liabilities": 1764000.0,
+      "essential_monthly_expense": 55200.0,
+      "dependents": 2,
+      "income_stability": 0.372,
+      "risk_tolerance": 0.81,
+      "maximum_acceptable_loss": 0.29,
+      "knowledge_score": 0.835,
+      "goal": {
+        "target_amount": 3925152.0,
+        "current_assets": 1707441.12,
+        "horizon_months": 186,
+        "expected_return": 0.047,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "hold_loser"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-05-01",
+      "segment": "tech_founder",
+      "segment_label": "科技创业者",
+      "age": 32,
+      "annual_income": 746200.0,
+      "financial_assets": 4500000.0,
+      "liabilities": 1680000.0,
+      "essential_monthly_expense": 30800.0,
+      "dependents": 1,
+      "income_stability": 0.42,
+      "risk_tolerance": 0.708,
+      "maximum_acceptable_loss": 0.248,
+      "knowledge_score": 0.76,
+      "goal": {
+        "target_amount": 1492400.0,
+        "current_assets": 179088.0,
+        "horizon_months": 156,
+        "expected_return": 0.051,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "hold_loser"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-05-02",
+      "segment": "tech_founder",
+      "segment_label": "科技创业者",
+      "age": 33,
+      "annual_income": 782600.0,
+      "financial_assets": 4830000.0,
+      "liabilities": 1568000.0,
+      "essential_monthly_expense": 31850.0,
+      "dependents": 1,
+      "income_stability": 0.408,
+      "risk_tolerance": 0.726,
+      "maximum_acceptable_loss": 0.256,
+      "knowledge_score": 0.775,
+      "goal": {
+        "target_amount": 1659112.0,
+        "current_assets": 257162.36,
+        "horizon_months": 162,
+        "expected_return": 0.051,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "hold_loser"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-05-03",
+      "segment": "tech_founder",
+      "segment_label": "科技创业者",
+      "age": 34,
+      "annual_income": 819000.0,
+      "financial_assets": 5160000.0,
+      "liabilities": 1456000.0,
+      "essential_monthly_expense": 32900.0,
+      "dependents": 1,
+      "income_stability": 0.396,
+      "risk_tolerance": 0.744,
+      "maximum_acceptable_loss": 0.264,
+      "knowledge_score": 0.79,
+      "goal": {
+        "target_amount": 1834560.0,
+        "current_assets": 348566.4,
+        "horizon_months": 168,
+        "expected_return": 0.051,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "chase_top_performer"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-05-04",
+      "segment": "tech_founder",
+      "segment_label": "科技创业者",
+      "age": 35,
+      "annual_income": 855400.0,
+      "financial_assets": 5490000.0,
+      "liabilities": 1344000.0,
+      "essential_monthly_expense": 33950.0,
+      "dependents": 1,
+      "income_stability": 0.384,
+      "risk_tolerance": 0.762,
+      "maximum_acceptable_loss": 0.272,
+      "knowledge_score": 0.805,
+      "goal": {
+        "target_amount": 2018744.0,
+        "current_assets": 454217.4,
+        "horizon_months": 174,
+        "expected_return": 0.051,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "hold_loser"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-05-05",
+      "segment": "tech_founder",
+      "segment_label": "科技创业者",
+      "age": 36,
+      "annual_income": 891800.0,
+      "financial_assets": 5820000.0,
+      "liabilities": 1232000.0,
+      "essential_monthly_expense": 35000.0,
+      "dependents": 1,
+      "income_stability": 0.372,
+      "risk_tolerance": 0.78,
+      "maximum_acceptable_loss": 0.28,
+      "knowledge_score": 0.82,
+      "goal": {
+        "target_amount": 2211664.0,
+        "current_assets": 575032.64,
+        "horizon_months": 180,
+        "expected_return": 0.051,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "hold_loser"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-05-06",
+      "segment": "tech_founder",
+      "segment_label": "科技创业者",
+      "age": 32,
+      "annual_income": 928200.0,
+      "financial_assets": 6150000.0,
+      "liabilities": 1120000.0,
+      "essential_monthly_expense": 36050.0,
+      "dependents": 1,
+      "income_stability": 0.36,
+      "risk_tolerance": 0.798,
+      "maximum_acceptable_loss": 0.288,
+      "knowledge_score": 0.835,
+      "goal": {
+        "target_amount": 2413320.0,
+        "current_assets": 711929.4,
+        "horizon_months": 186,
+        "expected_return": 0.051,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "chase_top_performer"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-05-07",
+      "segment": "tech_founder",
+      "segment_label": "科技创业者",
+      "age": 33,
+      "annual_income": 964600.0,
+      "financial_assets": 6480000.0,
+      "liabilities": 1008000.0,
+      "essential_monthly_expense": 37100.0,
+      "dependents": 1,
+      "income_stability": 0.348,
+      "risk_tolerance": 0.816,
+      "maximum_acceptable_loss": 0.296,
+      "knowledge_score": 0.85,
+      "goal": {
+        "target_amount": 2623712.0,
+        "current_assets": 865824.96,
+        "horizon_months": 192,
+        "expected_return": 0.051,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "hold_loser"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-05-08",
+      "segment": "tech_founder",
+      "segment_label": "科技创业者",
+      "age": 34,
+      "annual_income": 1001000.0,
+      "financial_assets": 6810000.0,
+      "liabilities": 896000.0,
+      "essential_monthly_expense": 38150.0,
+      "dependents": 2,
+      "income_stability": 0.336,
+      "risk_tolerance": 0.834,
+      "maximum_acceptable_loss": 0.304,
+      "knowledge_score": 0.865,
+      "goal": {
+        "target_amount": 2842840.0,
+        "current_assets": 1037636.6,
+        "horizon_months": 198,
+        "expected_return": 0.051,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "hold_loser"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-05-09",
+      "segment": "tech_founder",
+      "segment_label": "科技创业者",
+      "age": 35,
+      "annual_income": 1037400.0,
+      "financial_assets": 7140000.0,
+      "liabilities": 784000.0,
+      "essential_monthly_expense": 39200.0,
+      "dependents": 2,
+      "income_stability": 0.324,
+      "risk_tolerance": 0.852,
+      "maximum_acceptable_loss": 0.312,
+      "knowledge_score": 0.88,
+      "goal": {
+        "target_amount": 3070704.0,
+        "current_assets": 1228281.6,
+        "horizon_months": 204,
+        "expected_return": 0.051,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "chase_top_performer"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-05-10",
+      "segment": "tech_founder",
+      "segment_label": "科技创业者",
+      "age": 36,
+      "annual_income": 1073800.0,
+      "financial_assets": 7470000.0,
+      "liabilities": 672000.0,
+      "essential_monthly_expense": 40250.0,
+      "dependents": 1,
+      "income_stability": 0.312,
+      "risk_tolerance": 0.87,
+      "maximum_acceptable_loss": 0.32,
+      "knowledge_score": 0.895,
+      "goal": {
+        "target_amount": 3307304.0,
+        "current_assets": 1438677.24,
+        "horizon_months": 210,
+        "expected_return": 0.051,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "hold_loser"
+      ],
+      "expected_escalation": true,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "insurance_disclosure"
+      ]
+    },
+    {
+      "profile_id": "BENCH-06-01",
+      "segment": "retiree",
+      "segment_label": "退休人士",
+      "age": 64,
+      "annual_income": 254200.0,
+      "financial_assets": 2625000.0,
+      "liabilities": 210000.0,
+      "essential_monthly_expense": 13200.0,
+      "dependents": 0,
+      "income_stability": 0.92,
+      "risk_tolerance": 0.308,
+      "maximum_acceptable_loss": 0.068,
+      "knowledge_score": 0.46,
+      "goal": {
+        "target_amount": 508400.0,
+        "current_assets": 61008.0,
+        "horizon_months": 36,
+        "expected_return": 0.055,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "hold_loser"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "personal_pension"
+      ]
+    },
+    {
+      "profile_id": "BENCH-06-02",
+      "segment": "retiree",
+      "segment_label": "退休人士",
+      "age": 65,
+      "annual_income": 266600.0,
+      "financial_assets": 2817500.0,
+      "liabilities": 196000.0,
+      "essential_monthly_expense": 13650.0,
+      "dependents": 0,
+      "income_stability": 0.908,
+      "risk_tolerance": 0.326,
+      "maximum_acceptable_loss": 0.076,
+      "knowledge_score": 0.475,
+      "goal": {
+        "target_amount": 565192.0,
+        "current_assets": 87604.76,
+        "horizon_months": 42,
+        "expected_return": 0.055,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "hold_loser"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "personal_pension"
+      ]
+    },
+    {
+      "profile_id": "BENCH-06-03",
+      "segment": "retiree",
+      "segment_label": "退休人士",
+      "age": 66,
+      "annual_income": 279000.0,
+      "financial_assets": 3010000.0,
+      "liabilities": 182000.0,
+      "essential_monthly_expense": 14100.0,
+      "dependents": 0,
+      "income_stability": 0.896,
+      "risk_tolerance": 0.344,
+      "maximum_acceptable_loss": 0.084,
+      "knowledge_score": 0.49,
+      "goal": {
+        "target_amount": 624960.0,
+        "current_assets": 118742.4,
+        "horizon_months": 48,
+        "expected_return": 0.055,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "chase_top_performer"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "personal_pension"
+      ]
+    },
+    {
+      "profile_id": "BENCH-06-04",
+      "segment": "retiree",
+      "segment_label": "退休人士",
+      "age": 67,
+      "annual_income": 291400.0,
+      "financial_assets": 3202500.0,
+      "liabilities": 168000.0,
+      "essential_monthly_expense": 14550.0,
+      "dependents": 0,
+      "income_stability": 0.884,
+      "risk_tolerance": 0.362,
+      "maximum_acceptable_loss": 0.092,
+      "knowledge_score": 0.505,
+      "goal": {
+        "target_amount": 687704.0,
+        "current_assets": 154733.4,
+        "horizon_months": 54,
+        "expected_return": 0.055,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "hold_loser"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "personal_pension"
+      ]
+    },
+    {
+      "profile_id": "BENCH-06-05",
+      "segment": "retiree",
+      "segment_label": "退休人士",
+      "age": 68,
+      "annual_income": 303800.0,
+      "financial_assets": 3395000.0,
+      "liabilities": 154000.0,
+      "essential_monthly_expense": 15000.0,
+      "dependents": 0,
+      "income_stability": 0.872,
+      "risk_tolerance": 0.38,
+      "maximum_acceptable_loss": 0.1,
+      "knowledge_score": 0.52,
+      "goal": {
+        "target_amount": 753424.0,
+        "current_assets": 195890.24,
+        "horizon_months": 60,
+        "expected_return": 0.055,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "hold_loser"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "personal_pension"
+      ]
+    },
+    {
+      "profile_id": "BENCH-06-06",
+      "segment": "retiree",
+      "segment_label": "退休人士",
+      "age": 64,
+      "annual_income": 316200.0,
+      "financial_assets": 3587500.0,
+      "liabilities": 140000.0,
+      "essential_monthly_expense": 15450.0,
+      "dependents": 0,
+      "income_stability": 0.86,
+      "risk_tolerance": 0.398,
+      "maximum_acceptable_loss": 0.108,
+      "knowledge_score": 0.535,
+      "goal": {
+        "target_amount": 822120.0,
+        "current_assets": 242525.4,
+        "horizon_months": 66,
+        "expected_return": 0.055,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "chase_top_performer"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "personal_pension"
+      ]
+    },
+    {
+      "profile_id": "BENCH-06-07",
+      "segment": "retiree",
+      "segment_label": "退休人士",
+      "age": 65,
+      "annual_income": 328600.0,
+      "financial_assets": 3780000.0,
+      "liabilities": 126000.0,
+      "essential_monthly_expense": 15900.0,
+      "dependents": 0,
+      "income_stability": 0.848,
+      "risk_tolerance": 0.416,
+      "maximum_acceptable_loss": 0.116,
+      "knowledge_score": 0.55,
+      "goal": {
+        "target_amount": 893792.0,
+        "current_assets": 294951.36,
+        "horizon_months": 72,
+        "expected_return": 0.055,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "hold_loser"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "personal_pension"
+      ]
+    },
+    {
+      "profile_id": "BENCH-06-08",
+      "segment": "retiree",
+      "segment_label": "退休人士",
+      "age": 66,
+      "annual_income": 341000.0,
+      "financial_assets": 3972500.0,
+      "liabilities": 112000.0,
+      "essential_monthly_expense": 16350.0,
+      "dependents": 1,
+      "income_stability": 0.836,
+      "risk_tolerance": 0.434,
+      "maximum_acceptable_loss": 0.124,
+      "knowledge_score": 0.565,
+      "goal": {
+        "target_amount": 968440.0,
+        "current_assets": 353480.6,
+        "horizon_months": 78,
+        "expected_return": 0.055,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "hold_loser"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "personal_pension"
+      ]
+    },
+    {
+      "profile_id": "BENCH-06-09",
+      "segment": "retiree",
+      "segment_label": "退休人士",
+      "age": 67,
+      "annual_income": 353400.0,
+      "financial_assets": 4165000.0,
+      "liabilities": 98000.0,
+      "essential_monthly_expense": 16800.0,
+      "dependents": 1,
+      "income_stability": 0.824,
+      "risk_tolerance": 0.452,
+      "maximum_acceptable_loss": 0.132,
+      "knowledge_score": 0.58,
+      "goal": {
+        "target_amount": 1046064.0,
+        "current_assets": 418425.6,
+        "horizon_months": 84,
+        "expected_return": 0.055,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "recent_return_anchor",
+        "chase_top_performer"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "personal_pension"
+      ]
+    },
+    {
+      "profile_id": "BENCH-06-10",
+      "segment": "retiree",
+      "segment_label": "退休人士",
+      "age": 68,
+      "annual_income": 365800.0,
+      "financial_assets": 4357500.0,
+      "liabilities": 84000.0,
+      "essential_monthly_expense": 17250.0,
+      "dependents": 0,
+      "income_stability": 0.812,
+      "risk_tolerance": 0.47,
+      "maximum_acceptable_loss": 0.14,
+      "knowledge_score": 0.595,
+      "goal": {
+        "target_amount": 1126664.0,
+        "current_assets": 490098.84,
+        "horizon_months": 90,
+        "expected_return": 0.055,
+        "inflation_rate": 0.03
+      },
+      "behavior_signals": [
+        "excessive_trading",
+        "hold_loser"
+      ],
+      "expected_escalation": false,
+      "required_knowledge_categories": [
+        "product_suitability",
+        "consumer_protection",
+        "personal_pension"
+      ]
+    }
+  ]
+}

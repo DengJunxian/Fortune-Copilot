@@ -54,6 +54,10 @@ from app.schemas.review_workflow import (
 from app.services.client_experience import build_client_experience
 from app.services.crud import ensure_household
 from app.services.financial.engine import analyze_household
+from app.services.governance.evidence import (
+    build_workflow_decision_evidence,
+    refresh_workflow_decision_evidence,
+)
 from app.services.mock_bank import build_mock_bank_snapshot
 from app.services.planning.engine import plan_household
 from app.services.portfolio.engine import portfolio_household
@@ -369,6 +373,35 @@ def _new_version(
         }
         before_hash = prior.after_hash
     values.update(overrides or {})
+    recommendation_snapshot = values["recommendation_snapshot"]
+    if isinstance(recommendation_snapshot, dict):
+        evidence = recommendation_snapshot.get("decision_evidence")
+        prior_had_evidence = bool(
+            prior is not None
+            and isinstance(prior.recommendation_snapshot, dict)
+            and prior.recommendation_snapshot.get("decision_evidence")
+        )
+        if prior_had_evidence and isinstance(evidence, dict):
+            suitability_snapshot = values["suitability_snapshot"]
+            customer_confirmation = values["customer_confirmation"]
+            refreshed = refresh_workflow_decision_evidence(
+                evidence,
+                selected_candidate=values["selected_candidate"],
+                recommendation_snapshot=recommendation_snapshot,
+                suitability_snapshot=(
+                    suitability_snapshot if isinstance(suitability_snapshot, dict) else {}
+                ),
+                communication_draft=str(values["communication_draft"]),
+                advisor_decision=values["advisor_decision"],
+                compliance_decision=values["compliance_decision"],
+                customer_confirmation=(
+                    customer_confirmation if isinstance(customer_confirmation, dict) else {}
+                ),
+                generated_at=utc_now(),
+            )
+            recommendation_snapshot = copy.deepcopy(recommendation_snapshot)
+            recommendation_snapshot["decision_evidence"] = refreshed.model_dump(mode="json")
+            values["recommendation_snapshot"] = recommendation_snapshot
 
     material = {
         "workflow_id": workflow_id,
@@ -620,7 +653,11 @@ def get_latest_household_workflow(
     return _response(session, current, actor)
 
 
-def _portfolio_snapshot(session: Session, household_id: str) -> dict[str, object]:
+def _portfolio_snapshot(
+    session: Session,
+    household_id: str,
+    workflow_id: str,
+) -> dict[str, object]:
     settings = get_settings()
     portfolio = portfolio_household(
         session,
@@ -646,7 +683,7 @@ def _portfolio_snapshot(session: Session, household_id: str) -> dict[str, object
         numeric_ledger[f"{prefix}.liquidity_score"] = str(item.liquidity_score)
         numeric_ledger[f"{prefix}.annual_fee_estimate"] = str(item.annual_fee_estimate)
     knowledge = load_knowledge_dataset(settings.knowledge_base_path)
-    return {
+    snapshot: dict[str, object] = {
         "meta": portfolio.meta.model_dump(mode="json"),
         "context": portfolio.context.model_dump(mode="json"),
         "candidates": candidates,
@@ -655,6 +692,17 @@ def _portfolio_snapshot(session: Session, household_id: str) -> dict[str, object
         "calculation_source": "deterministic_tools",
         "knowledge_version": knowledge.dataset_version,
     }
+    evidence, cfs_snapshot = build_workflow_decision_evidence(
+        session,
+        household_id=household_id,
+        workflow_id=workflow_id,
+        recommendation_snapshot=snapshot,
+        settings=settings,
+        generated_at=utc_now(),
+    )
+    snapshot.update(cfs_snapshot)
+    snapshot["decision_evidence"] = evidence.model_dump(mode="json")
+    return snapshot
 
 
 def _candidate(snapshot: dict[str, object], candidate_type: str) -> dict[str, Any]:
@@ -1092,7 +1140,11 @@ def transition_plan_workflow(
     next_cycle = current.cycle
     overrides: dict[str, object] = {}
     if request.action == PlanWorkflowAction.CALCULATE:
-        snapshot = _portfolio_snapshot(session, current.household_id)
+        snapshot = _portfolio_snapshot(
+            session,
+            current.household_id,
+            current.workflow_id,
+        )
         meta = snapshot["meta"]
         assert isinstance(meta, dict)
         next_state = PlanWorkflowState.CALCULATED

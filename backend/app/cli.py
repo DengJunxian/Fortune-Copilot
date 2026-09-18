@@ -7,6 +7,10 @@ from pathlib import Path
 
 from app.core.config import get_settings
 from app.core.database import SessionLocal
+from app.services.calibration.registry import (
+    ensure_calibration_registry,
+    load_calibration_registry,
+)
 from app.services.demo_backup import backup_demo_database, restore_demo_database
 from app.services.public_data.rules import build_public_data_response
 from app.services.seed import seed_synthetic_data
@@ -15,7 +19,7 @@ from app.services.seed import seed_synthetic_data
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Fortune Copilot maintenance commands")
     subparsers = parser.add_subparsers(dest="command", required=True)
-    seed_parser = subparsers.add_parser("seed", help="load the three synthetic households")
+    seed_parser = subparsers.add_parser("seed", help="load the configured synthetic personas")
     seed_parser.add_argument("--reset", action="store_true", help="replace synthetic households")
     seed_parser.add_argument(
         "--if-empty",
@@ -55,17 +59,13 @@ def main() -> None:
     if args.command == "restore-demo":
         print(
             json.dumps(
-                asdict(
-                    restore_demo_database(settings, args.input, confirmation=args.confirm)
-                ),
+                asdict(restore_demo_database(settings, args.input, confirmation=args.confirm)),
                 ensure_ascii=False,
             )
         )
         return
     if args.command == "validate-public-data":
-        response = build_public_data_response(
-            args.path or settings.public_data_snapshot_path
-        )
+        response = build_public_data_response(args.path or settings.public_data_snapshot_path)
         print(
             json.dumps(
                 {
@@ -105,6 +105,12 @@ def main() -> None:
             reset=args.reset,
             if_empty=args.if_empty,
         )
+        if settings.enable_v5_calibration:
+            ensure_calibration_registry(
+                session,
+                load_calibration_registry(settings.calibration_registry_path),
+            )
+            session.commit()
     print(
         json.dumps(
             {
@@ -122,6 +128,8 @@ def main() -> None:
                 "knowledge_quarantined_chunk_count": (result.knowledge_quarantined_chunk_count),
                 "knowledge_documents_changed": result.knowledge_documents_changed,
                 "knowledge_chunks_changed": result.knowledge_chunks_changed,
+                "enterprise_profiles_loaded": result.enterprise_profiles_loaded,
+                "enterprise_exposures_refreshed": result.enterprise_exposures_refreshed,
             },
             ensure_ascii=False,
         )

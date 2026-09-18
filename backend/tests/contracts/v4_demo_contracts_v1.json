@@ -1,0 +1,194 @@
+{
+  "contract_version": "v4-demo-contracts-v1",
+  "analysis_date": "2026-08-04",
+  "shared_versions": {
+    "financial_formula": "financial-metrics-v1.0.0",
+    "financial_rule": "1.0.0",
+    "planning_formula": "fortune-copilot-four-account-v2.2.0",
+    "planning_rule": "2.2.0",
+    "methodology": "3.1.0",
+    "portfolio_formula": "portfolio-gates-v2.0.0",
+    "portfolio_rule": "2.0.0",
+    "optimizer": "hierarchical-deterministic-grid-v2.0.0",
+    "catalog": "1.0.0"
+  },
+  "formal_report_metadata": {
+    "chapter_count": 8,
+    "chapter_titles": [
+      "家庭基础情况",
+      "理财目标",
+      "大额支出计划",
+      "理财假设",
+      "家庭财务报表",
+      "家庭财务比率分析",
+      "投资规划建议",
+      "免责声明"
+    ],
+    "service_version": "formal-report-service-v1.0.0",
+    "composer_version": "formal-report-composer-v1.0.0"
+  },
+  "households": {
+    "DEMO_A": {
+      "financial_analysis": {
+        "total_assets": "90000.00",
+        "total_liabilities": "0.00",
+        "net_worth": "90000.00",
+        "annual_income": "180000.00",
+        "annual_expenses": "120000.00",
+        "annual_surplus": "60000.00",
+        "health_score": "29.60",
+        "health_status": "risk"
+      },
+      "planning": {
+        "plannable_financial_net_worth": "90000.00",
+        "investable_financial_assets": "90000.00",
+        "residual_long_term_plannable_capital": "64250.00",
+        "accounts": {
+          "daily_liquidity": "3000.00",
+          "risk_protection": "1800.00",
+          "stable_goals": "82181.25",
+          "long_term_growth": "4818.75"
+        },
+        "growth_eligible": false,
+        "formal_growth_amount": "0",
+        "learning_amount": "4818.75"
+      },
+      "portfolio": {
+        "eligible_long_term_amount": "4818.75",
+        "family_gate": "block",
+        "effective_risk_limit": "r2",
+        "candidate_decisions": {
+          "conservative": "education_only",
+          "balanced": "education_only",
+          "growth": "education_only"
+        }
+      },
+      "twin_configuration": {
+        "asset_buckets": {
+          "cash_equivalent": "70000.0",
+          "fixed_income": "0.0",
+          "diversified_equity": "20000.0",
+          "real_assets": "0.0",
+          "gold": "0.0",
+          "pension": "0.0",
+          "primary_property": "0.0",
+          "investment_property": "0.0",
+          "other_assets": "0.0"
+        },
+        "monthly_expenses": "10000.0",
+        "monthly_essential_expenses": "7000.0",
+        "income_count": 1,
+        "debt_count": 0,
+        "goal_count": 2
+      }
+    },
+    "DEMO_B": {
+      "financial_analysis": {
+        "total_assets": "2850000.00",
+        "total_liabilities": "1208000.00",
+        "net_worth": "1642000.00",
+        "annual_income": "360000.00",
+        "annual_expenses": "288000.00",
+        "annual_surplus": "72000.00",
+        "health_score": "36.08",
+        "health_status": "risk"
+      },
+      "planning": {
+        "plannable_financial_net_worth": "-888000.00",
+        "investable_financial_assets": "320000.00",
+        "residual_long_term_plannable_capital": "0.00",
+        "accounts": {
+          "daily_liquidity": "4750.00",
+          "risk_protection": "12000.00",
+          "stable_goals": "307250.00",
+          "long_term_growth": "0.00"
+        },
+        "growth_eligible": false,
+        "formal_growth_amount": "0",
+        "learning_amount": "0.00"
+      },
+      "portfolio": {
+        "eligible_long_term_amount": "0.00",
+        "family_gate": "block",
+        "effective_risk_limit": "r3",
+        "candidate_decisions": {
+          "conservative": "education_only",
+          "balanced": "education_only",
+          "growth": "education_only"
+        }
+      },
+      "twin_configuration": {
+        "asset_buckets": {
+          "cash_equivalent": "50000.0",
+          "fixed_income": "150000.0",
+          "diversified_equity": "120000.0",
+          "real_assets": "0.0",
+          "gold": "0.0",
+          "pension": "30000.0",
+          "primary_property": "2400000.0",
+          "investment_property": "0.0",
+          "other_assets": "100000.0"
+        },
+        "monthly_expenses": "18000.0",
+        "monthly_essential_expenses": "13000.0",
+        "income_count": 2,
+        "debt_count": 2,
+        "goal_count": 3
+      }
+    },
+    "DEMO_C": {
+      "financial_analysis": {
+        "total_assets": "7700000.00",
+        "total_liabilities": "300000.00",
+        "net_worth": "7400000.00",
+        "annual_income": "420000.00",
+        "annual_expenses": "300000.00",
+        "annual_surplus": "120000.00",
+        "health_score": "52.94",
+        "health_status": "risk"
+      },
+      "planning": {
+        "plannable_financial_net_worth": "2500000.00",
+        "investable_financial_assets": "2800000.00",
+        "residual_long_term_plannable_capital": "1866399.67",
+        "accounts": {
+          "daily_liquidity": "4750.00",
+          "risk_protection": "24000.00",
+          "stable_goals": "2795250.00",
+          "long_term_growth": "0.00"
+        },
+        "growth_eligible": false,
+        "formal_growth_amount": "0.00",
+        "learning_amount": "0"
+      },
+      "portfolio": {
+        "eligible_long_term_amount": "0.00",
+        "family_gate": "block",
+        "effective_risk_limit": "r3",
+        "candidate_decisions": {
+          "conservative": "education_only",
+          "balanced": "education_only",
+          "growth": "education_only"
+        }
+      },
+      "twin_configuration": {
+        "asset_buckets": {
+          "cash_equivalent": "200000.0",
+          "fixed_income": "1400000.0",
+          "diversified_equity": "1200000.0",
+          "real_assets": "0.0",
+          "gold": "0.0",
+          "pension": "600000.0",
+          "primary_property": "2800000.0",
+          "investment_property": "1500000.0",
+          "other_assets": "0.0"
+        },
+        "monthly_expenses": "25000.0",
+        "monthly_essential_expenses": "19000.0",
+        "income_count": 3,
+        "debt_count": 1,
+        "goal_count": 3
+      }
+    }
+  }
+}

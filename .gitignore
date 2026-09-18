@@ -21,6 +21,7 @@ frontend/playwright-report/
 frontend/test-results/
 .playwright-cli/
 .playwright-mcp/
+.codex-finalizer/
 tmp/
 output/
 *.log

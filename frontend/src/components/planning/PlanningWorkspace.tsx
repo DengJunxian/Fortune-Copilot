@@ -489,7 +489,7 @@ function V4WealthOverview({ plan }: { plan: PlanningResponse }) {
       </article>
 
       <article className="pension-copilot-card">
-        <header><div><span>Personal Pension Copilot</span><h3>个人养老金是制度账户，不是低风险等级</h3></div><strong>{formatMoney(pension.account_balance)}</strong></header>
+        <header><div><span>个人养老金规划</span><h3>个人养老金是制度账户，不是低风险等级</h3></div><strong>{formatMoney(pension.account_balance)}</strong></header>
         <dl>
           <div><dt>年度政策限额</dt><dd>{formatMoney(pension.contribution_limit)}</dd></div>
           <div><dt>本年已缴</dt><dd>{formatMoney(pension.annual_contribution_amount)}</dd></div>

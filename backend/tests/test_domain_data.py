@@ -26,7 +26,7 @@ from app.services.seed import seed_synthetic_data
 
 def test_all_required_entities_have_auditable_versioned_fields() -> None:
     domain_tables = set(Base.metadata.tables) - {"runtime_metadata"}
-    assert len(domain_tables) == 46
+    assert len(domain_tables) == 79
     for table_name in domain_tables:
         columns = set(Base.metadata.tables[table_name].columns.keys())
         assert {

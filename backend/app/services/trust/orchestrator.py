@@ -834,6 +834,7 @@ def get_orchestration(
         select(AgentOrchestrationRun).where(
             AgentOrchestrationRun.id == run_id,
             AgentOrchestrationRun.household_id == household_id,
+            AgentOrchestrationRun.orchestrator_version == ORCHESTRATOR_VERSION,
             AgentOrchestrationRun.is_deleted.is_(False),
         )
     )
@@ -853,6 +854,7 @@ def latest_orchestration(
         select(AgentOrchestrationRun)
         .where(
             AgentOrchestrationRun.household_id == household_id,
+            AgentOrchestrationRun.orchestrator_version == ORCHESTRATOR_VERSION,
             AgentOrchestrationRun.is_deleted.is_(False),
         )
         .order_by(AgentOrchestrationRun.created_at.desc(), AgentOrchestrationRun.id.desc())

@@ -1,0 +1,29 @@
+{
+  "code": "v5-family-enterprise-dependency",
+  "semantic_version": "1.0.0",
+  "formula_version": "family-enterprise-dependency-v1",
+  "effective_from": "2026-08-10",
+  "effective_to": null,
+  "source_type": "internal_demo",
+  "source_summary": "Fortune Copilot V5 E05 internal planning policy; not a regulatory rating or credit score.",
+  "dependency_weights": {
+    "wealth_dependency": "0.400000",
+    "income_dependency": "0.350000",
+    "guarantee_dependency": "0.150000",
+    "pledge_dependency": "0.070000",
+    "currency_dependency": "0.030000"
+  },
+  "dependency_thresholds": {
+    "low_below": "0.150000",
+    "medium_below": "0.350000",
+    "high_at": "0.600000"
+  },
+  "risk_budget_ceiling_by_capacity": {
+    "low": "0.200000",
+    "medium_low": "0.300000",
+    "medium": "0.450000",
+    "medium_high": "0.550000",
+    "high": "0.650000"
+  },
+  "high_dependency_blocks_additional_equity": true
+}

@@ -25,7 +25,7 @@ export interface CapabilitiesResponse {
 export type CapabilitySource = "api" | "offline-fallback";
 
 export const offlineCapabilities: CapabilitiesResponse = {
-  version: "0.13.0",
+  version: "0.15.0",
   runtime_mode: "offline-demo",
   mock_mode: true,
   database: {
@@ -87,6 +87,12 @@ export const offlineCapabilities: CapabilitiesResponse = {
       status: "blocked",
       implementation: "real",
       notes: "十阶段完整 Demo、三家庭对照和七项实验已实现；纯前端降级无法执行后端计算",
+    },
+    {
+      id: "competition_cfs",
+      status: "blocked",
+      implementation: "real",
+      notes: "60画像与上海家庭CFS算法已实现；离线纯前端模式不会伪造计算结果",
     },
   ],
   guardrails: [

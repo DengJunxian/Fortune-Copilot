@@ -45,16 +45,23 @@ export function RiskPage() {
     <main className="page-shell" id="main-content">
       <header className="page-intro">
         <p className="page-kicker">风险端</p>
-        <h1>风险与审计控制台</h1>
-        <p>从同一方案版本复核三道闸门、禁止性表述、数字、来源、授权、模型治理与审计哈希。</p>
+        <h1>为什么产生这份建议？</h1>
+        <p>先看建议依据、适当性、证据与可回放性，再按需展开规则、模型和产品快照明细。</p>
       </header>
 
+      <section className="risk-review-questions" aria-label="风险合规四项核心回答">
+        <article><span>01 · Why This Advice</span><h2>这个方案为什么产生？</h2><p>从家庭事实、责任、ELTC、风险预算到产品候选，保持同一条决策链。</p></article>
+        <article><span>02 · Suitability</span><h2>是否符合适当性？</h2><p>家庭安全、客户风险、产品、渠道与交易时点均不能被说明文字绕过。</p></article>
+        <article><span>03 · Evidence</span><h2>依据来自哪里？</h2><p>输入、规则、知识、产品快照与人工复核状态按版本冻结。</p></article>
+        <article><span>04 · Replay</span><h2>出现争议能否复现？</h2><p>使用当时冻结包重建哈希，不换成今天的数据，也不覆盖历史。</p></article>
+      </section>
+
       <RiskWorkflowWorkspace />
-      <ProductionReadinessWorkspace />
-      <SecurityQualityWorkspace />
 
       <details className="technical-evidence-drawer">
-        <summary>查看基础禁令与专项对抗证据</summary>
+        <summary>展开技术治理、基础禁令与专项对抗证据</summary>
+      <ProductionReadinessWorkspace />
+      <SecurityQualityWorkspace />
       <section aria-labelledby="guardrail-heading">
         <h2 className="section-heading" id="guardrail-heading">
           基础治理规则

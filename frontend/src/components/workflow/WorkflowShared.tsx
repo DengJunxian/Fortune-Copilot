@@ -71,7 +71,7 @@ export function WorkflowBoundary() {
   return (
     <aside className="workflow-boundary" aria-label="方案闭环边界">
       <strong>人工与数据边界</strong>
-      <p>AI 只生成可编辑解释草稿，不决定方案、不计算金额。所有候选金额、比率和配置读取确定性工具；高风险类型必须人工确认。</p>
+      <p>系统只提供可编辑的解释草稿，不决定方案，也不计算金额。候选金额、比率和配置均读取确定性账本；高风险类型必须人工确认。</p>
     </aside>
   );
 }

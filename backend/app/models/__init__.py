@@ -17,8 +17,24 @@ from app.models.behavior import (
     BehaviorExperimentSession,
     BehaviorIntervention,
 )
+from app.models.calibration import CalibrationDataset, CalibrationParameter
+from app.models.cfs import CFSSolution, CFSSolutionComponent, ProfessionalServiceReferral
+from app.models.client_profile import (
+    ClientProfileTag,
+    ClientWealthProfile,
+    WealthNeed,
+    WealthNeedPriority,
+)
 from app.models.demo import DemoRun, ExperimentSuiteRun
 from app.models.family import ConsentRecord, Household, HouseholdMember
+from app.models.family_enterprise import (
+    EnterpriseCashflow,
+    EnterpriseGuarantee,
+    EnterpriseLiquidityEvent,
+    EnterpriseOwnership,
+    EnterpriseProfile,
+    EnterpriseValuation,
+)
 from app.models.finance import (
     Asset,
     ExpenseItem,
@@ -29,6 +45,7 @@ from app.models.finance import (
     Responsibility,
     SocialSecurityAccount,
 )
+from app.models.financial_twin import FinancialEvent, HouseholdSnapshot, LifeEvent
 from app.models.governance import (
     ActionItem,
     AdvisorReview,
@@ -39,10 +56,18 @@ from app.models.governance import (
     PlanWorkflowVersion,
     PolicyDocument,
     Product,
+    ProductSnapshot,
     Recommendation,
     RuleVersion,
     ScenarioDefinition,
     SimulationRun,
+)
+from app.models.liability import LiabilityStream, LiabilityStreamCashflow
+from app.models.monitoring import (
+    AdvisorTrigger,
+    BehaviorObservation,
+    MonitoringAlert,
+    MonitoringPolicy,
 )
 from app.models.security import (
     EvaluationRun,
@@ -50,17 +75,30 @@ from app.models.security import (
     PrivacyRequest,
     QualityGateRun,
 )
+from app.models.specialized_cfs import (
+    CurrencyExposure,
+    InstitutionalEntitlement,
+    PhilanthropyGoal,
+    TrustSuccessionNeed,
+)
 from app.models.trust import (
     AgentOrchestrationRun,
     AgentStepRun,
     IntakeDraft,
     KnowledgeChunk,
 )
+from app.models.wealth_graph import (
+    FinancialAccount,
+    FinancialEntity,
+    OwnershipEdge,
+    Position,
+)
 
 __all__ = [
     "AccountBucketPlan",
     "ActionItem",
     "AdvisorReview",
+    "AdvisorTrigger",
     "AgentOrchestrationRun",
     "AgentStepRun",
     "Asset",
@@ -72,30 +110,59 @@ __all__ = [
     "BehaviorExperimentResponse",
     "BehaviorExperimentSession",
     "BehaviorIntervention",
+    "BehaviorObservation",
+    "CFSSolution",
+    "CFSSolutionComponent",
+    "CalibrationDataset",
+    "CalibrationParameter",
+    "ClientProfileTag",
+    "ClientWealthProfile",
     "ConsentRecord",
+    "CurrencyExposure",
     "CustomerConfirmation",
     "DemoRun",
+    "EnterpriseCashflow",
+    "EnterpriseGuarantee",
+    "EnterpriseLiquidityEvent",
+    "EnterpriseOwnership",
+    "EnterpriseProfile",
+    "EnterpriseValuation",
     "EvaluationRun",
     "ExpenseItem",
     "ExperimentSuiteRun",
+    "FinancialAccount",
+    "FinancialEntity",
+    "FinancialEvent",
     "FinancialGoal",
     "FinancialMetric",
     "FinancialSnapshot",
     "Household",
     "HouseholdMember",
+    "HouseholdSnapshot",
     "IdentityAccessGrant",
     "IncomeSource",
+    "InstitutionalEntitlement",
     "InsurancePolicy",
     "IntakeDraft",
     "KnowledgeChunk",
     "Liability",
+    "LiabilityStream",
+    "LiabilityStreamCashflow",
+    "LifeEvent",
     "ModelRun",
+    "MonitoringAlert",
+    "MonitoringPolicy",
+    "OwnershipEdge",
+    "PhilanthropyGoal",
     "PlanReport",
     "PlanWorkflowVersion",
     "PolicyDocument",
     "PortfolioPlan",
+    "Position",
     "PrivacyRequest",
     "Product",
+    "ProductSnapshot",
+    "ProfessionalServiceReferral",
     "QualityGateRun",
     "Recommendation",
     "Responsibility",
@@ -106,4 +173,7 @@ __all__ = [
     "SimulationRun",
     "SocialSecurityAccount",
     "SuitabilityCheck",
+    "TrustSuccessionNeed",
+    "WealthNeed",
+    "WealthNeedPriority",
 ]

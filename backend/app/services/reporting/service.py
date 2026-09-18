@@ -41,10 +41,16 @@ from app.schemas.formal_report import (
 from app.schemas.trust import KnowledgeCitation, KnowledgeSearchRequest
 from app.schemas.twin import TwinResult, TwinRunRequest
 from app.services.behavior.engine import behavior_overview
+from app.services.calibration.registry import build_calibration_catalog
 from app.services.client_experience import build_action_calendar
 from app.services.financial.engine import analyze_household
 from app.services.financial.facts import load_household_facts
 from app.services.fund_advisory.engine import advise_household
+from app.services.governance.evidence import (
+    minimal_v2_from_legacy,
+    rebind_decision_evidence,
+    searchable_fields,
+)
 from app.services.planning.engine import plan_household
 from app.services.portfolio.engine import portfolio_household
 from app.services.reporting.composer import compose_formal_report
@@ -582,6 +588,11 @@ def _compose_and_stage_report(
         settings,
         analysis_date,
     )
+    calibration = (
+        build_calibration_catalog(session, settings.calibration_registry_path)
+        if settings.enable_v5_calibration
+        else None
+    )
     previous = _latest_report(session, household_id)
     if request.expected_report_sequence is not None:
         actual = previous.sequence if previous is not None else None
@@ -631,6 +642,30 @@ def _compose_and_stage_report(
     )
     session.add(record)
     session.flush()
+    workflow_evidence = (
+        workflow.recommendation_snapshot.get("decision_evidence") if workflow is not None else None
+    )
+    if isinstance(workflow_evidence, dict):
+        evidence_v2 = rebind_decision_evidence(
+            workflow_evidence,
+            decision_id=record.id,
+            decision_type="plan_report",
+            generated_at=generated_at,
+        )
+    else:
+        evidence_v2 = minimal_v2_from_legacy(
+            decision_id=record.id,
+            decision_type="plan_report",
+            household_id=household_id,
+            legacy=plan.decision_evidence.model_dump(mode="json"),
+            generated_at=generated_at,
+            calibration=calibration,
+        )
+    search = searchable_fields(evidence_v2)
+    record.decision_evidence = evidence_v2.model_dump(mode="json")
+    record.decision_hash = evidence_v2.decision_hash
+    for field_name, value in search.model_dump().items():
+        setattr(record, field_name, value)
     calendar = build_action_calendar(plan, analysis_date)
     action_records = _sync_actions(
         session,
@@ -669,6 +704,7 @@ def _compose_and_stage_report(
         knowledge_version=knowledge_version,
         model_version=MODEL_VERSION,
         prompt_version=PROMPT_VERSION,
+        calibration=calibration,
     )
     report_hash = _report_hash(document)
     document = document.model_copy(update={"report_hash": report_hash})
