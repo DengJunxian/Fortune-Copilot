@@ -65,3 +65,5 @@ Docker Compose was also attempted, but the local Docker daemon was unavailable a
 ## Acceptance conclusion
 
 The implemented V6 scope satisfies the product, logic, GRB, product-suitability, controlled-intake, explainability, monitoring and replay checks listed above in the local release environment. This conclusion does not imply production readiness, live ICBC connectivity, investment performance, customer conversion or operational SLA validation.
+
+GitHub Actions run `35299965812` independently passed both PR jobs for release-candidate commit `faffdb8`: Backend completed lint, typecheck, 198 tests and empty-database migration; Frontend completed lint, typecheck, 66 tests, build and Playwright smoke. Runner notices about the Actions Node runtime and a future `ubuntu-latest` image migration remain informational warnings.

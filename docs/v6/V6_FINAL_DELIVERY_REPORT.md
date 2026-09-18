@@ -90,4 +90,11 @@ Fortune Copilot 被明确定位为连接家庭需求与银行财富产品和服�
 
 ## 9. Repository State
 
-本节在最终推送与 PR 检查后填写，记录 branch、commit、PR/CI 和 tag 的实际状态；在远端结果返回前不预写 PASS。
+- Source branch：`codex/fortune-copilot-v5-upgrade`；
+- Release-candidate commit：`faffdb8`（最后一个运行时代码/测试修复提交）；
+- Pull request：[PR #1](https://github.com/DengJunxian/Fortune-Copilot/pull/1)，记录本节时为 Draft、Open、MERGEABLE；
+- Remote CI：GitHub Actions run `35299965812` 的 Backend 与 Frontend jobs 均通过；
+- Tag：未创建；
+- Working tree：交付提交前为 clean；最终 PPT 为可再生构建产物，按仓库规则保存在被忽略的 `output/`，生成脚本已提交。
+
+本节记录的是最终报告元数据提交前的可验证 release-candidate 状态。PR 是否转为 Ready、是否合并以及合并提交，以 GitHub 上的最终状态和交付回复为准；不在文档中预写尚未发生的结果。
