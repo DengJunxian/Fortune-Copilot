@@ -651,10 +651,10 @@ describe("Fortune Copilot routes", () => {
 
   it("has no automatically detectable accessibility violations on the entry page", async () => {
     const { container } = render(<AppRoutes initialPath="/" />);
-    expect(await screen.findByRole("heading", { name: /让专业财富规划/ })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: /每个家庭.*财富答案/ })).toBeInTheDocument();
     expect(screen.getByRole("img", { name: /中国家庭财富管理主视觉/ })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "中国家庭，不能直接套用一张海外比例表" })).toBeInTheDocument();
-    expect(screen.getByText(/标普家庭资产配置图/)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "家庭责任先于投资收益" })).toBeInTheDocument();
+    expect(screen.getByText(/单一风险问卷或固定比例无法完整表达/)).toBeInTheDocument();
     const result = await run(container, {
       rules: {
         "color-contrast": { enabled: false },

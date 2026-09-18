@@ -18,24 +18,42 @@ import { useRouter } from "../router/context";
 
 const chineseDifferences = [
   {
-    topic: "决策单位",
-    imported: "以个人风险偏好和可投资资产为中心",
-    chinese: "以家庭为单位，同时核对成员、收入、住房、赡养、教育与保障责任",
+    topic: "决策起点",
+    imported: "传统路径通常先确认风险偏好和可投资资产",
+    chinese: "Fortune Copilot 先核对成员、收入、住房、赡养、教育与保障责任",
   },
   {
-    topic: "资产结构",
-    imported: "用固定比例切分现金、保障与投资",
-    chinese: "先识别房产集中、经营性资产、房贷与流动性，再确定各账户边界",
+    topic: "资金资格",
+    imported: "在已声明的可投资资产内讨论配置",
+    chinese: "先扣除周转、应急、债务、保障和近期责任，再得到 ELTC",
   },
   {
-    topic: "制度环境",
-    imported: "默认养老、税制和资本流动规则相对统一",
-    chinese: "纳入社保、个人养老金、地区生活成本、人民币与跨境约束",
+    topic: "风险判断",
+    imported: "风险问卷是重要输入，并结合产品适当性",
+    chinese: "能力、意愿与真实行为共同约束家庭风险预算",
   },
   {
     topic: "服务方式",
-    imported: "一次测评后匹配产品，结果随交易结束",
-    chinese: "家庭事实变化即重算，方案、解释、复核和行动记录持续留痕",
+    imported: "围绕阶段性规划或产品服务形成建议",
+    chinese: "家庭事实变化后重新计算，方案、解释与复核持续留痕",
+  },
+];
+
+const coreQuestions = [
+  {
+    icon: ShieldCheckIcon,
+    question: "我家现在安全吗？",
+    answer: "用 CHFH 核对现金流、债务、保障和家庭责任。",
+  },
+  {
+    icon: WalletIcon,
+    question: "我到底有多少钱可以长期投资？",
+    answer: "动态四账户逐层扣除必须保留的资金，得到 ELTC。",
+  },
+  {
+    icon: ScalesIcon,
+    question: "这些钱应该怎么配置？",
+    answer: "用 Goal + Risk + Behavior 形成风险预算，再进入配置与产品候选。",
   },
 ];
 
@@ -159,35 +177,55 @@ export function HomePage() {
         />
         <div className="home-hero-shade" aria-hidden="true" />
         <div className="home-hero-copy">
-          <p className="home-eyebrow"><ShieldCheckIcon size={17} weight="fill" aria-hidden="true" /> 面向每个中国家庭的自主财富管理体系</p>
-          <h1 id="home-hero-title">让专业财富规划，<br />走进每个中国家庭</h1>
-          <p className="home-hero-lead">先管家底、责任与风险，再谈产品和收益。把复杂财富决策变成看得懂、能核验、可持续调整的家庭方案。</p>
+          <p className="home-eyebrow"><ShieldCheckIcon size={17} weight="fill" aria-hidden="true" /> 家庭约束驱动型可信智能投顾</p>
+          <h1 id="home-hero-title">每个家庭，<br />都有自己的财富答案</h1>
+          <p className="home-hero-lead">从家庭责任、人生目标和真实行为出发，先判断真正可以长期投资的钱，再提供持续、可信、可解释的智能财富管理。</p>
           <div className="home-hero-actions">
-            <AppLink className="home-primary-cta" to="/planning">建立家庭规划 <ArrowRightIcon size={19} aria-hidden="true" /></AppLink>
-            <a className="home-secondary-cta" href="#china-method">了解中国方法</a>
+            <AppLink className="home-primary-cta" to="/planning">开始家庭财富规划 <ArrowRightIcon size={19} aria-hidden="true" /></AppLink>
+            <button className="home-secondary-cta" type="button" onClick={() => openCase("DEMO_B")}>查看演示家庭</button>
           </div>
         </div>
       </section>
 
       <section className="home-assurance-strip" aria-label="体系原则">
-        <div><strong>家庭视角</strong><span>从共同生活与共同责任出发</span></div>
-        <div><strong>确定计算</strong><span>金额、比率和边界由规则引擎计算</span></div>
-        <div><strong>适当性约束</strong><span>产品不能越过风险与资金用途边界</span></div>
-        <div><strong>持续管理</strong><span>家庭变化后重算，历史版本可复核</span></div>
+        <div><strong>先懂家庭</strong><span>资产、负债、收入、保障和人生目标统一画像</span></div>
+        <div><strong>再管资金</strong><span>识别真正能够长期承担市场波动的资本</span></div>
+        <div><strong>持续陪伴</strong><span>家庭变化后重算，方案与行动同步更新</span></div>
+      </section>
+
+      <section className="home-section home-core-questions" aria-labelledby="core-questions-heading">
+        <header className="home-section-heading">
+          <p className="section-eyebrow">Three household questions</p>
+          <h2 id="core-questions-heading">传统智能投顾先问钱怎么投，Fortune Copilot 先问这笔钱能不能投</h2>
+          <p>它仍然属于财富管理与智能投顾，但把家庭责任、资金资格和持续复核放在产品之前。</p>
+        </header>
+        <ol>
+          {coreQuestions.map((item, index) => {
+            const Icon = item.icon;
+            return (
+              <li key={item.question}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <Icon size={28} weight="duotone" aria-hidden="true" />
+                <h3>{item.question}</h3>
+                <p>{item.answer}</p>
+              </li>
+            );
+          })}
+        </ol>
       </section>
 
       <section className="home-section home-china-method" id="china-method" aria-labelledby="china-method-heading">
         <div className="home-manifesto">
-          <p>为什么要有中国自己的家庭财富方法</p>
-          <h2 id="china-method-heading">中国家庭，不能直接套用一张海外比例表</h2>
+          <p>中国家庭财富健康 CHFH</p>
+          <h2 id="china-method-heading">家庭责任先于投资收益</h2>
           <div className="home-manifesto-copy">
-            <p>网传的“标普家庭资产配置图”和固定资产分桶，可用于财商启蒙，却不足以承担真实家庭规划。中国家庭常同时面对住房资产集中、代际赡养、教育投入、社保养老金、经营性资产与跨境规则。</p>
-            <p>过去以单次测评和产品销售为中心的方式，也难以应对收入结构、家庭成员和政策环境的持续变化。财富管理需要回到家庭资产负债表，先解决责任，再安排增长。</p>
+            <p>中国家庭常同时面对住房资产集中、代际赡养、教育投入、社保养老金和经营性资产。单一风险问卷或固定比例无法完整表达这些约束。</p>
+            <p>Fortune Copilot 不是从产品开始的智能投顾，而是从家庭责任开始的智能投顾。它先确定哪些钱必须留在生活和责任中，再安排长期增长。</p>
           </div>
         </div>
 
-        <div className="home-comparison" aria-label="通用海外模板与中国家庭财富方法比较">
-          <header><span>比较维度</span><strong>通用海外模板</strong><strong>中国家庭财富方法</strong></header>
+        <div className="home-comparison" aria-label="传统产品起点路径与 Fortune Copilot 比较">
+          <header><span>比较维度</span><strong>传统产品起点路径</strong><strong>Fortune Copilot</strong></header>
           {chineseDifferences.map((item) => (
             <article key={item.topic}>
               <h3>{item.topic}</h3>

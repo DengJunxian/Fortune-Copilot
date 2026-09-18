@@ -20,7 +20,7 @@ async function openAdvisorWorkflow(page: Page) {
 }
 
 const v5ResponsiveRoutes = [
-  ["/", /让专业财富规划/],
+  ["/", /每个家庭.*财富答案/],
   ["/wealth?case=DEMO_D", /今天先看最重要的四件事/],
   ["/wealth/profile?case=DEMO_D", "先看清家庭，再安排财富。"],
   ["/wealth/goals?case=DEMO_H", "把未来责任，落到每一笔现金流。"],
@@ -46,9 +46,9 @@ test("offline demo exposes all three portal routes", async ({ page }) => {
   page.on("pageerror", (error) => browserErrors.push(error.message));
 
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: /让专业财富规划/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /每个家庭.*财富答案/ })).toBeVisible();
   await expect(page.getByRole("img", { name: /中国家庭财富管理主视觉/ })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "中国家庭，不能直接套用一张海外比例表" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "家庭责任先于投资收益" })).toBeVisible();
   await expect(page.getByText("规划结果用于辅助家庭决策，不构成投资建议，也不承诺任何金融产品的本金或收益。")).toBeVisible();
 
   await page.goto("/client");

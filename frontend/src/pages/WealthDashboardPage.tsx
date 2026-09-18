@@ -160,6 +160,16 @@ export function WealthDashboardPage() {
     ?? data.analysis?.health_assessment.priority_action.detail
     ?? "保持当前安排，并在家庭事实变化后重新核对。";
   const lastEvent = data.timeline?.events[0];
+  const metricById = (metricId: string) => data.analysis?.metrics.find(
+    (metric) => metric.metric_id === metricId,
+  )?.result ?? null;
+  const liquidityMonths = metricById("liquidity_reserve_months");
+  const debtRatio = metricById("debt_to_asset_ratio");
+  const protectionRatio = data.analysis?.protection.coverage_ratio ?? null;
+  const goalEntries = [...(data.liability?.entries ?? [])]
+    .sort((left, right) => left.stream.start_date.localeCompare(right.stream.start_date))
+    .slice(0, 3);
+  const nextBestActions = data.actions?.actions.slice(0, 3) ?? [];
 
   const completeness = useMemo(() => {
     const blocks = [data.analysis, data.needs, data.liability, data.eligible, data.twin];
@@ -191,31 +201,94 @@ export function WealthDashboardPage() {
       {!loading && completeness > 0 ? (
         <>
           {error ? <p className="dashboard-partial-warning" role="status">{error}</p> : null}
-          <section className="dashboard-answer-grid" aria-label="家庭财富四项核心回答">
-            <article className="dashboard-safety-answer" data-tone={healthTone}>
-              <span><ShieldCheckIcon size={20} weight="duotone" aria-hidden="true" /> 家庭现在安全吗？</span>
-              <h2>{safetyStatus === "healthy" ? "基础安全" : safetyStatus === "risk" ? "需要优先修复" : "有事项需要关注"}</h2>
+          <section className="dashboard-core-grid" aria-label="家庭财富四项核心回答">
+            <article className="dashboard-core-card dashboard-safety-answer" data-tone={healthTone}>
+              <header>
+                <span><ShieldCheckIcon size={20} weight="duotone" aria-hidden="true" /> 01</span>
+                <div><small>家庭安全</small><h2>我家现在安全吗？</h2></div>
+              </header>
+              <strong>{safetyStatus === "healthy" ? "基础安全" : safetyStatus === "risk" ? "需要优先修复" : "有事项需要关注"}</strong>
               <p>{data.analysis?.health_assessment.priority_action.title ?? "等待完整财务健康结果"}</p>
-              <dl>
+              <dl className="dashboard-safety-ledger">
                 <div><dt>财务健康</dt><dd>{data.analysis ? `${Number(data.analysis.health_assessment.overall_score).toFixed(0)} 分` : "待读取"}</dd></div>
-                <div><dt>长期资本</dt><dd>{data.eligible?.calculation.formally_eligible ? "已过前置闸门" : "先补足责任"}</dd></div>
+                <div><dt>应急覆盖</dt><dd>{liquidityMonths ? `${Number(liquidityMonths).toFixed(1)} 个月` : "待读取"}</dd></div>
+                <div><dt>资产负债率</dt><dd>{debtRatio ? `${(Number(debtRatio) * 100).toFixed(1)}%` : "待读取"}</dd></div>
+                <div><dt>保障覆盖</dt><dd>{protectionRatio ? `${(Number(protectionRatio) * 100).toFixed(1)}%` : "待读取"}</dd></div>
               </dl>
               <AppLink to="/wealth/goals">查看安全闸门 <ArrowRightIcon size={16} aria-hidden="true" /></AppLink>
             </article>
-            <article>
-              <span><TargetIcon size={20} weight="duotone" aria-hidden="true" /> 目标还有多少缺口？</span>
-              <strong>{data.liability ? formatMoney(data.liability.summary.funding_gap, true) : "待读取"}</strong>
-              <p>{data.liability ? `${data.liability.summary.stream_count} 项责任 · 最近 ${data.liability.summary.next_due_date ? formatDate(data.liability.summary.next_due_date) : "暂无到期日"}` : "责任流服务暂不可用"}</p>
+
+            <article className="dashboard-core-card dashboard-goals-answer">
+              <header>
+                <span><TargetIcon size={20} weight="duotone" aria-hidden="true" /> 02</span>
+                <div><small>人生目标</small><h2>我未来有哪些重要目标？</h2></div>
+                <strong>{data.liability ? `总缺口 ${formatMoney(data.liability.summary.funding_gap, true)}` : "待读取"}</strong>
+              </header>
+              {goalEntries.length > 0 ? (
+                <ol className="dashboard-goal-timeline">
+                  {goalEntries.map((entry) => (
+                    <li key={entry.stream.id}>
+                      <time dateTime={entry.stream.start_date}>{new Date(`${entry.stream.start_date}T00:00:00`).getFullYear()}</time>
+                      <div><strong>{entry.stream.name}</strong><span>{formatDomainLabel(entry.stream.stream_type)} · {entry.stream.deferrable ? "可协商" : "刚性责任"}</span></div>
+                      <dl><dt>金额缺口</dt><dd>{formatMoney(entry.funding_gap, true)}</dd></dl>
+                    </li>
+                  ))}
+                </ol>
+              ) : <DashboardUnavailable>目标责任时间轴暂时无法读取。</DashboardUnavailable>}
+              <AppLink to="/wealth/goals">查看完整目标时间轴 <ArrowRightIcon size={16} aria-hidden="true" /></AppLink>
             </article>
-            <article>
-              <span><CompassIcon size={20} weight="duotone" aria-hidden="true" /> 下一笔钱先做什么？</span>
-              <strong>{firstAction ? `优先级 ${firstAction.priority}` : "按安全顺序安排"}</strong>
-              <p>{priorityText}</p>
+
+            <article className="dashboard-core-card dashboard-eltc-answer">
+              <header>
+                <span><CurrencyCircleDollarIcon size={20} weight="duotone" aria-hidden="true" /> 03</span>
+                <div><small>资金资格</small><h2>我真正可以长期投资多少钱？</h2></div>
+              </header>
+              {data.eligible ? (
+                <>
+                  <div className="dashboard-eltc-outcome" data-eligible={data.eligible.calculation.formally_eligible}>
+                    <span>长期可投资资本 ELTC</span>
+                    <strong>{formatMoney(data.eligible.calculation.eligible_long_term_capital, true)}</strong>
+                    <small>{data.eligible.calculation.formally_eligible ? "可进入长期配置评估" : "前置责任尚未通过，当前先修复而不新增投资"}</small>
+                  </div>
+                  <ol className="dashboard-eltc-bridge" aria-label="长期可投资资本扣减桥">
+                    <li><span>可调度金融资源</span><strong>{formatMoney(data.eligible.calculation.dispatchable_financial_resources, true)}</strong></li>
+                    {data.eligible.calculation.bridge.map((step) => (
+                      <li key={step.code}><span>{step.label}</span><strong>− {formatMoney(step.deduction, true)}</strong></li>
+                    ))}
+                  </ol>
+                  <details className="dashboard-eltc-explanation">
+                    <summary>为什么不是全部金融资产？</summary>
+                    <p>日常周转、应急、债务、保障、近期责任、已承诺目标和锁定资金都有明确用途，不能重复用于长期承担市场波动。</p>
+                  </details>
+                </>
+              ) : <DashboardUnavailable>ELTC 结果暂时无法读取。</DashboardUnavailable>}
+              <AppLink to="/wealth/goals">查看完整 ELTC Bridge <ArrowRightIcon size={16} aria-hidden="true" /></AppLink>
             </article>
-            <article>
-              <span><BellRingingIcon size={20} weight="duotone" aria-hidden="true" /> 最近值得重规划吗？</span>
-              <strong>{recentChange || openAlerts.length > 0 ? "建议核对" : "暂无重大变化"}</strong>
-              <p>{lastEvent ? `${formatDomainLabel(lastEvent.event_type)} · ${formatDate(lastEvent.effective_at.slice(0, 10))}` : openAlerts[0]?.client_impact ?? "尚无已确认事件改变当前快照。"}</p>
+
+            <article className="dashboard-core-card dashboard-next-actions">
+              <header>
+                <span><CompassIcon size={20} weight="duotone" aria-hidden="true" /> 04</span>
+                <div><small>Next Best Action</small><h2>现在需要做什么？</h2></div>
+              </header>
+              {nextBestActions.length > 0 ? (
+                <ol>
+                  {nextBestActions.map((action) => (
+                    <li key={action.action_code}>
+                      <span>{action.priority}</span>
+                      <div><strong>{action.client_impact}</strong><p>{action.recommended_action}</p></div>
+                    </li>
+                  ))}
+                </ol>
+              ) : (
+                <div className="dashboard-next-action-fallback">
+                  <CheckCircleIcon size={24} weight="duotone" aria-hidden="true" />
+                  <div><strong>按家庭安全顺序安排</strong><p>{priorityText}</p></div>
+                </div>
+              )}
+              <aside>
+                <BellRingingIcon size={19} weight="duotone" aria-hidden="true" />
+                <p>{recentChange || openAlerts.length > 0 ? "近期变化需要复核当前方案。" : lastEvent ? `${formatDomainLabel(lastEvent.event_type)}已进入事件账本。` : "没有重大变化时，保持当前方案也是正式行动。"}</p>
+              </aside>
             </article>
           </section>
 

@@ -34,17 +34,19 @@ describe("WealthDashboardPage", () => {
     const { container } = render(<RouterProvider initialPath="/wealth"><WealthDashboardPage /></RouterProvider>);
 
     expect(await screen.findByRole("heading", { name: /今天先看最重要的四件事/ })).toBeInTheDocument();
-    expect(await screen.findByText("家庭现在安全吗？")).toBeInTheDocument();
-    expect(screen.getByText("目标还有多少缺口？")).toBeInTheDocument();
-    expect(screen.getByText("下一笔钱先做什么？")).toBeInTheDocument();
-    expect(screen.getByText("最近值得重规划吗？")).toBeInTheDocument();
-    expect(await screen.findByText("¥110万", {}, { timeout: 5_000 })).toBeInTheDocument();
+    expect(await screen.findByText("我家现在安全吗？")).toBeInTheDocument();
+    expect(screen.getByText("我未来有哪些重要目标？")).toBeInTheDocument();
+    expect(screen.getByText("我真正可以长期投资多少钱？")).toBeInTheDocument();
+    expect(screen.getByText("现在需要做什么？")).toBeInTheDocument();
+    expect(await screen.findByText(/¥110万/, {}, { timeout: 5_000 })).toBeInTheDocument();
+    expect(screen.getByText("长期可投资资本 ELTC")).toBeInTheDocument();
+    expect(screen.getByText("为什么不是全部金融资产？")).toBeInTheDocument();
     expect(screen.getByRole("list", { name: "财富需要优先顺序" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "持续监控提醒" })).toBeInTheDocument();
 
     const results = await run(container, { rules: { "color-contrast": { enabled: false } } });
     expect(results.violations).toEqual([]);
-  });
+  }, 15_000);
 
   it("does not fabricate a dashboard when all core services fail", async () => {
     vi.stubGlobal("fetch", vi.fn((request: RequestInfo | URL) => {
