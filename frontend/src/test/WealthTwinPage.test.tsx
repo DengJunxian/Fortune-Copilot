@@ -97,7 +97,7 @@ describe("WealthTwinPage", () => {
       id: violation.id,
       targets: violation.nodes.map((node) => node.target),
     }))).toEqual([]);
-  });
+  }, 15_000);
 
   it("does not fabricate a snapshot when the service fails", async () => {
     vi.stubGlobal("fetch", vi.fn((request: RequestInfo | URL) => {

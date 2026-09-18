@@ -57,3 +57,4 @@
 - Lowered the experimental `/competition` page from primary navigation and reframed its opening around household safety and long-term-capital eligibility.
 - Updated the existing presentation generator without replacing its design system; the 15-slide deck now leads with CHFH, ELTC and GRB, adds a deterministic Product Candidate Funnel, and presents the five engines under a Trust & Compliance Layer.
 - Kept the public verified product catalog at eight items because no additional official evidence was introduced; Public Verified remains distinct from a live ICBC shelf.
+- Removed a cross-platform currency-symbol assumption from the dashboard test and gave the interaction-heavy Twin accessibility test an explicit CI timeout after GitHub Actions exposed Linux/runner-only failures.

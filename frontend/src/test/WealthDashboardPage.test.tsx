@@ -38,7 +38,8 @@ describe("WealthDashboardPage", () => {
     expect(screen.getByText("我未来有哪些重要目标？")).toBeInTheDocument();
     expect(screen.getByText("我真正可以长期投资多少钱？")).toBeInTheDocument();
     expect(screen.getByText("现在需要做什么？")).toBeInTheDocument();
-    expect(await screen.findByText(/¥110万/, {}, { timeout: 5_000 })).toBeInTheDocument();
+    // Node ICU may render CNY compact notation as either `¥110万` or `CN¥110万`.
+    expect(await screen.findByText(/110万/, {}, { timeout: 5_000 })).toBeInTheDocument();
     expect(screen.getByText("长期可投资资本 ELTC")).toBeInTheDocument();
     expect(screen.getByText("为什么不是全部金融资产？")).toBeInTheDocument();
     expect(screen.getByRole("list", { name: "财富需要优先顺序" })).toBeInTheDocument();
@@ -55,6 +56,6 @@ describe("WealthDashboardPage", () => {
     }));
     render(<RouterProvider initialPath="/wealth"><WealthDashboardPage /></RouterProvider>);
     expect(await screen.findByRole("heading", { name: "家庭财富总览暂时无法读取" })).toBeInTheDocument();
-    expect(screen.queryByText("¥110万")).not.toBeInTheDocument();
+    expect(screen.queryByText(/110万/)).not.toBeInTheDocument();
   });
 });
