@@ -8,7 +8,7 @@ async function openClientTask(page: Page, label: string) {
 }
 
 async function openRiskTechnicalEvidence(page: Page) {
-  const summary = page.getByText("查看基础禁令与专项对抗证据", { exact: true });
+  const summary = page.getByText("展开技术治理、基础禁令与专项对抗证据", { exact: true });
   await summary.click();
 }
 
@@ -59,7 +59,7 @@ test("offline demo exposes all three portal routes", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "客户经理工作台", exact: true })).toBeVisible();
 
   await page.goto("/risk");
-  await expect(page.getByRole("heading", { name: "风险与审计控制台", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "为什么产生这份建议？", exact: true })).toBeVisible();
   await openRiskTechnicalEvidence(page);
   await expect(page.getByText("最低工资不等于 CPI")).toBeVisible();
   expect(expectedOfflineErrors.length).toBeGreaterThan(0);

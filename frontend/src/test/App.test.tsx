@@ -57,6 +57,10 @@ function jsonResponse(payload: unknown): Pick<Response, "ok" | "status" | "json"
   return { ok: true, status: 200, json: async () => payload };
 }
 
+async function openRiskTechnicalEvidence(user: ReturnType<typeof userEvent.setup>) {
+  await user.click(screen.getByText("展开技术治理、基础禁令与专项对抗证据", { exact: true }));
+}
+
 function connectedFetch() {
   let behaviorAnsweredCount = 0;
   let currentFormalReport: ReturnType<typeof formalReportFixture> | null = null;
@@ -585,7 +589,7 @@ describe("Fortune Copilot routes", () => {
     ["/client/advanced", "家庭财富驾驶舱"],
     ["/advisor", "客户经理工作台"],
     ["/advisor/actions", "客户行动中心"],
-    ["/risk", "风险与审计控制台"],
+    ["/risk", "为什么产生这份建议？"],
   ])("renders %s as a real portal route", async (path, heading) => {
     render(<AppRoutes initialPath={path} />);
     expect(await screen.findByRole("heading", { level: 1, name: heading })).toBeInTheDocument();
@@ -594,8 +598,10 @@ describe("Fortune Copilot routes", () => {
 
   it("shows verified public data separately from blocked ICBC production ports", async () => {
     vi.stubGlobal("fetch", connectedFetch());
+    const user = userEvent.setup();
     render(<AppRoutes initialPath="/risk" />);
 
+    await openRiskTechnicalEvidence(user);
     expect(await screen.findByRole("heading", {
       name: "真实数据与银行系统接入边界",
     })).toBeInTheDocument();
@@ -925,6 +931,7 @@ describe("Fortune Copilot routes", () => {
     const user = userEvent.setup();
     render(<AppRoutes initialPath="/risk" />);
 
+    await openRiskTechnicalEvidence(user);
     expect(await screen.findByRole("heading", { name: "测试环境安全与模型风险质量门禁" })).toBeInTheDocument();
     expect(screen.getByText("仅测试环境")).toBeInTheDocument();
     expect(screen.getAllByText("test fixture")).toHaveLength(6);
@@ -940,6 +947,7 @@ describe("Fortune Copilot routes", () => {
     const user = userEvent.setup();
     render(<AppRoutes initialPath="/risk" />);
 
+    await openRiskTechnicalEvidence(user);
     const gateButton = await screen.findByRole("button", { name: "运行十项发布门禁" });
     expect(gateButton).toBeDisabled();
     await user.click(screen.getByRole("checkbox", { name: /我已人工复核报告/ }));

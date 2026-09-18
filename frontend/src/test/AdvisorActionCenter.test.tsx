@@ -54,10 +54,11 @@ describe("AdvisorActionCenter", () => {
     expect(screen.getByText("稳健退休家庭")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /成长三口之家/ }));
     const detail = await screen.findByRole("region", { name: "成长三口之家行动证据" });
-    for (const title of ["Trigger", "Changed Facts", "Changed Needs", "Changed CFS", "Evidence", "Recommended Conversation"]) {
+    for (const title of ["Why Now · 为什么现在", "What Changed · 发生了什么", "What Matters · 影响什么", "Suggested Discussion · 建议沟通", "What Not To Sell · 当前不适合推荐什么"]) {
       expect(within(detail).getByRole("heading", { name: title })).toBeInTheDocument();
     }
-    expect(within(detail).getByText(/本次沟通只核对事实和规划/)).toBeInTheDocument();
+    expect(within(detail).getByText(/不要推荐新增投资产品/)).toBeInTheDocument();
+    expect(within(detail).getByText(/Evidence · 查看触发证据/)).toBeInTheDocument();
     const results = await run(container, { rules: { "color-contrast": { enabled: false } } });
     expect(results.violations).toEqual([]);
   });

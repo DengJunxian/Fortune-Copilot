@@ -41,3 +41,11 @@
 - Added impact-ranked follow-up questions for cash flow, assets, protection, education stage/destination/prepared capital and debt details.
 - Retained the canonical-fact boundary: confirming a draft records reviewed values but does not silently write or overwrite formal Household Facts.
 - Reused the ELTC explanation modes added in Phase 3; AI changes wording depth but never recalculates the amount.
+
+## Phase 6 — Advisor & Compliance
+
+- Reframed the Advisor Action Center around “今天为什么需要联系这些客户？” instead of system modules.
+- Each expanded household now shows Why Now, What Changed, What Matters, Suggested Discussion and What Not To Sell.
+- Kept the advisor boundary as planning follow-up rather than automated marketing or Next Best Sale.
+- Added a four-question compliance overview: Why This Advice, Suitability, Evidence and Replay.
+- Moved production-readiness, security-quality, guardrail and specialist technical material behind an explicit evidence drawer.

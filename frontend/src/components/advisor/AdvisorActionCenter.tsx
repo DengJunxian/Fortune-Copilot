@@ -129,7 +129,7 @@ export function AdvisorActionCenter({ compact = false }: { compact?: boolean }) 
       <header className="action-center-header">
         <div>
           <p className="page-kicker">Trigger → evidence → conversation</p>
-          <h2 id="action-center-title">Action Center</h2>
+          <h2 id="action-center-title">今天为什么需要联系这些客户？</h2>
           <p>先处理家庭变化和安全边界，再决定是否需要方案更新；这里不会直接发出销售指令。</p>
         </div>
         <div className="action-center-stats" aria-label="行动中心统计">
@@ -180,12 +180,12 @@ function ActionDetail({ item, twin, loading }: { item: AdvisorActionCenterItem; 
   const evidenceEntries = Object.entries(item.evidence).slice(0, 6);
   return (
     <div className="action-detail" role="region" aria-label={`${item.household_name}行动证据`}>
-      <section><h4>Trigger</h4><p>{item.reason}</p><span>{formatDomainLabel(item.trigger_type)} · {formatDomainLabel(item.urgency)}</span></section>
-      <section><h4>Changed Facts</h4>{loading ? <p>正在核对最新快照…</p> : facts.length > 0 ? <ul>{facts.map((fact) => <li key={fact.code}><strong>{fact.label}</strong><span>{fact.before ?? "—"} → {fact.after ?? "—"}</span></li>)}</ul> : <p>本次触发没有形成新的事实差异，需在沟通中再次确认。</p>}</section>
-      <section><h4>Changed Needs</h4>{needs.length > 0 ? <ul>{needs.map((need) => <li key={`${need.need_type}-${need.change_type}`}><strong>{formatDomainLabel(need.need_type)}</strong><span>{formatDomainLabel(need.change_type)}</span></li>)}</ul> : <p>当前需求种类和目标金额没有记录到变化。</p>}</section>
-      <section><h4>Changed CFS</h4>{twin?.comparison.changed_cfs.changed ? <p>{twin.comparison.changed_cfs.after.explanation}</p> : <p>当前 CFS 未变化；先核对触发事实，不自动改方案。</p>}</section>
-      <section className="action-detail-evidence"><h4>Evidence</h4>{evidenceEntries.length > 0 ? <dl>{evidenceEntries.map(([key, value]) => <div key={key}><dt>{formatDomainLabel(key)}</dt><dd>{evidenceValue(value)}</dd></div>)}</dl> : <p>触发记录未附加扩展证据。</p>}</section>
-      <section className="action-conversation"><h4>Recommended Conversation</h4><ol><li>先说明：{item.reason}</li><li>请客户确认近期事实是否准确，以及对家庭的实际影响。</li><li>再讨论：{(item.title ?? "是否需要重新核对当前规划").replace(/[。！？!?]+$/, "")}。</li><li>{item.do_not_sell_flag ? "本次沟通只核对事实和规划，不进行产品销售。" : "如需产品讨论，先完成适当性与人工复核。"}</li></ol>{item.required_specialist ? <p>建议协同：{formatDomainLabel(item.required_specialist)}</p> : null}</section>
+      <section><h4>Why Now · 为什么现在</h4><p>{item.reason}</p><span>{formatDomainLabel(item.trigger_type)} · {formatDomainLabel(item.urgency)}{item.follow_up_due ? ` · ${formatDate(item.follow_up_due)}` : ""}</span></section>
+      <section><h4>What Changed · 发生了什么</h4>{loading ? <p>正在核对最新快照…</p> : facts.length > 0 ? <ul>{facts.map((fact) => <li key={fact.code}><strong>{fact.label}</strong><span>{fact.before ?? "—"} → {fact.after ?? "—"}</span></li>)}</ul> : <p>本次触发没有形成新的事实差异，需在沟通中再次确认。</p>}</section>
+      <section><h4>What Matters · 影响什么</h4>{needs.length > 0 ? <ul>{needs.map((need) => <li key={`${need.need_type}-${need.change_type}`}><strong>{formatDomainLabel(need.need_type)}</strong><span>{formatDomainLabel(need.change_type)}</span></li>)}</ul> : <p>当前需求种类和目标金额没有记录到变化。</p>}{twin?.comparison.changed_cfs.changed ? <p>{twin.comparison.changed_cfs.after.explanation}</p> : <p>当前 CFS 未变化；先核对触发事实，不自动改方案。</p>}</section>
+      <section className="action-conversation"><h4>Suggested Discussion · 建议沟通</h4><ol><li>先说明：{item.reason}</li><li>请客户确认近期事实是否准确，以及对家庭的实际影响。</li><li>再讨论：{(item.title ?? "是否需要重新核对当前规划").replace(/[。！？!?]+$/, "")}。</li></ol>{item.required_specialist ? <p>建议协同：{formatDomainLabel(item.required_specialist)}</p> : null}</section>
+      <section className="action-do-not-sell" data-blocked={item.do_not_sell_flag}><h4>What Not To Sell · 当前不适合推荐什么</h4><p>{item.do_not_sell_flag ? "本次沟通只核对事实、责任和规划；不要推荐新增投资产品，也不要把行动项改写成销售机会。" : "未设置特定禁售标记；如进入产品讨论，仍须先完成资金资格、适当性与人工复核。"}</p></section>
+      <details className="action-detail-evidence"><summary>Evidence · 查看触发证据</summary>{evidenceEntries.length > 0 ? <dl>{evidenceEntries.map(([key, value]) => <div key={key}><dt>{formatDomainLabel(key)}</dt><dd>{evidenceValue(value)}</dd></div>)}</dl> : <p>触发记录未附加扩展证据。</p>}</details>
     </div>
   );
 }
