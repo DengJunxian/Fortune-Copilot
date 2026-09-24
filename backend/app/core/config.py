@@ -161,6 +161,9 @@ class Settings(BaseSettings):
     demo_auth_enabled: bool = Field(default=True, alias="DEMO_AUTH_ENABLED")
     hosted_proxy_required: bool = Field(default=False, alias="HOSTED_PROXY_REQUIRED")
     hosted_proxy_secret: SecretStr | None = Field(default=None, alias="HOSTED_PROXY_SECRET")
+    hosted_external_database_required: bool = Field(
+        default=False, alias="HOSTED_EXTERNAL_DATABASE_REQUIRED"
+    )
     enable_v5_financial_graph: bool = Field(default=False, alias="ENABLE_V5_FINANCIAL_GRAPH")
     enable_v5_client_profile: bool = Field(default=False, alias="ENABLE_V5_CLIENT_PROFILE")
     enable_v5_liability_engine: bool = Field(default=False, alias="ENABLE_V5_LIABILITY_ENGINE")
@@ -182,6 +185,10 @@ class Settings(BaseSettings):
             or len(self.hosted_proxy_secret.get_secret_value()) < 32
         ):
             raise ValueError("HOSTED_PROXY_SECRET must contain at least 32 characters")
+        if self.hosted_external_database_required and not self.database_url.startswith(
+            "postgresql+psycopg://"
+        ):
+            raise ValueError("hosted demo requires a persistent PostgreSQL DATABASE_URL")
         if environment == "production":
             if self.demo_auth_enabled:
                 raise ValueError("DEMO_AUTH_ENABLED must be false in production")

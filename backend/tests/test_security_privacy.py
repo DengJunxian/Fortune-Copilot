@@ -100,6 +100,8 @@ def role_headers(role: str) -> dict[str, str]:
 def test_hosted_demo_proxy_gate_fails_closed() -> None:
     with pytest.raises(ValueError, match="HOSTED_PROXY_SECRET"):
         Settings(_env_file=None, APP_ENV="demo", HOSTED_PROXY_REQUIRED=True)
+    with pytest.raises(ValueError, match="persistent PostgreSQL"):
+        Settings(_env_file=None, APP_ENV="demo", HOSTED_EXTERNAL_DATABASE_REQUIRED=True)
 
     secret = "hosted-demo-test-secret-at-least-32-characters"
     gated_app = FastAPI()

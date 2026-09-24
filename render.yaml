@@ -1,28 +1,24 @@
 # Private Sites frontend -> secret-bearing Worker proxy -> synthetic FastAPI.
-# This Blueprint deliberately cannot start until HOSTED_PROXY_SECRET is entered
-# in Render. A paid instance is required for the persistent SQLite disk.
+# The free web service uses an external persistent PostgreSQL database. It
+# cannot start until both DATABASE_URL and HOSTED_PROXY_SECRET are supplied.
 services:
   - type: web
     name: fortune-copilot-v6-api
     runtime: docker
-    plan: 0.5c-512mb
+    plan: free
     region: singapore
     dockerfilePath: backend/Dockerfile
     dockerContext: .
     dockerCommand: /app/start_hosted.sh
     healthCheckPath: /api/v1/health/live
     autoDeployTrigger: off
-    disk:
-      name: fortune-copilot-demo-data
-      mountPath: /data
-      sizeGB: 1
     envVars:
       - key: APP_ENV
         value: demo
       - key: APP_VERSION
         value: 0.15.0
       - key: DATABASE_URL
-        value: sqlite:////data/wealthtwin.db
+        sync: false
       - key: SYNTHETIC_DATA_PATH
         value: /seed-data/synthetic/v5_personas/personas_v2.json
       - key: V5_PERSONA_DATA_PATH
@@ -74,6 +70,8 @@ services:
       - key: DEMO_AUTH_ENABLED
         value: "true"
       - key: HOSTED_PROXY_REQUIRED
+        value: "true"
+      - key: HOSTED_EXTERNAL_DATABASE_REQUIRED
         value: "true"
       - key: HOSTED_PROXY_SECRET
         sync: false
