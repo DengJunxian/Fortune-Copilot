@@ -10,6 +10,20 @@ permissions:
 jobs:
   backend:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: fortune_ci
+          POSTGRES_USER: fortune_ci
+          POSTGRES_PASSWORD: ci-only-password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U fortune_ci -d fortune_ci"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     defaults:
       run:
         working-directory: backend
@@ -37,6 +51,17 @@ jobs:
           alembic upgrade head
           alembic check
           python -m app.cli seed --reset
+      - name: Verify PostgreSQL migration and public product catalog
+        env:
+          DATABASE_URL: postgresql+psycopg://fortune_ci:ci-only-password@localhost:5432/fortune_ci
+          APP_ENV: demo
+          LLM_PROVIDER: mock
+          ENABLE_V5_PRODUCT_ONTOLOGY: "true"
+        run: |
+          alembic upgrade head
+          alembic check
+          python -m app.cli seed --if-empty
+          python -c "from fastapi.testclient import TestClient; from app.main import app; response = TestClient(app).get('/api/v1/products/search'); assert response.status_code == 200, response.text"
 
   frontend:
     runs-on: ubuntu-latest

@@ -37,6 +37,10 @@ def _record_columns() -> list[sa.Column[Any]]:
 
 
 def upgrade() -> None:
+    # Alembic's default version column is VARCHAR(32). Later descriptive
+    # revision IDs exceed that limit; PostgreSQL enforces it, unlike SQLite.
+    if op.get_bind().dialect.name == "postgresql":
+        op.execute("ALTER TABLE alembic_version ALTER COLUMN version_num TYPE VARCHAR(64)")
     op.create_table(
         "liability_streams",
         sa.Column("household_id", sa.String(36), nullable=False),
