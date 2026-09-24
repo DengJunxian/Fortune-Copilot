@@ -5,6 +5,7 @@ from collections.abc import Mapping
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
+import pytest
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient, Response
 from pytest import MonkeyPatch
@@ -14,7 +15,11 @@ from app.core.auth import create_session_token, verify_session_token
 from app.core.config import Settings
 from app.core.database import SessionLocal
 from app.core.errors import AppError
-from app.core.http_security import RateLimitMiddleware, RequestBodyLimitMiddleware
+from app.core.http_security import (
+    HostedProxyMiddleware,
+    RateLimitMiddleware,
+    RequestBodyLimitMiddleware,
+)
 from app.domain.enums import EmploymentStability, LifecycleStage, RiskLevel
 from app.main import app
 from app.models.family import Household, HouseholdMember
@@ -90,6 +95,47 @@ def call(
 
 def role_headers(role: str) -> dict[str, str]:
     return {"X-Actor-ID": f"demo-{role}", "X-Actor-Role": role}
+
+
+def test_hosted_demo_proxy_gate_fails_closed() -> None:
+    with pytest.raises(ValueError, match="HOSTED_PROXY_SECRET"):
+        Settings(_env_file=None, APP_ENV="demo", HOSTED_PROXY_REQUIRED=True)
+
+    secret = "hosted-demo-test-secret-at-least-32-characters"
+    gated_app = FastAPI()
+    gated_app.add_middleware(
+        HostedProxyMiddleware,
+        settings=Settings(
+            _env_file=None,
+            APP_ENV="demo",
+            HOSTED_PROXY_REQUIRED=True,
+            HOSTED_PROXY_SECRET=secret,
+        ),
+    )
+
+    @gated_app.get("/api/v1/health/live")
+    def live() -> dict[str, bool]:
+        return {"ok": True}
+
+    @gated_app.get("/api/v1/households")
+    def households() -> dict[str, bool]:
+        return {"ok": True}
+
+    async def probe() -> tuple[int, int, int, int]:
+        async with AsyncClient(
+            transport=ASGITransport(app=gated_app), base_url="http://test"
+        ) as client:
+            health = await client.get("/api/v1/health/live")
+            absent = await client.get("/api/v1/households")
+            invalid = await client.get(
+                "/api/v1/households", headers={"X-Fortune-Proxy-Secret": "wrong"}
+            )
+            trusted = await client.get(
+                "/api/v1/households", headers={"X-Fortune-Proxy-Secret": secret}
+            )
+            return health.status_code, absent.status_code, invalid.status_code, trusted.status_code
+
+    assert asyncio.run(probe()) == (200, 403, 403, 200)
 
 
 def test_signed_session_is_tamper_evident_expires_and_enforces_object_scope(

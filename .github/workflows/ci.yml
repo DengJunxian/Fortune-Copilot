@@ -54,8 +54,10 @@ jobs:
         run: npm run frontend:typecheck
       - name: Unit and accessibility tests
         run: npm run frontend:test
-      - name: Build
-        run: npm run frontend:build
+      - name: Sites proxy tests
+        run: npm run test:sites
+      - name: Build frontend and Sites package
+        run: npm run build:sites
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
       - name: End-to-end smoke

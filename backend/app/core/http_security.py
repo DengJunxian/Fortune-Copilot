@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import hmac
 import json
 import threading
 import time
@@ -97,6 +98,40 @@ class RequestBodyLimitMiddleware:
 
 class _RequestTooLarge(Exception):
     pass
+
+
+class HostedProxyMiddleware:
+    """Keep a synthetic demo API inaccessible except through its trusted site proxy."""
+
+    def __init__(self, app: ASGIApp, settings: Settings) -> None:
+        self.app = app
+        self.required = settings.hosted_proxy_required
+        self.secret = (
+            settings.hosted_proxy_secret.get_secret_value().encode("utf-8")
+            if settings.hosted_proxy_secret is not None
+            else b""
+        )
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "http" or not self.required:
+            await self.app(scope, receive, send)
+            return
+        path = str(scope.get("path", ""))
+        if path == "/api/v1/health/live":
+            await self.app(scope, receive, send)
+            return
+        supplied = next(
+            (
+                value
+                for key, value in scope.get("headers", [])
+                if key.lower() == b"x-fortune-proxy-secret"
+            ),
+            b"",
+        )
+        if not hmac.compare_digest(supplied, self.secret):
+            await _send_error(send, 403, "proxy_required", "该演示接口仅允许通过受控站点访问")
+            return
+        await self.app(scope, receive, send)
 
 
 class RateLimitMiddleware:

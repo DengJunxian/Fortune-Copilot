@@ -1,5 +1,7 @@
 # 部署、迁移与合成数据恢复
 
+Sites 前端加 Render Python 后端的私有完整演示方案见 [V6 完整演示托管](hosting_sites_render.md)。该方案与下述本地 Compose 部署并存；未完成远端联调前，不应把静态页面视为完整上线。
+
 ## 发布构成
 
 版本号的唯一人工发布标记是根目录 `VERSION`，当前为 0.14.0；Python、npm、前端静态能力清单、Compose 和 API 版本保持一致。`CHANGELOG.md` 记录变更，`LICENSE` 与 `THIRD_PARTY_NOTICES.md` 记录授权边界。

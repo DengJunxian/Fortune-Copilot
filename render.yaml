@@ -1,0 +1,101 @@
+# Private Sites frontend -> secret-bearing Worker proxy -> synthetic FastAPI.
+# This Blueprint deliberately cannot start until HOSTED_PROXY_SECRET is entered
+# in Render. A paid instance is required for the persistent SQLite disk.
+services:
+  - type: web
+    name: fortune-copilot-v6-api
+    runtime: docker
+    plan: 0.5c-512mb
+    region: singapore
+    dockerfilePath: backend/Dockerfile
+    dockerContext: .
+    dockerCommand: /app/start_hosted.sh
+    healthCheckPath: /api/v1/health/live
+    autoDeployTrigger: off
+    disk:
+      name: fortune-copilot-demo-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: APP_ENV
+        value: demo
+      - key: APP_VERSION
+        value: 0.15.0
+      - key: DATABASE_URL
+        value: sqlite:////data/wealthtwin.db
+      - key: SYNTHETIC_DATA_PATH
+        value: /seed-data/synthetic/v5_personas/personas_v2.json
+      - key: V5_PERSONA_DATA_PATH
+        value: /seed-data/synthetic/v5_personas/personas_v2.json
+      - key: V5_PERSONA_GOLDEN_PATH
+        value: /seed-data/synthetic/v5_personas/golden_outcomes_v2.json
+      - key: FINANCIAL_RULES_PATH
+        value: /seed-data/rules/financial_health_v1.json
+      - key: PLANNING_RULES_PATH
+        value: /seed-data/rules/planning_waterfall_v1.json
+      - key: METHODOLOGY_RULES_PATH
+        value: /seed-data/rules/wealth_methodology_v3.json
+      - key: PUBLIC_DATA_SNAPSHOT_PATH
+        value: /seed-data/public/authoritative_public_snapshot_v1.json
+      - key: CALIBRATION_REGISTRY_PATH
+        value: /seed-data/calibration/china_purchasing_power_v1.json
+      - key: PORTFOLIO_RULES_PATH
+        value: /seed-data/rules/portfolio_policy_v1.json
+      - key: PRODUCT_CATALOG_PATH
+        value: /seed-data/products/mock_products_v1.json
+      - key: FUND_ADVISORY_CATALOG_PATH
+        value: /seed-data/products/verified_real_funds_v1.json
+      - key: TWIN_RULES_PATH
+        value: /seed-data/rules/twin_simulation_v1.json
+      - key: BEHAVIOR_RULES_PATH
+        value: /seed-data/rules/behavior_finance_v1.json
+      - key: CLIENT_PROFILE_RULES_PATH
+        value: /seed-data/rules/client_profile_v1.json
+      - key: LIABILITY_RULES_PATH
+        value: /seed-data/rules/liability_engine_v1.json
+      - key: FAMILY_ENTERPRISE_RULES_PATH
+        value: /seed-data/rules/family_enterprise_v1.json
+      - key: CFS_RULES_PATH
+        value: /seed-data/rules/cfs_composer_v1.json
+      - key: SPECIALIZED_CFS_RULES_PATH
+        value: /seed-data/rules/specialized_cfs_v1.json
+      - key: MONITORING_RULES_PATH
+        value: /seed-data/rules/monitoring_v1.json
+      - key: KNOWLEDGE_BASE_PATH
+        value: /seed-data/knowledge/controlled_knowledge_v1.json
+      - key: DEMO_BENCHMARK_PATH
+        value: /seed-data/benchmarks/demo_release_v1.json
+      - key: V5_RELEASE_BENCHMARK_PATH
+        value: /seed-data/benchmarks/v5_release_v2.json
+      - key: COMPETITION_DATA_ROOT
+        value: /seed-data
+      - key: LLM_PROVIDER
+        value: mock
+      - key: DEMO_AUTH_ENABLED
+        value: "true"
+      - key: HOSTED_PROXY_REQUIRED
+        value: "true"
+      - key: HOSTED_PROXY_SECRET
+        sync: false
+      - key: ALLOWED_HOSTS
+        value: "*.onrender.com,localhost,127.0.0.1"
+      - key: ENABLE_V5_FINANCIAL_GRAPH
+        value: "true"
+      - key: ENABLE_V5_CLIENT_PROFILE
+        value: "true"
+      - key: ENABLE_V5_LIABILITY_ENGINE
+        value: "true"
+      - key: ENABLE_V5_PERSISTENT_TWIN
+        value: "true"
+      - key: ENABLE_V5_FAMILY_ENTERPRISE
+        value: "true"
+      - key: ENABLE_V5_CFS
+        value: "true"
+      - key: ENABLE_V5_PRODUCT_ONTOLOGY
+        value: "true"
+      - key: ENABLE_V5_MONITORING
+        value: "true"
+      - key: ENABLE_V5_AGENTS
+        value: "true"
+      - key: ENABLE_V5_CALIBRATION
+        value: "true"

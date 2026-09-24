@@ -2,6 +2,7 @@
   "name": "wealthtwin",
   "version": "0.15.0",
   "private": true,
+  "type": "module",
   "workspaces": [
     "frontend"
   ],
@@ -11,6 +12,8 @@
     "frontend:lint": "npm --workspace frontend run lint",
     "frontend:typecheck": "npm --workspace frontend run typecheck",
     "frontend:build": "npm --workspace frontend run build",
+    "build:sites": "node scripts/build_sites.mjs",
+    "test:sites": "node --test worker/index.test.mjs",
     "frontend:e2e": "npm --workspace frontend run test:e2e"
   },
   "engines": {

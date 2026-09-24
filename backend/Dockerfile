@@ -23,9 +23,13 @@ RUN mkdir -p app \
 COPY backend/alembic.ini ./
 COPY backend/alembic ./alembic
 COPY backend/app ./app
+COPY backend/deploy/start_hosted.sh /app/start_hosted.sh
+COPY data /seed-data
+RUN chmod +x /app/start_hosted.sh
 
 # Keep release/legal/acceptance artifacts in the distributable image. Runtime
-# calculation data remains a read-only Compose mount so it can be version-audited.
+# calculation data is bundled for hosted builds; Compose overrides it with its
+# existing read-only mount so local release checks retain their previous source.
 COPY VERSION LICENSE THIRD_PARTY_NOTICES.md CHANGELOG.md docker-compose.yml /release/
 COPY scripts /release/scripts
 
