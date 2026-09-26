@@ -82,7 +82,15 @@ typecheck:
 build:
 	npm --workspace frontend run build
 
-check: lint typecheck test build
+.PHONY: repo-check test-sites
+
+repo-check:
+	$(PYTHON) scripts/check_repository.py
+
+test-sites:
+	npm run test:sites
+
+check: repo-check lint typecheck test test-sites build
 
 # Dependency intelligence requires registry/network access; the application and
 # normal offline check remain independent of this explicit supply-chain gate.

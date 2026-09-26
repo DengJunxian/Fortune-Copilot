@@ -224,7 +224,7 @@ def erase_household_data(
             continue
         if not hasattr(model, "household_id") or not hasattr(model, "is_deleted"):
             continue
-        rows = list(
+        rows: list[Any] = list(
             session.scalars(
                 select(model).where(
                     cast(Any, model).household_id == household.id,
