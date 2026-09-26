@@ -81,7 +81,7 @@ def upgrade() -> None:
         batch.add_column(sa.Column("region_code", sa.String(24), nullable=True))
 
     op.execute(
-        "UPDATE assets SET account_wrapper = 'PERSONAL_PENSION', lock_up = 1, "
+        "UPDATE assets SET account_wrapper = 'PERSONAL_PENSION', lock_up = TRUE, "
         "institution_type = 'personal_pension', purpose_dimension = 'STABLE' "
         "WHERE category = 'PENSION_ACCOUNT'"
     )
@@ -99,7 +99,7 @@ def upgrade() -> None:
         "WHERE category = 'INSURANCE_CASH_VALUE'"
     )
     op.execute(
-        "UPDATE assets SET legally_principal_guaranteed = 1, principal_loss_possible = 0 "
+        "UPDATE assets SET legally_principal_guaranteed = TRUE, principal_loss_possible = FALSE "
         "WHERE category IN ('DEMAND_DEPOSIT', 'TIME_DEPOSIT')"
     )
 
@@ -142,7 +142,7 @@ def upgrade() -> None:
         )
     op.execute(
         "UPDATE products SET legally_principal_guaranteed = principal_guaranteed, "
-        "principal_loss_possible = CASE WHEN principal_guaranteed = 1 THEN 0 ELSE 1 END, "
+        "principal_loss_possible = CASE WHEN principal_guaranteed = TRUE THEN FALSE ELSE TRUE END, "
         "snapshot_version = catalog_version"
     )
 

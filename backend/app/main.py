@@ -11,6 +11,7 @@ from app.api.v1.router import api_router
 from app.core.config import get_settings
 from app.core.errors import install_exception_handlers
 from app.core.http_security import (
+    HostedProxyMiddleware,
     RateLimitMiddleware,
     RequestBodyLimitMiddleware,
     SecurityHeadersMiddleware,
@@ -54,6 +55,7 @@ app.add_middleware(
     ],
     expose_headers=["X-Request-ID", "X-RateLimit-Limit", "X-RateLimit-Remaining"],
 )
+app.add_middleware(HostedProxyMiddleware, settings=settings)
 
 
 @app.middleware("http")

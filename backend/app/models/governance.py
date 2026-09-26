@@ -92,7 +92,7 @@ class Product(RecordMixin, Base):
         Numeric(9, 6), default=0, nullable=False
     )
     sale_status: Mapped[str] = mapped_column(
-        String(24), default="available", nullable=False
+        String(40), default="available", nullable=False
     )
     channel: Mapped[str] = mapped_column(String(48), default="demo_catalog", nullable=False)
     source_reference: Mapped[str] = mapped_column(String(500), default="", nullable=False)
