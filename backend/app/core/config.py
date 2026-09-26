@@ -6,6 +6,8 @@ from urllib.parse import urlsplit
 from pydantic import Field, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from app import __version__
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -17,7 +19,7 @@ class Settings(BaseSettings):
     )
 
     app_env: str = Field(default="development", alias="APP_ENV")
-    app_version: str = Field(default="0.14.0", alias="APP_VERSION")
+    app_version: str = Field(default=__version__, alias="APP_VERSION")
     log_level: str = Field(default="INFO", alias="LOG_LEVEL")
     cors_origins_raw: str = Field(
         default="http://localhost:5173,http://localhost:8080",

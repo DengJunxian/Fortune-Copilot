@@ -2,6 +2,10 @@
 
 **面向中国家庭的家庭约束驱动型可信智能投顾系统。**
 
+[![CI](https://github.com/DengJunxian/Fortune-Copilot/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/DengJunxian/Fortune-Copilot/actions/workflows/ci.yml)
+
+技术入口：[快速启动](#快速启动) · [技术文档与目录导航](docs/README.md) · [部署与排错](docs/deployment.md) · [系统架构](docs/v6/V6_ARCHITECTURE.md)。当前版本见 [`VERSION`](VERSION)。
+
 Fortune Copilot 先判断家庭真正有多少钱可以长期投资，再决定钱怎么配置，并根据家庭变化、风险行为与人生目标持续调整。
 
 > 有多少钱，不等于有多少钱可以投资。
@@ -41,15 +45,19 @@ Fortune Copilot 以中国家庭财富健康 CHFH 为总体框架，保持以下�
 6. 产品智能层执行用途、期限、适当性、流动性、费用和冲突过滤，返回当前家庭约束下的候选产品；
 7. 家庭事件发生后，Financial Twin 显示 Before、Event、After，并生成新的 Next Best Action。
 
-## 产品截图
+## 仓库结构
 
-![家庭财富总览](output/presentation_assets/demo-overview.png)
+| 目录 | 技术内容 |
+| --- | --- |
+| [`backend/app/`](backend/app/) | FastAPI、领域模型、确定性计算与受控 AI 服务 |
+| [`backend/alembic/`](backend/alembic/) | SQLite / PostgreSQL 数据库迁移 |
+| [`frontend/src/`](frontend/src/) | React 页面、API 客户端与交互组件 |
+| [`worker/`](worker/) | 托管站点的同源 API 代理与测试 |
+| [`data/`](data/) | 版本化规则、公开资料快照、合成种子与回归基准 |
+| [`docs/`](docs/README.md) | 架构、接口、部署、维护与历史验证记录 |
+| [`scripts/`](scripts/) | 技术检查、构建与验收工具 |
 
-![家庭财务底表](output/playwright/stage9-client-balance-1366x768.png)
-
-![客户经理行动中心](output/screenshots/stage10/advisor-1366.png)
-
-![风险与合规证据链](output/screenshots/stage10/risk-1440.png)
+本地生成的截图、PPT、Word、PDF 保存在被忽略的 `output/`，不属于运行项目的前置条件。
 
 ## Architecture
 
@@ -260,16 +268,18 @@ flowchart LR
 需要 Docker Desktop 与 Docker Compose。
 
 ```bash
-cp .env.example .env
+test -f .env || cp .env.example .env
 docker compose up --build
 ```
 
-默认访问：
+从 `.env.example` 创建配置后的默认访问地址：
 
-- 产品首页：http://localhost:18080
-- 开始规划：http://localhost:18080/planning
-- API 文档：http://localhost:18000/docs
-- 健康检查：http://localhost:18000/api/v1/health
+- 产品首页：http://localhost:8080
+- 开始规划：http://localhost:8080/planning
+- API 文档：http://localhost:8000/docs
+- 健康检查：http://localhost:8000/api/v1/health
+
+已有 `.env` 中的 `FRONTEND_PORT` / `BACKEND_PORT` 会覆盖默认端口；例如 `18080` / `18000`。用 `docker compose ps` 查看实际地址。遇到端口占用、旧版本或启动失败，按[部署与排错](docs/deployment.md#常见问题)处理。
 
 ### 连接 DeepSeek
 
@@ -307,7 +317,9 @@ make frontend-dev
 make check
 ```
 
-该命令依次执行后端与前端静态检查、类型检查、全量测试和前端生产构建。
+该命令依次执行仓库版本与入口链接检查、后端与前端静态检查、类型检查、单元测试、代理测试和前端生产构建。浏览器端到端检查另执行 `make test-e2e`，GitHub CI 同时验证 SQLite 与 PostgreSQL 迁移。
+
+只检查技术仓库结构可运行 `make repo-check`。`make final-acceptance` 是历史比赛材料验收，需要本地 `output/` 成品，不作为技术仓库的质量检查入口。
 
 ## 主要 API
 
